@@ -1,0 +1,43 @@
+{
+  "browserslist": [
+    "defaults"
+  ],
+  "devDependencies": {
+    "@symfony/webpack-encore": "^1.8.1",
+    "bootstrap": "^4.4.1",
+    "core-js": "^3.21.1",
+    "deepmerge": "^4.2.2",
+    "regenerator-runtime": "^0.13.9",
+    "sass": "~1.32",
+    "sass-loader": "^12.6.0",
+    "ts-loader": "^9.2.6",
+    "typescript": "^4.5.5",
+    "vue": "^2.6.14",
+    "vue-loader": "^15.9.8",
+    "vue-template-compiler": "^2.6.14",
+    "vuetify-loader": "^1.7.3",
+    "webpack-notifier": "^1.6.0"
+  },
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "dev-server": "encore dev-server",
+    "dev": "encore dev",
+    "watch": "encore dev --watch",
+    "build": "encore production --progress",
+    "lint": "node_modules/.bin/eslint assets/** --ignore-pattern *.scss --ignore-pattern *.gif --ignore-pattern *.png"
+  },
+  "dependencies": {
+    "axios": "^0.26.0",
+    "glob": "^7.2.0",
+    "leaflet": "^1.7.1",
+    "vue-class-component": "^7.2.6",
+    "vue-cookies": "^1.7.4",
+    "vue-i18n": "^8.27.0",
+    "vue-property-decorator": "^9.1.2",
+    "vue-tel-input-vuetify": "^1.5.3",
+    "vue2-leaflet": "^2.7.1",
+    "vuetify": "^2.6.3",
+    "vuetify-country-region-select": "^0.1.7"
+  }
+}
