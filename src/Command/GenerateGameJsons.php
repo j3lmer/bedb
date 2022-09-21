@@ -43,7 +43,7 @@ class GenerateGameJsons extends Command
         $path = "{$package->getUrl("assets/steam/")}steamgames.json";
         $response = file_get_contents("https://api.steampowered.com/ISteamApps/GetAppList/v0002/?key=STEAMKEY&format=json");
         $filesystem->dumpFile($path, $response);
-        printf("Got updated games list!");
+        printf("Got updated games list!\n");
     }
 
     protected function dumpGames(Filesystem $filesystem, Package $package, mixed $gameList)
