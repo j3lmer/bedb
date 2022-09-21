@@ -1,0 +1,9 @@
+gameview: 
+popup verwijder 
+maak aan knop
+popup wijzig / maak aan
+
+
+Account instellingen:
+popup wijzig wachtwoord
+popup wijzig username

@@ -154,6 +154,8 @@ Hier volgt een lijst van entiteiten (database-tabellen) en hun properties
 
 - notes (string) (100 karakters)
 
+- release_date (ReleaseDate) (one to one -> ReleaseDate)
+
 #### PcRequirement
 
 - minimum (string) (1000 karakters)
@@ -204,6 +206,12 @@ Hier volgt een lijst van entiteiten (database-tabellen) en hun properties
 
 - game (Game) (many to one -> game)
 
+### ReleaseDate
+
+- coming_soon (bool) (verplicht)
+
+- date (string) 
+
 Entiteiten bevatten ook getters en setters voor elke respectieve property
 
 ---
@@ -219,8 +227,6 @@ Wanneer er een account word aangemaakt word er een email verstuurd om je account
 Wanneer het de gebruiker niet lukt om in te loggen / een account aan te maken, krijgt hij een kleine notificatie in het venster dat het niet is gelukt.
 
 Wanneer een gebruiker een account aanmaakt, zal hij een email ontvangen, hierzin zal een link zitten waarmee het account word geverifieerd. Nadat dit is gebeurd kan de gebruiker inloggen.
-
-
 
 ---
 
@@ -239,6 +245,10 @@ Een gebruikersreview kan door de gebruiker worden gewijzigd (text/media).
 Een gebruikersreview kan worden gerapporteerd door een gebruiker.
 
 Een steamreview kan door een moderator worden verwijderd.
+
+---
+
+Een game kan nog niet uit zijn en wel al op de website zijn, wanneer de game nog niet uit is, kunnen gebruikers ook geen review plaatsen.
 
 ---
 
@@ -524,6 +534,8 @@ Voorbeeld:
   }
 }
 ```
+
+Er zal een enum zijn voor game categorieen, en genres, elke keer als er waarde voor een van deze variabelen tegen word gekomen die nog niet in de enum staat, word deze er bij gezet.
 
 Als het wel een `"game"` is, dan wordt alle essentiele data gezet in een `Game` object, als dit goed verloopt word het in de database opgeslagen.
 
