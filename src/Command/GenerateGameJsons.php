@@ -48,13 +48,21 @@ class GenerateGameJsons extends Command
 
     protected function dumpGames(Filesystem $filesystem, Package $package, mixed $gameList)
     {
+        $sleepCounter = 0;
         for ($i = 0; $i < count($gameList); $i++) {
             $appId = $gameList[$i]["appid"];
-            $path = "{$package->getUrl("assets/steam/games/")}{$appId}.json";
+            $path = "{$package->getUrl("assets/steam/games/")}/{$appId}/{$appId}.json";
             $response = file_get_contents("https://store.steampowered.com/api/appdetails?appids={$appId}");
 
             $filesystem->dumpFile($path, $response);
-            printf("Dumped file {$appId}.json for game {$gameList[$i]["name"]} \n");
+            printf("Dumped file {$appId}.json for game: {$gameList[$i]["name"]} \n");
+            $sleepCounter++;
+
+            if ($sleepCounter === 190) {
+                $sleepCounter = 0;
+                printf("Sleeping for 5 min to avoid too many requests error. \n");
+                sleep(300);
+            }
         }
     }
 }
