@@ -23,27 +23,29 @@ class GenerateGameJsons extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $rootDir = '/home/j3lmer/projects/GitHub/bedb'; //beetje vieze code, lukte zo snel niet om te injecteren in een Command.
         $filesystem = new Filesystem();
-
-
         $package = new Package(new EmptyVersionStrategy());
+
         $json = json_decode(
             file_get_contents($package->getUrl('assets/steam/steamgames.json')),
             true
         );
-
         $gameList = $json["applist"]["apps"];
 
+        $this->dumpGames($filesystem, $package, $gameList);
+
+        return Command::SUCCESS;
+    }
+
+    protected function dumpGames(Filesystem $filesystem, Package $package, mixed $gameList)
+    {
         for ($i = 0; $i < count($gameList); $i++) {
             $appId = $gameList[$i]["appid"];
-            $path = "{$rootDir}/assets/steam/games/{$appId}.json";
+            $path = "{$package->getUrl("assets/steam/games/")}{$appId}.json";
             $response = file_get_contents("https://store.steampowered.com/api/appdetails?appids={$appId}");
 
             $filesystem->dumpFile($path, $response);
-            printf("dumped file {$appId}.json for game {$gameList[$i]["name"]} \n");
+            printf("Dumped file {$appId}.json for game {$gameList[$i]["name"]} \n");
         }
-
-        return Command::SUCCESS;
     }
 }
