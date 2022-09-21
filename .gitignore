@@ -28,3 +28,5 @@ yarn-error.log
 .env
 .idea
 .env.test
+
+assets/steam/games
