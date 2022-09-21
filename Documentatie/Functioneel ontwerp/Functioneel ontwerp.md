@@ -220,7 +220,7 @@ Wanneer het de gebruiker niet lukt om in te loggen / een account aan te maken, k
 
 Wanneer een gebruiker een account aanmaakt, zal hij een email ontvangen, hierzin zal een link zitten waarmee het account word geverifieerd. Nadat dit is gebeurd kan de gebruiker inloggen.
 
-In het midden van het scherm zijn rijen aan spellen gesorteerd op genre / populariteit / score.
+
 
 ---
 
