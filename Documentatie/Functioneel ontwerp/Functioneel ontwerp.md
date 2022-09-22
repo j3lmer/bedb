@@ -565,3 +565,7 @@ Voorbeeld:
 Wanneer alle reviews zijn geschraapt worden ze in een textbestand gezet, bijv: `15270.json`. Dit textbestand gaat hierna dan weer uitgelezen worden, en elke review gaat bekeken en gevalideerd worden. Als alles goed is wordt deze gezet in een `SteamReview` object en opgeslagen in de database.
 
 Dit proces zal niet in een keer gebeuren. Een cron proces zal dit proces om de x tijd activeren, en eventuele errors of warnings loggen.
+
+## Nice to haves:
+
+Mobile ui support

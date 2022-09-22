@@ -7,3 +7,7 @@ popup wijzig / maak aan
 Account instellingen:
 popup wijzig wachtwoord
 popup wijzig username
+
+
+NICE TO HAVE:
+Mobile UI
