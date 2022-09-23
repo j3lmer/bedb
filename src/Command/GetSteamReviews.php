@@ -75,7 +75,6 @@ class GetSteamReviews extends Command
             while (isset($cursor) && $cursor !== '') {
                 $api_string = "https://store.steampowered.com/appreviews/{$appid}?json=1&num_per_page={$numReviewsPerChunk}&review_type=all&cursor={$cursor}";
                 $json = json_decode(file_get_contents($api_string), true);
-
                 $json["appid"] = $appid;
 
                 if (!array_key_exists("cursor", $json)) {
