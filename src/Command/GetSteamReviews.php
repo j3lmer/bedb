@@ -29,7 +29,7 @@ class GetSteamReviews extends Command
 
 // Ik kan alles van tevoren in mijn eigen db zetten, en dan per zoveel geven (queryen) aan de browser
 
-//TODO: ZET DIT IN HET FUNCTIONEEL ONTWERP + FLOWCHART
+//TODO: ZET DIT IN FLOWCHART
 // Ik kan dynamisch de steam api queryen bij pagina load, en het dan op de achtergrond opslaan naar mijn db,
 // en het dan in de toekomst uit mn eigen db halen
 

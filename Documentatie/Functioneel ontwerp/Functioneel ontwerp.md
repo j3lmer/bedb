@@ -539,6 +539,10 @@ Er zal een enum zijn voor game categorieen, en genres, elke keer als er waarde v
 
 Als het wel een `"game"` is, dan wordt alle essentiele data gezet in een `Game` object, als dit goed verloopt word het in de database opgeslagen.
 
+---
+
+#### (old) Reviews
+
 Nadat alle games zijn opgeslagen, gaat er voor elke opgeslagen game gekeken worden naar de reviews, hiervoor zal ik [dit]([GitHub - prncc/steam-scraper: A pair of spiders for scraping product data and reviews from Steam.](https://github.com/prncc/steam-scraper)) pakketje gebruiken. 
 
 Voorbeeld:
@@ -565,6 +569,14 @@ Voorbeeld:
 Wanneer alle reviews zijn geschraapt worden ze in een textbestand gezet, bijv: `15270.json`. Dit textbestand gaat hierna dan weer uitgelezen worden, en elke review gaat bekeken en gevalideerd worden. Als alles goed is wordt deze gezet in een `SteamReview` object en opgeslagen in de database.
 
 Dit proces zal niet in een keer gebeuren. Een cron proces zal dit proces om de x tijd activeren, en eventuele errors of warnings loggen.
+
+---
+
+#### (updated) Reviews
+
+Wanneer een user op een game pagina land, word de steam api gecalled om de reviews dynamisch op te halen, alle reviews die de gebruiker ophaalt, worden naar de backend gestuurd en opgeslagen in de database, zo hoef ik niet ontzettend veel data op te slaan, maar heb ik wel altijd alle reviews. de volgende keer dat dezelfde of een andere gebruiker op die game pagina land kunnen de reviews uit de database worden gehaald, en als ze meer reviews opvragen word de steam api weer gecalled, etc
+
+---
 
 ## Nice to haves:
 
