@@ -28,6 +28,13 @@ class RemoveNonGames extends Command
 
         foreach ($paths as $path) {
             $appId = explode('assets/steam/games/', $path)[1];
+
+            if(!$filesystem->exists("{$path}/{$appId}.json")) {
+                printf("No json found for " . $appId . ". Removing.. \n");
+
+                $filesystem->remove($path);
+            }
+
             $file = json_decode(file_get_contents("{$path}/{$appId}.json"), true);
 
             $type = $this->getType($file, $appId);
