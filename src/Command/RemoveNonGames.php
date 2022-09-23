@@ -18,14 +18,13 @@ use Symfony\Component\Filesystem\Filesystem;
 )]
 class RemoveNonGames extends Command
 {
-    private FilestructureHelper $filestructureHelper;
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->filestructureHelper = new FilestructureHelper();
+        $filestructureHelper = new FilestructureHelper();
         $filesystem = new Filesystem();
 
-        $paths = $this->filestructureHelper->getGamePaths();
+        $paths = $filestructureHelper->getGamePaths();
 
         foreach ($paths as $path) {
             $appId = explode('assets/steam/games/', $path)[1];
