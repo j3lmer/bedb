@@ -24,9 +24,7 @@ class GenerateGameJsons extends Command
     {
         $filesystem = new Filesystem();
         $package = new Package(new EmptyVersionStrategy());
-
         $this->getUpdatedGameList($filesystem, $package);
-
         $json = json_decode(
             file_get_contents($package->getUrl('assets/steam/steamgames.json')),
             true
@@ -34,7 +32,6 @@ class GenerateGameJsons extends Command
         $gameList = $json["applist"]["apps"];
 
         $this->dumpGames($filesystem, $package, $gameList);
-
         return Command::SUCCESS;
     }
 

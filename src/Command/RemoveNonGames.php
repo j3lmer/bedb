@@ -23,20 +23,17 @@ class RemoveNonGames extends Command
     {
         $filestructureHelper = new FilestructureHelper();
         $filesystem = new Filesystem();
-
         $paths = $filestructureHelper->getGamePaths();
 
         foreach ($paths as $path) {
             $appId = explode('assets/steam/games/', $path)[1];
 
-            if(!$filesystem->exists("{$path}/{$appId}.json")) {
+            if (!$filesystem->exists("{$path}/{$appId}.json")) {
                 printf("No json found for " . $appId . ". Removing.. \n");
-
                 $filesystem->remove($path);
             }
 
             $file = json_decode(file_get_contents("{$path}/{$appId}.json"), true);
-
             $type = $this->getType($file, $appId);
 
             if ($type === null) {
@@ -47,7 +44,6 @@ class RemoveNonGames extends Command
                 $this->removeGame($filesystem, $path);
             }
         }
-
         return Command::SUCCESS;
     }
 
