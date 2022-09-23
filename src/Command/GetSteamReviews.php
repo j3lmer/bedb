@@ -1,7 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Command\Helper\FilestructureHelper;
 use Symfony\Component\Asset\Package;
 use Symfony\Component\Asset\VersionStrategy\EmptyVersionStrategy;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -13,27 +15,19 @@ use Symfony\Component\Filesystem\Filesystem;
 #[AsCommand(
     name: 'app:get-reviews',
     description: 'gets the reviews for all games currently in filesystem',
-    aliases: ['app:gen-games'],
     hidden: false
 )]
 class GetSteamReviews extends Command
 {
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $filesystem = new Filesystem();
-        $package = new Package(new EmptyVersionStrategy());
+    private FilestructureHelper $filestructureHelper;
 
-        $this->getReviews($package);
-
-        return Command::SUCCESS;
-    }
-//todo: https://symfony.com/doc/current/console.html
-// Gebruik deze link om bij command executie een cijfer in te nemen van hoeveel reviewchunks er moeten worden opgehaald
+//TODO: https://symfony.com/doc/current/console.html
+// Gebruik deze link om bij command executie een cijfer in te nemen van hoeveel review chunks er moeten worden opgehaald
 
 //Opties:
 // Ik kan op pagina load van een gebruiker, de steam api callen en dan dat zo displayen,
-// en dan de cursor incrementen als de gebruiker meer dan 20 reviews wil zien
+// en dan de cursor incrementeren als de gebruiker meer dan 20 reviews wil zien
 // Voordelen:
 // Nadelen:
 
@@ -47,38 +41,89 @@ class GetSteamReviews extends Command
 // Voordelen:
 // Nadelen:
 
-    protected function getReviews(Package $package, Filesystem $filesystem) //deprecated
+//TODO: Command maken die alle non-games verwijderd
+
+
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $appids = [];
+        $this->filestructureHelper = new FilestructureHelper();
+        $filesystem = new Filesystem();
+        $numReviewsPerChunk = 25; // max 100
+        $numTotalReviewsPerGame = 50;
+
+        $this->getReviews($filesystem, $numReviewsPerChunk, $numTotalReviewsPerGame);
+
+        return Command::SUCCESS;
+    }
+
+    protected function getReviews(Filesystem $filesystem, int $numReviewsPerChunk, $numTotalReviewsPerGame) // only for test purposes
+    {
+        $appids = $this->getAppIds();
         $cursor = '*';
         $reviewChunks = [];
-        $path = $package->getUrl("assets/steam/games/");
-
-        foreach (glob("{$package->getUrl("assets/steam/games/**")}") as $path) {
-            $appids[] = explode("assets/steam/games/", $path, 1000000);
-        }
 
 
-        foreach($appids as $appid) {
-            printf("Reviews ophalen voor: {$appid[1]} \n");
-            while(isset($cursor) && $cursor !== '') {
-                $json = json_decode(
-                    file_get_contents(
-                        "https://store.steampowered.com/appreviews/{$appid[1]}?json=1&num_per_page=100&review_type=all&cursor={$cursor}"),
-                    true
-                );
+        foreach ($appids as $appid) {
+            $reviewCounter = 0;
+            $appid = $appid[1];
+            printf("\n Reviews ophalen voor: {$appid} \n");
+            while (isset($cursor) && $cursor !== '') {
+                $api_string = "https://store.steampowered.com/appreviews/{$appid}?json=1&num_per_page={$numReviewsPerChunk}&review_type=all&cursor={$cursor}";
+                $json = json_decode(file_get_contents($api_string),true);
+
+                $json["appid"] = $appid;
                 $reviewChunks[] = $json;
-                $cursor = $json["cursor"];
-            }
 
+                if (!array_key_exists("cursor", $json)) {
+                    printf("\n cursor not found, skipping \n");
+                    break;
+                }
+
+                $cursor = urlencode($json["cursor"]);
+
+                $reviewCounter += $numReviewsPerChunk;
+                if ($reviewCounter >= $numTotalReviewsPerGame) {
+                    printf("\n Got enough reviews, skipping to next game \n");
+                    break;
+                }
+            }
+        }
+        $this->removePreExistingReviews($reviewChunks, $filesystem);
+        $this->appendToReviewFiles($reviewChunks, $filesystem);
+    }
+
+    protected function getAppIds(): array
+    {
+        $appids = [];
+
+        foreach ($this->filestructureHelper->getGamePaths() as $path) {
+            $appids[] = explode("assets/steam/games/", $path);
+        }
+        return $appids;
+    }
+
+    protected function removePreExistingReviews($reviewChunks, Filesystem $filesystem)
+    {
+        foreach ($reviewChunks as $reviewChunk) {
+            $appid = $reviewChunk["appid"];
+            $reviewPath = "assets/steam/games/{$appid}/{$appid}_reviews.json";
+            if ($filesystem->exists($reviewPath)) {
+                $filesystem->remove($reviewPath);
+            }
+            $filesystem->dumpFile($reviewPath, '');
         }
 
-        foreach($reviewChunks as $reviewChunk) {
-            foreach($reviewChunk as $review) {
-//                $filesystem->exists()
-                var_dump($review);
-            }
-        }
+        printf("\n Created new empty file \n");
+    }
 
+    protected function appendToReviewFiles($reviewChunks, Filesystem $filesystem)
+    {
+        foreach ($reviewChunks as $reviewChunk) {
+            $appid = $reviewChunk["appid"];
+            $reviewPath = "assets/steam/games/{$appid}/{$appid}_reviews.json";
+
+            $filesystem->appendToFile($reviewPath, json_encode($reviewChunk["reviews"]));
+        }
+        printf("\n filled reviewfile of {$appid} \n");
     }
 }
