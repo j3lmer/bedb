@@ -37,10 +37,10 @@ class RemoveNonGames extends Command
             $type = $this->getType($file, $appId);
 
             if ($type === null) {
-                printf($appId . " has no type \n");
+                printf($appId . " has no type, removing.. \n");
                 $this->removeGame($filesystem, $path);
             } else if ($type !== "game") {
-                printf($appId . " is not a game \n");
+                printf($appId . " is not a game, removing.. \n");
                 $this->removeGame($filesystem, $path);
             }
         }

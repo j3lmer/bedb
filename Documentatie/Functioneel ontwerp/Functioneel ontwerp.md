@@ -156,6 +156,8 @@ Hier volgt een lijst van entiteiten (database-tabellen) en hun properties
 
 - release_date (ReleaseDate) (one to one -> ReleaseDate)
 
+- nsfw (bool) 
+
 #### PcRequirement
 
 - minimum (string) (1000 karakters)
