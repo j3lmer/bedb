@@ -62,7 +62,6 @@ class GetSteamReviews extends Command
     {
         $appids = $this->getAppIds();
         $cursor = '*';
-        $test = chr(8);
 
         foreach ($appids as $appid) {
             $reviewCounter = 0;
