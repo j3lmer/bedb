@@ -56,42 +56,6 @@ class GetSteamReviews extends Command
         return Command::SUCCESS;
     }
 
-    protected function getReviews(Filesystem $filesystem, int $numReviewsPerChunk, $numTotalReviewsPerGame) // only for test purposes
-    {
-        $appids = $this->getAppIds();
-        $cursor = '*';
-        $reviewChunks = [];
-
-
-        foreach ($appids as $appid) {
-            $reviewCounter = 0;
-            $appid = $appid[1];
-            printf("\n Reviews ophalen voor: {$appid} \n");
-            while (isset($cursor) && $cursor !== '') {
-                $api_string = "https://store.steampowered.com/appreviews/{$appid}?json=1&num_per_page={$numReviewsPerChunk}&review_type=all&cursor={$cursor}";
-                $json = json_decode(file_get_contents($api_string),true);
-
-                $json["appid"] = $appid;
-                $reviewChunks[] = $json;
-
-                if (!array_key_exists("cursor", $json)) {
-                    printf("\n cursor not found, skipping \n");
-                    break;
-                }
-
-                $cursor = urlencode($json["cursor"]);
-
-                $reviewCounter += $numReviewsPerChunk;
-                if ($reviewCounter >= $numTotalReviewsPerGame) {
-                    printf("\n Got enough reviews, skipping to next game \n");
-                    break;
-                }
-            }
-        }
-        $this->removePreExistingReviews($reviewChunks, $filesystem);
-        $this->appendToReviewFiles($reviewChunks, $filesystem);
-    }
-
     protected function getAppIds(): array
     {
         $appids = [];
@@ -102,28 +66,61 @@ class GetSteamReviews extends Command
         return $appids;
     }
 
-    protected function removePreExistingReviews($reviewChunks, Filesystem $filesystem)
+    protected function getReviews(Filesystem $filesystem, int $numReviewsPerChunk, $numTotalReviewsPerGame) // only for test purposes
     {
-        foreach ($reviewChunks as $reviewChunk) {
-            $appid = $reviewChunk["appid"];
-            $reviewPath = "assets/steam/games/{$appid}/{$appid}_reviews.json";
-            if ($filesystem->exists($reviewPath)) {
-                $filesystem->remove($reviewPath);
+        $appids = $this->getAppIds();
+        $cursor = '*';
+
+        foreach ($appids as $appid) {
+            $reviewCounter = 0;
+            $appid = $appid[1];
+
+            printf("\n Reviews verwijderen en leeg bestand maken voor voor: {$appid} \n");
+            $this->removePreExistingReviews($appid, $filesystem);
+
+            printf("\n Reviews ophalen voor: {$appid} \n");
+            while (isset($cursor) && $cursor !== '') {
+                $api_string = "https://store.steampowered.com/appreviews/{$appid}?json=1&num_per_page={$numReviewsPerChunk}&review_type=all&cursor={$cursor}";
+                $json = json_decode(file_get_contents($api_string),true);
+
+                $json["appid"] = $appid;
+
+                if (!array_key_exists("cursor", $json)) {
+                    printf("\n Cursor not found, skipping \n");
+                    break;
+                }
+
+                $this->appendToReviewFile($json, $filesystem);
+                $cursor = urlencode($json["cursor"]);
+
+                $reviewCounter += $numReviewsPerChunk;
+                if ($reviewCounter >= $numTotalReviewsPerGame) {
+                    printf("\n Got enough reviews, skipping to next game \n");
+                    break;
+                }
             }
-            $filesystem->dumpFile($reviewPath, '');
+
+            printf("\n \n");
         }
+    }
+
+    protected function removePreExistingReviews($appid, Filesystem $filesystem)
+    {
+        $reviewPath = "assets/steam/games/{$appid}/{$appid}_reviews.json";
+        if ($filesystem->exists($reviewPath)) {
+            $filesystem->remove($reviewPath);
+        }
+        $filesystem->dumpFile($reviewPath, '');
 
         printf("\n Created new empty file \n");
     }
 
-    protected function appendToReviewFiles($reviewChunks, Filesystem $filesystem)
+    protected function appendToReviewFile($json, Filesystem $filesystem)
     {
-        foreach ($reviewChunks as $reviewChunk) {
-            $appid = $reviewChunk["appid"];
-            $reviewPath = "assets/steam/games/{$appid}/{$appid}_reviews.json";
+        $appid = $json["appid"];
+        $reviewPath = "assets/steam/games/{$appid}/{$appid}_reviews.json";
 
-            $filesystem->appendToFile($reviewPath, json_encode($reviewChunk["reviews"]));
-        }
-        printf("\n filled reviewfile of {$appid} \n");
+        $filesystem->appendToFile($reviewPath, json_encode($json["reviews"]));
+        printf("\n Filled reviewfile of {$appid} \n");
     }
 }
