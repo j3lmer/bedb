@@ -28,28 +28,20 @@ class GetSteamReviews extends Command
 //Opties:
 // Ik kan op pagina load van een gebruiker, de steam api callen en dan dat zo displayen,
 // en dan de cursor incrementeren als de gebruiker meer dan 20 reviews wil zien
-// Voordelen:
-// Nadelen:
 
 // Ik kan alles van tevoren in mijn eigen db zetten, en dan per zoveel geven (queryen) aan de browser
-// Voordelen:
-// Nadelen:
 
 //TODO: ZET DIT IN HET FUNCTIONEEL ONTWERP + FLOWCHART
 // Ik kan dynamisch de steam api queryen bij pagina load, en het dan op de achtergrond opslaan naar mijn db,
 // en het dan in de toekomst uit mn eigen db halen
-// Voordelen:
-// Nadelen:
-
-//TODO: Command maken die alle non-games verwijderd
 
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->filestructureHelper = new FilestructureHelper();
         $filesystem = new Filesystem();
-        $numReviewsPerChunk = 25; // max 100
-        $numTotalReviewsPerGame = 50;
+        $numReviewsPerChunk = 100; // max 100
+        $numTotalReviewsPerGame = 100;
 
         $this->getReviews($filesystem, $numReviewsPerChunk, $numTotalReviewsPerGame);
 
@@ -70,13 +62,15 @@ class GetSteamReviews extends Command
     {
         $appids = $this->getAppIds();
         $cursor = '*';
+        $test = chr(8);
 
         foreach ($appids as $appid) {
             $reviewCounter = 0;
             $appid = $appid[1];
+            $reviewPath = "assets/steam/games/{$appid}/{$appid}_reviews.json";
 
             printf("\n Reviews verwijderen en leeg bestand maken voor voor: {$appid} \n");
-            $this->removePreExistingReviews($appid, $filesystem);
+            $this->removePreExistingReviews($reviewPath, $filesystem);
 
             printf("\n Reviews ophalen voor: {$appid} \n");
             while (isset($cursor) && $cursor !== '') {
@@ -90,7 +84,7 @@ class GetSteamReviews extends Command
                     break;
                 }
 
-                $this->appendToReviewFile($json, $filesystem);
+                $this->appendToReviewFile($json, $reviewPath, $filesystem);
                 $cursor = urlencode($json["cursor"]);
 
                 $reviewCounter += $numReviewsPerChunk;
@@ -99,14 +93,19 @@ class GetSteamReviews extends Command
                     break;
                 }
             }
-
+            $filesystem->dumpFile(
+                $reviewPath,
+                substr(
+                    file_get_contents($reviewPath),
+                    0,
+                    -1) . ']'
+            );
             printf("\n \n");
         }
     }
 
-    protected function removePreExistingReviews($appid, Filesystem $filesystem)
+    protected function removePreExistingReviews(string $reviewPath,  Filesystem $filesystem)
     {
-        $reviewPath = "assets/steam/games/{$appid}/{$appid}_reviews.json";
         if ($filesystem->exists($reviewPath)) {
             $filesystem->remove($reviewPath);
         }
@@ -115,12 +114,13 @@ class GetSteamReviews extends Command
         printf("\n Created new empty file \n");
     }
 
-    protected function appendToReviewFile($json, Filesystem $filesystem)
+    protected function appendToReviewFile($json, string $reviewPath, Filesystem $filesystem)
     {
         $appid = $json["appid"];
-        $reviewPath = "assets/steam/games/{$appid}/{$appid}_reviews.json";
 
+        $filesystem->appendToFile($reviewPath, '[');
         $filesystem->appendToFile($reviewPath, json_encode($json["reviews"]));
+        $filesystem->appendToFile($reviewPath, ',');
         printf("\n Filled reviewfile of {$appid} \n");
     }
 }
