@@ -75,7 +75,7 @@ class GetSteamReviews extends Command
             printf("\n Reviews ophalen voor: {$appid} \n");
             while (isset($cursor) && $cursor !== '') {
                 $api_string = "https://store.steampowered.com/appreviews/{$appid}?json=1&num_per_page={$numReviewsPerChunk}&review_type=all&cursor={$cursor}";
-                $json = json_decode(file_get_contents($api_string),true);
+                $json = json_decode(file_get_contents($api_string), true);
 
                 $json["appid"] = $appid;
 
@@ -98,13 +98,14 @@ class GetSteamReviews extends Command
                 substr(
                     file_get_contents($reviewPath),
                     0,
-                    -1) . ']'
+                    -1
+                ) . ']'
             );
             printf("\n \n");
         }
     }
 
-    protected function removePreExistingReviews(string $reviewPath,  Filesystem $filesystem)
+    protected function removePreExistingReviews(string $reviewPath, Filesystem $filesystem)
     {
         if ($filesystem->exists($reviewPath)) {
             $filesystem->remove($reviewPath);
