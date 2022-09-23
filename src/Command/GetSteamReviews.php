@@ -42,7 +42,6 @@ class GetSteamReviews extends Command
         $numTotalReviewsPerGame = 100;
 
         $this->getReviews($filesystem, $numReviewsPerChunk, $numTotalReviewsPerGame);
-
         return Command::SUCCESS;
     }
 
@@ -82,7 +81,6 @@ class GetSteamReviews extends Command
 
                 $this->appendToReviewFile($json, $reviewPath, $filesystem);
                 $cursor = urlencode($json["cursor"]);
-
                 $reviewCounter += $numReviewsPerChunk;
                 if ($reviewCounter >= $numTotalReviewsPerGame) {
                     printf("\n Got enough reviews, skipping to next game \n");
@@ -107,7 +105,6 @@ class GetSteamReviews extends Command
             $filesystem->remove($reviewPath);
         }
         $filesystem->dumpFile($reviewPath, '');
-
         printf("\n Created new empty file \n");
     }
 
