@@ -66,10 +66,10 @@ class GetSteamReviews extends Command
             $appid = $appid[1];
             $reviewPath = "assets/steam/games/{$appid}/{$appid}_reviews.json";
 
-            printf("\n Reviews verwijderen en leeg bestand maken voor voor: {$appid} \n");
+            printf("\n Deleting reviews and creating empty file for: {$appid} \n");
             $this->removePreExistingReviews($reviewPath, $filesystem);
 
-            printf("\n Reviews ophalen voor: {$appid} \n");
+            printf("\n Getting reviews for: {$appid} \n");
             while (isset($cursor) && $cursor !== '') {
                 $apiString = "https://store.steampowered.com/appreviews/{$appid}?json=1&num_per_page={$numReviewsPerChunk}&review_type=all&cursor={$cursor}";
                 $json = json_decode(file_get_contents($apiString), true);
