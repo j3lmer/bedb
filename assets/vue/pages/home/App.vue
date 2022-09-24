@@ -12,7 +12,7 @@ export default class App extends VueComponent
 
     public created(): void
     {
-        console.log('testo');
+        console.log('snot');
     }
 };
 </script>

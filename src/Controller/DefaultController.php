@@ -13,10 +13,4 @@ class DefaultController extends AbstractController
     {
         return $this->render('default/index.html.twig',);
     }
-
-    #[Route('about', name: 'about')]
-    public function about(): Response
-    {
-        return $this->render('default/about.html.twig',);
-    }
 }
