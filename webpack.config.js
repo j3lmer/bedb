@@ -89,9 +89,6 @@ Encore
 // enables Sass/SCSS support
 //.enableSassLoader()
 
-// uncomment if you use TypeScript
-
-
 // uncomment if you use React
 //.enableReactPreset()
 
