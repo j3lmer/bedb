@@ -78,8 +78,8 @@ Encore
     .enableTypeScriptLoader()
     .enableVueLoader(() => {}, {
         version: 2,
+        runtimeCompilerBuild: false
     })
-
 
     .addPlugin(new VuetifyLoaderPlugin())
     .enableSassLoader(options => {

@@ -32,6 +32,10 @@
                     >
                         Submit
                     </v-btn>
+                    <v-progress-circular v-if="submitting"
+                        indeterminate
+                        color="green"
+                    ></v-progress-circular>
                 </v-form>
             </v-col>
             <v-spacer/>
@@ -67,6 +71,7 @@ export default class LoginForm extends VueComponent {
 	private password = '';
     private snackbar = false;
     private snackbarText = '';
+    private submitting = false;
 
 	private emailRules = [
 		v => !!v || 'E-mail required',
@@ -83,7 +88,8 @@ export default class LoginForm extends VueComponent {
 
 	private async submit(): Promise<void> {
 		if ((this as any).$refs.form.validate() && this.valid) {
-			const user = {
+			this.submitting = true;
+            const user = {
 				email: this.email,
 				password: this.password,
 			}
@@ -105,6 +111,7 @@ export default class LoginForm extends VueComponent {
 					this.snackbar = true;
 				})
 		}
+        this.submitting = false;
 	}
 };
 </script>
