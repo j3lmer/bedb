@@ -1,50 +1,55 @@
 <template>
 	<v-container>
-		<v-form
-			class="mb-4"
-			ref="form"
-			v-model="valid"
-			lazy-validation
-		>
-			<v-text-field
-				v-model="username"
-				:counter="10"
-				label="Username"
-				:rules="nameRules"
-				required
-			/>
-			<v-text-field
-				v-model="email"
-				label="E-mail"
-				:rules="emailRules"
-				required
-			/>
+        <v-row>
+            <v-spacer/>
+            <v-col cols="3">
+                <v-form
+                    class="mb-4"
+                    ref="form"
+                    v-model="valid"
+                    lazy-validation
+                >
+                    <v-text-field
+                        v-model="username"
+                        label="Username"
+                        :rules="nameRules"
+                        required
+                    />
+                    <v-text-field
+                        v-model="email"
+                        label="E-mail"
+                        :rules="emailRules"
+                        required
+                    />
 
-			<v-text-field
-				v-model="password"
-				label="Password"
-				type="password"
-				:rules="[required, min6]"
-				required
-			/>
+                    <v-text-field
+                        v-model="password"
+                        label="Password"
+                        type="password"
+                        :rules="[required, min6]"
+                        required
+                    />
 
-			<v-text-field
-				v-model="passwordCheck"
-				label="Re-enter password"
-				type="password"
-				:rules="[required, min6]"
-				required
-			/>
+                    <v-text-field
+                        v-model="passwordCheck"
+                        label="Re-enter password"
+                        type="password"
+                        :rules="[required, min6]"
+                        required
+                    />
 
-			<v-btn
-				:disabled="!valid"
-				color="success"
-				class="mr-4"
-				@click="submit"
-			>
-				Submit
-			</v-btn>
-		</v-form>
+                    <v-btn
+                        :disabled="!valid"
+                        color="success"
+                        class="mr-4"
+                        @click="submit"
+                    >
+                        Submit
+                    </v-btn>
+                </v-form>
+            </v-col>
+            <v-spacer/>
+        </v-row>
 		<v-snackbar
 			v-model="snackbar"
 		>
