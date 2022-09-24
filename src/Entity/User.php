@@ -4,11 +4,23 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotNull;
 
-#[ApiResource]
+/**
+ * @ApiResource(
+ *     normalizationContext={"groups"={"user:read"}},
+ *     denormalizationContext={"groups"={"user:write"}},
+ * )
+ */
+#[UniqueEntity(fields: "username")]
+#[UniqueEntity(fields: "email")]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface
 {
@@ -18,10 +30,15 @@ class User implements UserInterface
     private $id;
 
     #[NotNull]
+    #[NotBlank]
+    #[Groups(["user:read", "user:write"])]
     #[ORM\Column(type: 'string', length: 255, unique: true)]
     private $username;
 
     #[NotNull]
+    #[NotBlank]
+    #[Email]
+    #[Groups(["user:read", "user:write"])]
     #[ORM\Column(type: 'string', length: 255)]
     private $email;
 
@@ -30,6 +47,7 @@ class User implements UserInterface
     private $roles = [];
 
     #[NotNull]
+    #[Groups("user:write")]
     #[ORM\Column(type: 'string', length: 255)]
     private $password;
 
@@ -37,8 +55,13 @@ class User implements UserInterface
     #[ORM\Column(type: 'boolean')]
     private $isVerified;
 
-//    #[ORM\Column(type: 'array', nullable: true)]
-//    private $reviews = [];
+//    #[ORM\Column(type: 'Reviews[]', nullable: true)]
+//    #[OnetoMany(
+//        mappedBy: 'owner',
+//        targetEntity: Review::class,
+//        cascade: ["persist", "remove"])
+//    ]
+//    private iterable $reviews = [];
 
     public function getId(): ?int
     {
@@ -107,12 +130,17 @@ class User implements UserInterface
 
     public function getRoles(): array
     {
-        return $this->roles;
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
     }
 
-    public function setRoles(array $roles): void
+    public function setRoles(array $roles): self
     {
         $this->roles = $roles;
+        return $this;
     }
 
     public function eraseCredentials()
@@ -122,6 +150,26 @@ class User implements UserInterface
 
     public function getUserIdentifier(): string
     {
-        // TODO: Implement getUserIdentifier() method.
+        return $this->email;
     }
+
+//    public function removeReservation(Review $reservation): self
+//    {
+//        if ($this->reviews->contains($reservation)) {
+//            $this->reviews->removeElement($reservation);
+//            // set the owning side to null (unless already changed)
+//            if ($reservation->getOwner() === $this) {
+//                $reservation->setOwner(null);
+//            }
+//        }
+//        return $this;
+//    }
+
+//    /**
+//     * @return iterable|ArrayCollection
+//     */
+//    public function getReservations(): iterable|ArrayCollection
+//    {
+//        return $this->reviews;
+//    }
 }
