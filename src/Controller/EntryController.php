@@ -13,4 +13,12 @@ class EntryController extends AbstractController
     {
         return $this->render('entry/entry.html.twig',);
     }
+
+    #[Route('/login', name: 'app_login', methods: 'POST')]
+    public function login(): Response
+    {
+        return $this->json([
+            'user' => $this->getUser() ? $this->getUser()->getUserIdentifier() : null,
+        ]);
+    }
 }
