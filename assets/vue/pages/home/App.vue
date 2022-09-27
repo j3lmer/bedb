@@ -6,13 +6,14 @@
 <script lang="ts">
 const {Component, VueComponent} = require('@/common/VueComponent')
 
+
 @Component
 export default class App extends VueComponent
 {
 
     public created(): void
     {
-        console.log('snot');
+        console.log('test');
     }
 };
 </script>
