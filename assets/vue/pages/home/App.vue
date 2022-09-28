@@ -4,8 +4,7 @@
 </template>
 
 <script lang="ts">
-import {VueComponent, Component} from "@/common/VueComponent";
-
+const {Component, VueComponent} = require('@/common/VueComponent');
 
 @Component
 export default class App extends VueComponent

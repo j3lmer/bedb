@@ -69,7 +69,7 @@
 </template>
 
 <script lang="ts">
-import {VueComponent, Component} from "@/common/VueComponent";
+const {Component, VueComponent} = require('@/common/VueComponent');
 import axios from "axios";
 
 @Component
@@ -104,23 +104,31 @@ export default class RegisterForm extends VueComponent {
 	}
 
 	private async submit(): Promise<void> {
-		// if ((this as any).$refs.form.validate() && this.valid) {
-		// 	const user = {
-		// 		username: this.username,
-		// 		emailAddress: this.email,
-		// 		password: this.password
-		// 	}
-        //
-		// 	const response = await axios.post('/entry/register', user);
-        //
-		// 	if (response.status < 299 && response.data) {
-		// 		this.snackbarText = this.$t('entry.snackbarSentMail');
-		// 		this.snackbar = true;
-		// 	} else {
-		// 		this.snackbarText = this.$t('entry.snackbarFailedMail');
-		// 		this.snackbar = true;
-		// 	}
-		// }
+		if ((this as any).$refs.form.validate() && this.valid) {
+			const user = {
+				username: this.username,
+				email: this.email,
+				password: this.password
+			}
+
+            axios
+                .post('/api/users', user)
+                .then(response => {
+                    console.log(response.data);
+                    console.log(response.headers);
+                    if(response.status < 299){
+                        // location.replace('/landed');
+                    }
+                })
+                .catch(error => {
+                    if (error.response.data.error) {
+                        this.snackbarText = 'Successfully sent E-mail, Check your inbox to validate your account ';
+                    } else {
+                        this.snackbarText = 'Unfortunately we weren\'t able to send an E-mail, please try again';
+                    }
+                    this.snackbar = true;
+                })
+		}
 	}
 };
 </script>

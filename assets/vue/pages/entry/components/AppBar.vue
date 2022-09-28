@@ -31,7 +31,7 @@
     </div>
 </template>
 <script lang="ts">
-import {VueComponent, Component, Prop} from "@/common/VueComponent";
+const {Component, VueComponent, Prop} = require('@/common/VueComponent');
 
 @Component
 export default class AppBar extends VueComponent {

@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts">
-import {VueComponent, Component} from "@/common/VueComponent";
+const {Component, VueComponent} = require('@/common/VueComponent');
 import axios from "axios";
 
 @Component
@@ -97,6 +97,7 @@ export default class LoginForm extends VueComponent {
 				.post('/login', user)
 				.then(response => {
                     console.log(response.data);
+                    console.log(response.headers);
 					if(response.status < 299){
 						// location.replace('/landed');
 					}

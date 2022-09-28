@@ -5,6 +5,7 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use ApiPlatform\Core\Api\IriConverterInterface;
 
 class EntryController extends AbstractController
 {
@@ -15,7 +16,7 @@ class EntryController extends AbstractController
     }
 
     #[Route('/login', name: 'app_login', methods: 'POST')]
-    public function login(): Response
+    public function login(IriConverterInterface $iriConverter): Response
     {
         if (!$this->isGranted('IS_AUTHENTICATED_FULLY')) {
             return $this->json([
@@ -23,8 +24,8 @@ class EntryController extends AbstractController
             ], 400);
         }
 
-        return $this->json([
-            'user' => $this->getUser() ? $this->getUser()->getUserIdentifier() : null,
+        return new Response(null, 204, [
+            'Location' => $iriConverter->getIriFromItem($this->getUser())
         ]);
     }
 }
