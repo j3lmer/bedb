@@ -4,7 +4,7 @@
 </template>
 
 <script lang="ts">
-const {Component, VueComponent} = require('@/common/VueComponent')
+import {VueComponent, Component} from "@/common/VueComponent";
 
 
 @Component

@@ -60,9 +60,8 @@
 </template>
 
 <script lang="ts">
+import {VueComponent, Component} from "@/common/VueComponent";
 import axios from "axios";
-
-const {Component, VueComponent} = require('@/common/VueComponent')
 
 @Component
 export default class LoginForm extends VueComponent {
