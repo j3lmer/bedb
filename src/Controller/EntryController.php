@@ -68,4 +68,9 @@ class EntryController extends AbstractController
         $this->helper->verifyEmail($request);
         return $this->redirectToRoute('entry');
     }
+    
+    #[Route('/logout', name: 'app_logout', methods: ['GET'])]
+    public function logout()
+    {
+    }
 }
