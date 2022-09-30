@@ -23,19 +23,27 @@
                         type="password"
                         required
                     />
+                    <v-row>
+                        <v-col>
+                            <v-btn
+                                :disabled="!valid"
+                                color="success"
+                                class="mr-4"
+                                @click="submit"
+                            >
+                                Submit
+                            </v-btn>
+                        </v-col>
+                        <v-col>
+                            <div :style="{visibility: submitting ? 'visible' : 'hidden'}">
+                                <v-progress-circular
+                                    indeterminate
+                                    color="green"
+                                ></v-progress-circular>
+                            </div>
+                        </v-col>
+                    </v-row>
 
-                    <v-btn
-                        :disabled="!valid"
-                        color="success"
-                        class="mr-4"
-                        @click="submit"
-                    >
-                        Submit
-                    </v-btn>
-                    <v-progress-circular v-if="submitting"
-                        indeterminate
-                        color="green"
-                    ></v-progress-circular>
                 </v-form>
             </v-col>
             <v-spacer/>
@@ -86,17 +94,17 @@ export default class LoginForm extends VueComponent {
 	}
 
 	private async submit(): Promise<void> {
+        this.submitting = true;
+        await this.$nextTick();
 		if ((this as any).$refs.form.validate() && this.valid) {
-			this.submitting = true;
             const user = {
 				email: this.email,
 				password: this.password,
-			}
+			};
 
 			axios
 				.post('/login', user)
 				.then(response => {
-                    console.log(response.data);
                     console.log(response.headers);
 					if(response.status < 299){
 						// location.replace('/landed');
@@ -113,7 +121,8 @@ export default class LoginForm extends VueComponent {
 				})
 		}
         this.submitting = false;
-	}
+        await this.$nextTick();
+    }
 };
 </script>
 

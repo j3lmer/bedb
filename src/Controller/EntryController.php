@@ -30,14 +30,8 @@ class EntryController extends AbstractController
     }
 
     #[Route('/login', name: 'app_login', methods: 'POST')]
-    public function login(#[CurrentUser] ?User $user, IriConverterInterface $iriConverter): Response
+    public function login(IriConverterInterface $iriConverter): Response
     {
-        if (null === $user) {
-            return $this->json([
-                'message' => 'missing credentials',
-            ], Response::HTTP_UNAUTHORIZED);
-         }
-
         if (!$this->isGranted('IS_AUTHENTICATED_FULLY')) {
             return $this->json([
                 'error' => 'Invalid login request: check that the Content-Type header is "application/json".'

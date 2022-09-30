@@ -19,8 +19,9 @@ use Symfony\Component\Validator\Constraints\NotNull;
  *     denormalizationContext={"groups"={"user:write"}},
  * )
  */
-#[UniqueEntity(fields: "username")]
-#[UniqueEntity(fields: "email")]
+#[UniqueEntity(fields: ["username"], message: 'There is already an account with this username.')]
+#[UniqueEntity(fields: ["email"], message: 'There is already an account with this email.')]
+#[ORM\Table(name: '`user`')]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -39,7 +40,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[NotBlank]
     #[Email]
     #[Groups(["user:read", "user:write"])]
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, unique: true, nullable: false)]
     private $email;
 
     #[NotNull]
