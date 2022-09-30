@@ -103,6 +103,7 @@ export default class LoginForm extends VueComponent {
 					}
 				})
 				.catch(error => {
+                    console.log(error);
 					if (error.response.data.error) {
 						this.snackbarText = error.response.data.error;
 					} else {

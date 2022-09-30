@@ -108,11 +108,11 @@ export default class RegisterForm extends VueComponent {
 			const user = {
 				username: this.username,
 				email: this.email,
-				password: this.password
+				plainPassword: this.password
 			}
 
             axios
-                .post('/api/users', user)
+                .post('/register', user)
                 .then(response => {
                     console.log(response.data);
                     console.log(response.headers);
