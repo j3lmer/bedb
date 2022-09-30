@@ -3,16 +3,12 @@
 namespace App\Controller;
 
 use App\Business\EntryHelper;
-use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
-use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use ApiPlatform\Core\Api\IriConverterInterface;
-use Symfony\Component\Security\Http\Attribute\CurrentUser;
-use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 
 class EntryController extends AbstractController
 {
@@ -52,7 +48,7 @@ class EntryController extends AbstractController
         $response = new Response();
 
         $user = $this->helper->makeUser($request);
-        if ($user === null){
+        if ($user === null) {
             $response->setStatusCode(Response::HTTP_BAD_REQUEST);
             return $response;
         }
@@ -68,7 +64,7 @@ class EntryController extends AbstractController
         $this->helper->verifyEmail($request);
         return $this->redirectToRoute('entry');
     }
-    
+
     #[Route('/logout', name: 'app_logout', methods: ['GET'])]
     public function logout()
     {
