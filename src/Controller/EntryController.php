@@ -49,32 +49,29 @@ class EntryController extends AbstractController
         ]);
     }
 
-
     /**
      * @throws TransportExceptionInterface
      */
     #[Route('register', name: 'app_register', methods: "POST")]
     public function registerAction(Request $request): Response
     {
+        $response = new Response();
+
         $user = $this->helper->makeUser($request);
         if ($user === null){
-            //TODO: RETURN CORRECT RESPONSE
-            dd($user);
+            $response->setStatusCode(Response::HTTP_BAD_REQUEST);
+            return $response;
         }
 
         $this->helper->sendConfirmationEmail($user);
-        //TODO: RETURN CORRECT RESPONSE
-        return $this->redirectToRoute('home');
+        $response->setStatusCode(Response::HTTP_ACCEPTED);
+        return $response;
     }
 
     #[Route('/verify', name: 'app_verify_email')]
     public function verifyUserEmail(Request $request): Response
     {
-        $processed = $this->helper->verifyEmail($request);
-        if (!$processed)
-            return $this->redirectToRoute('entry');
-
-        //TODO: return to main page or page user came from initially
-        return $this->redirectToRoute('home');
+        $this->helper->verifyEmail($request);
+        return $this->redirectToRoute('entry');
     }
 }

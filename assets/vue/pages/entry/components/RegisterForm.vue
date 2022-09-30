@@ -117,7 +117,7 @@ export default class RegisterForm extends VueComponent {
                     console.log(response.data);
                     console.log(response.headers);
                     if(response.status < 299){
-                        // location.replace('/landed');
+                        location.replace('/');
                     }
                 })
                 .catch(error => {
