@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Business\EntryHelper;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -66,11 +67,11 @@ class EntryController extends AbstractController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route('/logout', name: 'app_logout', methods: ['GET'])]
     public function logout()
     {
-        throw new \Exception('should not be reached');
+        throw new Exception('should not be reached');
     }
 }

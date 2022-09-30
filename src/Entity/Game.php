@@ -87,7 +87,7 @@ class Game
         return $this->appid;
     }
 
-    public function setAppid(int $appid): self
+    public function setAppid(int +$appid): self
     {
         $this->appid = $appid;
 
