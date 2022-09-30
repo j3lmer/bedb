@@ -2,20 +2,24 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\GameRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
+/**
+ * @ApiResource(
+ *     normalizationContext={"groups"={"game:read"}},
+ *     denormalizationContext={"groups"={"game:write"}},
+ * )
+ */
+#[UniqueEntity(fields: ["appid"], message: 'Another game already has this appid')]
+#[ORM\Table(name: '`game`')]
 #[ORM\Entity(repositoryClass: GameRepository::class)]
-#[ApiResource]
 class Game
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
-    #[ORM\Column]
+    #[ORM\Column(unique: true)]
     private ?int $appid = null;
 
     #[ORM\Column(length: 255)]
