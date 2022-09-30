@@ -65,8 +65,12 @@ class EntryController extends AbstractController
         return $this->redirectToRoute('entry');
     }
 
+    /**
+     * @throws \Exception
+     */
     #[Route('/logout', name: 'app_logout', methods: ['GET'])]
     public function logout()
     {
+        throw new \Exception('should not be reached');
     }
 }

@@ -107,7 +107,7 @@ export default class LoginForm extends VueComponent {
                 .then(response => {
                     console.log(response.headers);
                     if (response.status < 299) {
-                        // location.replace('/landed');
+                         location.replace('/');
                     }
                 })
                 .catch(error => {
