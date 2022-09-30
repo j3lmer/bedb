@@ -7,11 +7,9 @@
 const {Component, VueComponent} = require('@/common/VueComponent');
 
 @Component
-export default class App extends VueComponent
-{
+export default class App extends VueComponent {
 
-    public created(): void
-    {
+    public created(): void {
         console.log('test');
     }
 };

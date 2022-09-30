@@ -1,5 +1,5 @@
 <template>
-	<v-container>
+    <v-container>
         <v-row>
             <v-spacer/>
             <v-col cols="3">
@@ -64,7 +64,7 @@
                 </v-btn>
             </template>
         </v-snackbar>
-	</v-container>
+    </v-container>
 </template>
 
 <script lang="ts">
@@ -73,53 +73,53 @@ import axios from "axios";
 
 @Component
 export default class LoginForm extends VueComponent {
-	private valid = false;
-	private email  = '';
-	private password = '';
+    private valid = false;
+    private email = '';
+    private password = '';
     private snackbar = false;
     private snackbarText = '';
     private submitting = false;
 
-	private emailRules = [
-		v => !!v || 'E-mail required',
-		v => /.+@.+\..+/.test(v) || 'E-mail not valid',
-	];
+    private emailRules = [
+        v => !!v || 'E-mail required',
+        v => /.+@.+\..+/.test(v) || 'E-mail not valid',
+    ];
 
-	private required(value): boolean | string {
-		return value ? true : 'Password required';
-	}
+    private required(value): boolean | string {
+        return value ? true : 'Password required';
+    }
 
-	private min6(value): boolean | string {
-		return value.length >= 6 ? true : 'Password too short';
-	}
+    private min6(value): boolean | string {
+        return value.length >= 6 ? true : 'Password too short';
+    }
 
-	private async submit(): Promise<void> {
+    private async submit(): Promise<void> {
         this.submitting = true;
         await this.$nextTick();
-		if ((this as any).$refs.form.validate() && this.valid) {
+        if ((this as any).$refs.form.validate() && this.valid) {
             const user = {
-				email: this.email,
-				password: this.password,
-			};
+                email: this.email,
+                password: this.password,
+            };
 
-			axios
-				.post('/login', user)
-				.then(response => {
+            axios
+                .post('/login', user)
+                .then(response => {
                     console.log(response.headers);
-					if(response.status < 299){
-						// location.replace('/landed');
-					}
-				})
-				.catch(error => {
+                    if (response.status < 299) {
+                        // location.replace('/landed');
+                    }
+                })
+                .catch(error => {
                     console.log(error);
-					if (error.response.data.error) {
-						this.snackbarText = error.response.data.error;
-					} else {
-						this.snackbarText = 'There has been an unforeseen error, try again or contact support';
-					}
-					this.snackbar = true;
-				})
-		}
+                    if (error.response.data.error) {
+                        this.snackbarText = error.response.data.error;
+                    } else {
+                        this.snackbarText = 'There has been an unforeseen error, try again or contact support';
+                    }
+                    this.snackbar = true;
+                })
+        }
         this.submitting = false;
         await this.$nextTick();
     }
