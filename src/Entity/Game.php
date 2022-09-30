@@ -9,8 +9,27 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ApiResource(
- *     normalizationContext={"groups"={"game:read"}},
- *     denormalizationContext={"groups"={"game:write"}},
+ *     normalizationContext={
+ *          "groups"={
+ *              "game:read",
+ *              "game:item:get"
+ *          }
+ *     },
+ *
+ *     denormalizationContext={
+ *          "groups"={"game:write"}
+ *     },
+ *
+ *     collectionOperations={
+ *          "get",
+ *          "post"={"security"="is_granted('ROLE_ADMIN')"}
+ *      },
+ *
+ *     itemOperations={
+ *          "get",
+ *          "put"={"security"="is_granted('ROLE_ADMIN')"}
+ *      },
+ *     shortName="Games"
  * )
  */
 #[UniqueEntity(fields: ["appid"], message: 'Another game already has this appid')]

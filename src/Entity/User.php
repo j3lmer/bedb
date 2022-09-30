@@ -17,6 +17,9 @@ use Symfony\Component\Validator\Constraints\NotNull;
  * @ApiResource(
  *     normalizationContext={"groups"={"user:read"}},
  *     denormalizationContext={"groups"={"user:write"}},
+ *     collectionOperations={"get", "post"},
+ *     itemOperations={"get", "put", "delete"},
+ *     shortName="Users"
  * )
  */
 #[UniqueEntity(fields: ["username"], message: 'There is already an account with this username.')]
