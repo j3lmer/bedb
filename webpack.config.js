@@ -2,7 +2,7 @@ const Encore = require('@symfony/webpack-encore');
 const glob   = require('glob');
 const path   = require('path');
 
-const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
+const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin');
 
 
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
@@ -64,22 +64,12 @@ Encore
     // enables hashed filenames (e.g. app.abc123.css)
     .enableVersioning(Encore.isProduction())
 
-    .configureBabel((config) => {
-        config.plugins.push('@babel/plugin-proposal-class-properties');
-    })
-
-    // enables @babel/preset-env polyfills
-    .configureBabelPresetEnv((config) => {
-        config.useBuiltIns = 'usage';
-        config.corejs = 3;
-    })
-
 
     .enableTypeScriptLoader()
     .enableVueLoader(() => {}, {
         version: 2,
+        runtimeCompilerBuild: false
     })
-
 
     .addPlugin(new VuetifyLoaderPlugin())
     .enableSassLoader(options => {

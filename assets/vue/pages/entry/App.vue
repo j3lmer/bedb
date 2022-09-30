@@ -10,8 +10,7 @@
 </template>
 
 <script lang="ts">
-const {Component, VueComponent} = require('@/common/VueComponent')
-
+const {Component, VueComponent} = require('@/common/VueComponent');
 import RegisterForm from "@/pages/entry/components/RegisterForm.vue";
 import AppBar from "@/pages/entry/components/AppBar.vue";
 import LoginForm from "@/pages/entry/components/LoginForm.vue";

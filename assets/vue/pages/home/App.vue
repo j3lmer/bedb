@@ -4,15 +4,16 @@
 </template>
 
 <script lang="ts">
-const {Component, VueComponent} = require('@/common/VueComponent')
+const {Component, VueComponent} = require('@/common/VueComponent');
 
 @Component
-export default class App extends VueComponent
-{
+export default class App extends VueComponent {
+    private user = null;
 
-    public created(): void
-    {
-        console.log('snot');
+    public created(): void {
+        if((window as any).user !== null) {
+            this.user = (window as any).user;
+        }
     }
 };
 </script>
