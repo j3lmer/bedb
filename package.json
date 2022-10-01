@@ -34,7 +34,7 @@
     "glob": "^7.2.0",
     "leaflet": "^1.7.1",
     "vue-class-component": "^7.2.6",
-    "vue-cookies": "^1.7.4",
+    "vue-cookies": "^1.8.1",
     "vue-i18n": "^8.27.0",
     "vue-property-decorator": "^9.1.2",
     "vue2-leaflet": "^2.7.1",
