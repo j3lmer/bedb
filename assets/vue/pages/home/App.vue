@@ -11,6 +11,7 @@
 <script lang="ts">
 const {Component, VueComponent} = require('@/common/VueComponent');
 import Header from "@/pages/home/components/Header.vue";
+import {HomepageTabs} from "@/common/components/Enums/HomepageTabs";
 
 @Component({
     components: {
@@ -20,7 +21,7 @@ import Header from "@/pages/home/components/Header.vue";
 export default class App extends VueComponent {
     private user = null;
     private selectedComponent = 'Home';
-    private items = ['Home', 'Test'];
+    private items = HomepageTabs;
 
     public created(): void {
         let cookiePage = this.$cookies.get('page');

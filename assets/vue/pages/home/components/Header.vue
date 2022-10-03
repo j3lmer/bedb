@@ -96,13 +96,13 @@
 </template>
 
 <script lang="ts">
-const {Component, VueComponent, Prop, Watch} = require('@/common/VueComponent')
+const {Component, VueComponent, Prop, Watch} = require('@/common/VueComponent');
+import {HomepageTabs} from '@/common/components/Enums/HomepageTabs';
 
 
 @Component
 export default class Header extends VueComponent {
 
-    private group = false;
     private drawer = false;
     private tab = null;
 
@@ -115,10 +115,10 @@ export default class Header extends VueComponent {
     @Watch('selectedComponent')
     private updateTab(Value: string): void {
         switch (Value) {
-            case 'Home':
+            case HomepageTabs.Home:
                 this.tab = 0;
                 break;
-            case 'Test':
+            case HomepageTabs.Games:
                 this.tab = 1;
         }
     }
