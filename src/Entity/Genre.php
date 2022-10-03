@@ -4,9 +4,11 @@ namespace App\Entity;
 
 use App\Repository\GenresRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: GenresRepository::class)]
-class Genres
+class Genre
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -15,6 +17,11 @@ class Genres
 
     #[ORM\Column(length: 255)]
     private ?string $description = null;
+
+    #[Assert\NotNull]
+    #[ORM\ManyToOne(targetEntity: Game::class, inversedBy: 'genres')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Game $game;
 
     public function getId(): ?int
     {
@@ -31,5 +38,21 @@ class Genres
         $this->description = $description;
 
         return $this;
+    }
+
+    /**
+     * @return Game|null
+     */
+    public function getGame(): ?Game
+    {
+        return $this->game;
+    }
+
+    /**
+     * @param Game|null $game
+     */
+    public function setGame(?Game $game): void
+    {
+        $this->game = $game;
     }
 }

@@ -11,9 +11,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Validator\Constraints\Email;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\NotNull;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
@@ -30,39 +28,40 @@ use Symfony\Component\Validator\Constraints\NotNull;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    #[NotNull]
-    #[NotBlank]
+    #[Assert\NotNull]
+    #[Assert\NotBlank]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer', unique: true)]
     private ?int $id = null;
 
-    #[NotNull]
-    #[NotBlank]
+    #[Assert\NotNull]
+    #[Assert\NotBlank]
     #[Groups(["user:read", "user:write"])]
     #[ORM\Column(type: 'string', length: 255, unique: true, nullable: false)]
     private string $username;
 
-    #[NotNull]
-    #[NotBlank]
-    #[Email]
+    #[Assert\NotNull]
+    #[Assert\NotBlank]
+    #[Assert\Email]
     #[Groups(["user:read", "user:write"])]
     #[ORM\Column(type: 'string', length: 255, unique: true, nullable: false)]
     private string $email;
 
-    #[NotNull]
+    #[Assert\NotNull]
     #[ORM\Column(type: 'json')]
     private iterable $roles = [];
 
-    #[NotNull]
+    #[Assert\NotNull]
     #[Groups("user:write")]
     #[ORM\Column(type: 'string', length: 255, nullable: false)]
     private string $password;
 
-    #[NotNull]
+    #[Assert\NotNull]
     #[ORM\Column(type: 'boolean', nullable: false)]
     private bool $isVerified = false;
 
+    #[Groups("user:read")]
     #[OnetoMany(
         mappedBy: 'owner',
         targetEntity: Review::class,

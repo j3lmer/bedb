@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\ScreenshotRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: ScreenshotRepository::class)]
 class Screenshot
@@ -18,6 +20,11 @@ class Screenshot
 
     #[ORM\Column(length: 255)]
     private ?string $full = null;
+
+    #[Assert\NotNull]
+    #[ORM\ManyToOne(targetEntity: Game::class, inversedBy: 'screenshots')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Game $game;
 
     public function getId(): ?int
     {
@@ -46,5 +53,21 @@ class Screenshot
         $this->full = $full;
 
         return $this;
+    }
+
+    /**
+     * @return Game|null
+     */
+    public function getGame(): ?Game
+    {
+        return $this->game;
+    }
+
+    /**
+     * @param Game|null $game
+     */
+    public function setGame(?Game $game): void
+    {
+        $this->game = $game;
     }
 }

@@ -90,7 +90,7 @@ Hier volgt een lijst van entiteiten (database-tabellen) en hun properties
 
 - text (string) (8000 karakters)
 
-- rating (int) (range tussen 0 en 10) (verplicht)
+- rating (int) (range tussen 1 en 10) (verplicht)
 
 - image (file) (niet groter dan 8mb)
 
@@ -112,7 +112,7 @@ Hier volgt een lijst van entiteiten (database-tabellen) en hun properties
 
 - text (string) (8000 karakters)
 
-- username (string) (180 karakters) (verplicht)
+- username (string) (255 karakters) (verplicht)
 
 - date (datetime) (verplicht)
 
@@ -120,7 +120,7 @@ Hier volgt een lijst van entiteiten (database-tabellen) en hun properties
 
 - id (int) (uniek) (verplicht) **// van steam**
 
-- name (string) (100 karakters) (verplicht)
+- name (string) (255 karakters) (verplicht)
 
 - detailed description (string) (1000 karakters)
 
@@ -130,39 +130,40 @@ Hier volgt een lijst van entiteiten (database-tabellen) en hun properties
 
 - supported_languages (string) (1000 karakters)
 
-- header_image (string) (200 karakters) (verplicht)
+- header_image (string) (200 karakters)
 
 - website (string) (500 karakters)
 
-- pc_requirements (PcRequirements) (one to one -> PcRequirements) 
+- developers (string) (100 karakters)
 
-- developers (stqring) (100 karakters) (verplicht)
+- publishers (string) (100 karakters)
 
-- publishers (string) (100 karakters) (verplicht)
+- recommendations_total (int)
+
+- notes (string) (100 karakters)
+
+- nsfw (bool)
+
+- pc_requirements (PcRequirements) (one to one -> PcRequirements)
 
 - platforms (Platforms) (one to one -> Platform) (verplicht)
 
 - metacritic (Metacritic) (one to one -> Metacritic) (verplicht)
 
-- categories (iterable) (one to many)
-
-- genres (iterable) (one to many)
-
-- recommendations_total (int)
-
-- screenshot (iterable) (one to many -> Screenshot)
-
-- notes (string) (100 karakters)
-
 - release_date (ReleaseDate) (one to one -> ReleaseDate)
 
-- nsfw (bool) 
+- categories (iterable) (one to many -> Category)
 
+- genres (iterable) (one to many -> Genre)
+
+- screenshot (iterable) (one to many -> Screenshot)
 #### PcRequirement
 
 - minimum (string) (1000 karakters)
 
 - recommended (string) (1000 karakters)
+
+- game (onetoone -> Game) (verplicht)
 
 #### Platform
 

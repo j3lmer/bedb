@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\PlatformRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PlatformRepository::class)]
 class Platform
@@ -13,14 +14,21 @@ class Platform
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?bool $windows = null;
+    #[Assert\NotNull]
+    #[ORM\Column(nullable: false)]
+    private bool $windows;
 
-    #[ORM\Column]
-    private ?bool $mac = null;
+    #[Assert\NotNull]
+    #[ORM\Column(nullable: false)]
+    private bool $mac;
 
-    #[ORM\Column]
-    private ?bool $linux = null;
+    #[Assert\NotNull]
+    #[ORM\Column(nullable: false)]
+    private bool $linux;
+
+    #[Assert\NotNull]
+    #[ORM\OneToOne(inversedBy: 'pc_requirement', targetEntity: Game::class)]
+    private Game $game;
 
     public function getId(): ?int
     {
@@ -61,5 +69,21 @@ class Platform
         $this->linux = $linux;
 
         return $this;
+    }
+
+    /**
+     * @return Game|null
+     */
+    public function getGame(): ?Game
+    {
+        return $this->game;
+    }
+
+    /**
+     * @param Game|null $game
+     */
+    public function setGame(?Game $game): void
+    {
+        $this->game = $game;
     }
 }

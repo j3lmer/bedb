@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\PcRequirementRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PcRequirementRepository::class)]
 class PcRequirement
@@ -13,11 +14,15 @@ class PcRequirement
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 1000, nullable: true)]
-    private ?string $minimum = null;
+    #[ORM\Column(length: 1000, nullable: false)]
+    private string $minimum;
 
-    #[ORM\Column(length: 1000, nullable: true)]
-    private ?string $recommended = null;
+    #[ORM\Column(length: 1000, nullable: false)]
+    private string $recommended;
+
+    #[Assert\NotNull]
+    #[ORM\OneToOne(inversedBy: 'pc_requirement', targetEntity: Game::class)]
+    private Game $game;
 
     public function getId(): ?int
     {
@@ -46,5 +51,21 @@ class PcRequirement
         $this->recommended = $recommended;
 
         return $this;
+    }
+
+    /**
+     * @return Game
+     */
+    public function getGame(): Game
+    {
+        return $this->game;
+    }
+
+    /**
+     * @param Game $game
+     */
+    public function setGame(Game $game): void
+    {
+        $this->game = $game;
     }
 }

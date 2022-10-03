@@ -7,6 +7,7 @@ use App\Repository\TeamReviewRepository;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource
@@ -14,25 +15,27 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: TeamReviewRepository::class)]
 class SteamReview
 {
+    #[Assert\NotNull]
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    #[ORM\Column(unique: true)]
+    private int $id;
 
-    #[ORM\Column]
-    private ?float $hours = null;
+    #[Assert\NotNull]
+    #[ORM\Column(nullable: false)]
+    private float $hours;
 
-    #[ORM\Column]
-    private ?bool $recommended = null;
+    #[Assert\NotNull]
+    #[ORM\Column(nullable: false)]
+    private $recommended;
 
     #[ORM\Column(length: 8000, nullable: true)]
     private ?string $text = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $username = null;
+    #[ORM\Column(length: 255, nullable: false)]
+    private string $username;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?DateTimeInterface $date = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: false)]
+    private ?DateTimeInterface $date;
 
     public function getId(): ?int
     {

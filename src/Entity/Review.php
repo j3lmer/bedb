@@ -14,7 +14,6 @@ use Symfony\Component\HttpFoundation\File\File;
  * @ApiResource
  */
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
-
 class Review
 {
     #[ORM\Id]
@@ -25,6 +24,7 @@ class Review
     #[ORM\Column(length: 8000, nullable: true)]
     private ?string $text = null;
 
+    #[Assert\NotNull]
     #[Assert\Range(
         notInRangeMessage: "Rating must be between 1 and 10",
         min: 1,
@@ -33,21 +33,25 @@ class Review
     #[ORM\Column(nullable: false)]
     private int $rating;
 
+    #[Assert\NotNull]
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: false)]
     private DateTimeInterface $date_updated;
 
     #[Assert\Image(
+        maxSize: '8M',
         minWidth: 200,
         maxWidth: 1080,
         maxHeight: 1920,
-        minHeight: 200,
+        minHeight: 200
     )]
     private File $image;
 
+    #[Assert\NotNull]
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'reviews')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner;
 
+    #[Assert\NotNull]
     #[ORM\ManyToOne(targetEntity: Game::class, inversedBy: 'reviews')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Game $game;
@@ -108,6 +112,7 @@ class Review
     {
         return $this->owner;
     }
+
     public function setOwner(?User $owner): self
     {
         $this->owner = $owner;

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ReleaseDateRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ReleaseDateRepository::class)]
 class ReleaseDate
@@ -18,6 +19,10 @@ class ReleaseDate
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $date = null;
+
+    #[Assert\NotNull]
+    #[ORM\OneToOne(inversedBy: 'release_date', targetEntity: Game::class)]
+    private Game $game;
 
     public function getId(): ?int
     {

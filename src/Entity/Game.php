@@ -7,6 +7,8 @@ use App\Repository\GameRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\OneToMany;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
@@ -39,11 +41,12 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 class Game
 {
     #[ORM\Id]
-    #[ORM\Column(unique: true)]
-    private ?int $id = null; // steam appid
+    #[ORM\Column(unique: true, nullable: false)]
+    private int $id; // steam appid
 
-    #[ORM\Column(length: 255)]
-    private ?string $name = null;
+    #[Assert\NotNull]
+    #[ORM\Column(length: 255, nullable: false)]
+    private string $name;
 
     #[ORM\Column(length: 1000, nullable: true)]
     private ?string $detailed_description = null;
@@ -75,6 +78,23 @@ class Game
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $notes = null;
 
+    #[Assert\NotNull]
+    #[ORM\Column(nullable: false)]
+    private bool $nsfw = true;
+
+    #[ORM\OneToOne(mappedBy: 'game', targetEntity: PcRequirement::class)]
+    private ?PcRequirement $pc_requirement = null;
+
+    #[ORM\OneToOne(mappedBy: 'game', targetEntity: Platform::class)]
+    private Platform $platform;
+
+    #[ORM\OneToOne(mappedBy: 'game', targetEntity: Metacritic::class)]
+    private Metacritic $metacritic;
+
+    #[ORM\OneToOne(mappedBy: 'game', targetEntity: ReleaseDate::class)]
+    private ReleaseDate $release_date;
+
+    #[Groups("game:read")]
     #[OnetoMany(
         mappedBy: 'owner',
         targetEntity: Review::class,
@@ -82,8 +102,29 @@ class Game
     ]
     private iterable $reviews = [];
 
-    #[ORM\Column]
-    private bool $nsfw = true;
+    #[OnetoMany(
+        mappedBy: 'game',
+        targetEntity: Category::class,
+        cascade: ["persist", "remove"])
+    ]
+    private iterable $categories;
+
+    #[OnetoMany(
+        mappedBy: 'game',
+        targetEntity: Genre::class,
+        cascade: ["persist", "remove"])
+    ]
+    private iterable $genres;
+
+    #[OnetoMany(
+        mappedBy: 'game',
+        targetEntity: Screenshot::class,
+        cascade: ["persist", "remove"])
+    ]
+    private iterable $screenshots;
+
+
+
 
     public function getId(): ?int
     {

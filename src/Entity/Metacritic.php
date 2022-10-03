@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\MetacriticRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: MetacriticRepository::class)]
 class Metacritic
@@ -13,8 +14,13 @@ class Metacritic
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\NotNull]
     #[ORM\Column]
-    private ?int $score = null;
+    private int $score;
+
+    #[Assert\NotNull]
+    #[ORM\OneToOne(inversedBy: 'metacritic', targetEntity: Game::class)]
+    private Game $game;
 
     #[ORM\Column(length: 500)]
     private ?string $url = null;
@@ -46,5 +52,21 @@ class Metacritic
         $this->url = $url;
 
         return $this;
+    }
+
+    /**
+     * @return Game
+     */
+    public function getGame(): Game
+    {
+        return $this->game;
+    }
+
+    /**
+     * @param Game $game
+     */
+    public function setGame(Game $game): void
+    {
+        $this->game = $game;
     }
 }
