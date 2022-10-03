@@ -36,25 +36,8 @@ class GenerateCategoriesAndGenres extends Command
 
             $json = json_decode(file_get_contents("assets/steam/games/{$appId}/{$appId}.json"), true);
 
-            if(array_key_exists($appId, $json) && array_key_exists("data", $json[$appId])) {
-                if(array_key_exists("genres", $json[$appId]["data"])) {
-                    $genres = $json[$appId]["data"]["genres"];
-                    foreach ($genres as $genre) {
-                        if(!in_array($genre, $collectedGenres)) {
-                            $collectedGenres[] = $genre;
-                        }
-                    }
-                }
-
-                if(array_key_exists("categories", $json[$appId]["data"])) {
-                    $categories = $json[$appId]["data"]["categories"];
-                    foreach ($categories as $category) {
-                        if(!in_array($category, $collectedCategories)) {
-                            $collectedCategories[] = $category;
-                        }
-                    }
-                }
-            }
+            $collectedCategories = $this->collect($json, $appId, $collectedCategories, "categories");
+            $collectedGenres = $this->collect($json, $appId, $collectedGenres, "genres");
         }
 
         $categories = json_encode($collectedCategories);
@@ -66,5 +49,19 @@ class GenerateCategoriesAndGenres extends Command
         printf("dumped categories.json and genres.json @/assets/steam/");
 
         return Command::SUCCESS;
+    }
+
+    protected function collect($json, $appId, $collected, $string): array
+    {
+        if(array_key_exists($string, $json[$appId]["data"])) {
+            $things = $json[$appId]["data"][$string];
+            foreach ($things as $thing) {
+                if(!in_array($thing, $collected)) {
+                    $collected[] = $thing;
+                }
+            }
+        }
+
+        return $collected;
     }
 }
