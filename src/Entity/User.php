@@ -4,7 +4,9 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\OneToMany;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -28,44 +30,45 @@ use Symfony\Component\Validator\Constraints\NotNull;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    #[NotNull]
+    #[NotBlank]
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    private $id;
+    #[ORM\Column(type: 'integer', unique: true)]
+    private ?int $id = null;
 
     #[NotNull]
     #[NotBlank]
     #[Groups(["user:read", "user:write"])]
-    #[ORM\Column(type: 'string', length: 255, unique: true)]
-    private $username;
+    #[ORM\Column(type: 'string', length: 255, unique: true, nullable: false)]
+    private string $username;
 
     #[NotNull]
     #[NotBlank]
     #[Email]
     #[Groups(["user:read", "user:write"])]
     #[ORM\Column(type: 'string', length: 255, unique: true, nullable: false)]
-    private $email;
+    private string $email;
 
     #[NotNull]
     #[ORM\Column(type: 'json')]
-    private $roles = [];
+    private iterable $roles = [];
 
     #[NotNull]
     #[Groups("user:write")]
-    #[ORM\Column(type: 'string', length: 255)]
-    private $password;
+    #[ORM\Column(type: 'string', length: 255, nullable: false)]
+    private string $password;
 
     #[NotNull]
-    #[ORM\Column(type: 'boolean')]
-    private $isVerified = false;
+    #[ORM\Column(type: 'boolean', nullable: false)]
+    private bool $isVerified = false;
 
-//    #[ORM\Column(type: 'Reviews[]', nullable: true)]
-//    #[OnetoMany(
-//        mappedBy: 'owner',
-//        targetEntity: Review::class,
-//        cascade: ["persist", "remove"])
-//    ]
-//    private iterable $reviews = [];
+    #[OnetoMany(
+        mappedBy: 'owner',
+        targetEntity: Review::class,
+        cascade: ["persist", "remove"])
+    ]
+    private iterable $reviews = [];
 
     public function getId(): ?int
     {
@@ -120,18 +123,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getReviews(): ?array
-    {
-        return $this->reviews;
-    }
-
-    public function setReviews(?array $reviews): self
-    {
-        $this->reviews = $reviews;
-
-        return $this;
-    }
-
     public function getRoles(): array
     {
         $roles = $this->roles;
@@ -157,23 +148,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return (string)$this->email;
     }
 
-//    public function removeReservation(Review $reservation): self
-//    {
-//        if ($this->reviews->contains($reservation)) {
-//            $this->reviews->removeElement($reservation);
-//            // set the owning side to null (unless already changed)
-//            if ($reservation->getOwner() === $this) {
-//                $reservation->setOwner(null);
-//            }
-//        }
-//        return $this;
-//    }
+    public function getReviews(): ?array
+    {
+        return $this->reviews;
+    }
 
-//    /**
-//     * @return iterable|ArrayCollection
-//     */
-//    public function getReservations(): iterable|ArrayCollection
-//    {
-//        return $this->reviews;
-//    }
+    public function addReview(Review $review): self
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews[] = $review;
+            $review->setOwner($this);
+        }
+        return $this;
+    }
+
+    public function removeReview(Review $review): self
+    {
+        if ($this->reviews->contains($review)) {
+            $this->reviews->removeElement($review);
+            // set the owning side to null (unless already changed)
+            if ($review->getOwner() === $this) {
+                $review->setOwner(null);
+            }
+        }
+        return $this;
+    }
+
+
 }

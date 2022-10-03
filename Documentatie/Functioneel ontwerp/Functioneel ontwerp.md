@@ -70,15 +70,15 @@ Hier volgt een lijst van entiteiten (database-tabellen) en hun properties
 
 #### User
 
-- id (UUID) (generated value) (uniek) (verplicht)
+- id (int) (generated value) (uniek) (verplicht)
 
-- username (string) (uniek) (180 karakters) (verplicht)
+- username (string) (uniek) (255 karakters) (verplicht)
 
-- email (niet leeg) (string) (uniek) (180 karakters) (verplicht)
+- email (niet leeg) (string) (uniek) (255 karakters) (verplicht)
 
 - roles (array) 
 
-- password (string) (niet leeg) (180 karakters) (verplicht)
+- password (string) (niet leeg) (255 karakters) (verplicht)
 
 - isVerified (boolean) (verplicht)
 
@@ -86,7 +86,7 @@ Hier volgt een lijst van entiteiten (database-tabellen) en hun properties
 
 #### Review
 
-- id (int) (uniek) (verplicht) **// steam id**
+- id (int) (uniek) (verplicht) 
 
 - text (string) (8000 karakters)
 
@@ -96,13 +96,13 @@ Hier volgt een lijst van entiteiten (database-tabellen) en hun properties
 
 - date (datetime) (verplicht) **// date geupload of voor het laatstgewijzigd**
 
-- user (many to one -> User) (verplicht)
+- owner (many to one -> User) (verplicht) (inversedby: 'reviews')
 
 - game (many to one -> Game) (verplicht)
 
 #### SteamReview
 
-- id (int) (uniek)
+- id (int) (uniek) **// steam id**
 
 - hours (float) (verplicht)
 

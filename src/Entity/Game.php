@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\GameRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\OneToMany;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
@@ -39,7 +40,7 @@ class Game
 {
     #[ORM\Id]
     #[ORM\Column(unique: true)]
-    private ?int $appid = null;
+    private ?int $id = null; // steam appid
 
     #[ORM\Column(length: 255)]
     private ?string $name = null;
@@ -74,22 +75,24 @@ class Game
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $notes = null;
 
+    #[OnetoMany(
+        mappedBy: 'owner',
+        targetEntity: Review::class,
+        cascade: ["persist", "remove"])
+    ]
+    private iterable $reviews = [];
+
     #[ORM\Column]
     private bool $nsfw = true;
 
     public function getId(): ?int
     {
-        return $this->appid;
+        return $this->id;
     }
 
-    public function getAppid(): ?int
+    public function setId(int $id): self
     {
-        return $this->appid;
-    }
-
-    public function setAppid(int $appid): self
-    {
-        $this->appid = $appid;
+        $this->id = $id;
 
         return $this;
     }
@@ -235,6 +238,32 @@ class Game
     {
         $this->nsfw = $nsfw;
 
+        return $this;
+    }
+
+    public function getReviews(): ?array
+    {
+        return $this->reviews;
+    }
+
+    public function addReview(Review $review): self
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews[] = $review;
+            $review->setGame($this);
+        }
+        return $this;
+    }
+
+    public function removeReview(Review $review): self
+    {
+        if ($this->reviews->contains($review)) {
+            $this->reviews->removeElement($review);
+            // set the owning side to null (unless already changed)
+            if ($review->getGame() === $this) {
+                $review->setGame(null);
+            }
+        }
         return $this;
     }
 }

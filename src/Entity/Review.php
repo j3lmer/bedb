@@ -7,6 +7,8 @@ use App\Repository\ReviewRepository;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\File;
 
 /**
  * @ApiResource
@@ -23,11 +25,32 @@ class Review
     #[ORM\Column(length: 8000, nullable: true)]
     private ?string $text = null;
 
-    #[ORM\Column]
-    private ?int $rating = null;
+    #[Assert\Range(
+        notInRangeMessage: "Rating must be between 1 and 10",
+        min: 1,
+        max: 10
+    )]
+    #[ORM\Column(nullable: false)]
+    private int $rating;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?DateTimeInterface $date = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: false)]
+    private DateTimeInterface $date_updated;
+
+    #[Assert\Image(
+        minWidth: 200,
+        maxWidth: 1080,
+        maxHeight: 1920,
+        minHeight: 200,
+    )]
+    private File $image;
+
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'reviews')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $owner;
+
+    #[ORM\ManyToOne(targetEntity: Game::class, inversedBy: 'reviews')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Game $game;
 
     public function getId(): ?int
     {
@@ -58,15 +81,47 @@ class Review
         return $this;
     }
 
-    public function getDate(): ?DateTimeInterface
+    public function getDateUpdated(): ?DateTimeInterface
     {
-        return $this->date;
+        return $this->date_updated;
     }
 
-    public function setDate(DateTimeInterface $date): self
+    public function setDateUpdated(DateTimeInterface $date_updated): self
     {
-        $this->date = $date;
+        $this->date_updated = $date_updated;
 
+        return $this;
+    }
+
+    public function setImage(File $file = null): self
+    {
+        $this->image = $file;
+        return $this;
+    }
+
+    public function getImage(): File
+    {
+        return $this->image;
+    }
+
+    public function getOwner(): User
+    {
+        return $this->owner;
+    }
+    public function setOwner(?User $owner): self
+    {
+        $this->owner = $owner;
+        return $this;
+    }
+
+    public function getGame(): Game
+    {
+        return $this->game;
+    }
+
+    public function setGame(?Game $game): self
+    {
+        $this->game = $game;
         return $this;
     }
 }
