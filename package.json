@@ -30,6 +30,7 @@
     "lint": "node_modules/.bin/eslint assets/** --ignore-pattern *.scss --ignore-pattern *.gif --ignore-pattern *.png"
   },
   "dependencies": {
+    "@mdi/font": "^7.0.96",
     "axios": "^0.26.0",
     "glob": "^7.2.0",
     "leaflet": "^1.7.1",

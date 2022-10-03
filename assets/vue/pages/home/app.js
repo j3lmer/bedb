@@ -5,6 +5,7 @@ import Vuetify from 'vuetify';
 import VueCookies from 'vue-cookies';
 import App from './App.vue';
 import 'vuetify/dist/vuetify.min.css'
+import '@mdi/font/css/materialdesignicons.css'
 
 Vue.config.productionTip = false
 Vue.use(Vuetify);
