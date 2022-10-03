@@ -25,6 +25,19 @@ class GenerateCategoriesAndGenres extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        [$genres, $categories] = $this->getCategoriesAndGenres();
+
+        $this->filesystem->dumpFile("assets/steam/categories.json", json_encode($categories));
+        $this->filesystem->dumpFile("assets/steam/genres.json", json_encode($genres));
+
+        printf("dumped categories.json and genres.json @/assets/steam/");
+
+        return Command::SUCCESS;
+    }
+
+
+    protected function getCategoriesAndGenres(): array
+    {
         $this->filestructureHelper = new FilestructureHelper();
         $this->filesystem = new Filesystem();
         $collectedGenres = [];
@@ -40,15 +53,7 @@ class GenerateCategoriesAndGenres extends Command
             $collectedGenres = $this->collect($json, $appId, $collectedGenres, "genres");
         }
 
-        $categories = json_encode($collectedCategories);
-        $genres = json_encode($collectedGenres);
-
-        $this->filesystem->dumpFile("assets/steam/categories.json", $categories);
-        $this->filesystem->dumpFile("assets/steam/genres.json", $genres);
-
-        printf("dumped categories.json and genres.json @/assets/steam/");
-
-        return Command::SUCCESS;
+        return [$collectedGenres, $collectedCategories];
     }
 
     protected function collect($json, $appId, $collected, $string): array
