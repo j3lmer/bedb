@@ -7,11 +7,35 @@ use App\Repository\ReviewRepository;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\File;
 
 /**
- * @ApiResource
+ * @ApiResource(
+ *     normalizationContext={
+ *          "groups"={
+ *              "review:read",
+ *              "review:item:get",
+ *          }
+ *     },
+ *
+ *     denormalizationContext={
+ *          "groups"={"review:write"}
+ *     },
+ *
+ *     collectionOperations={
+ *          "get",
+ *          "post"={"security"="is_granted('ROLE_USER')"}
+ *      },
+ *
+ *     itemOperations={
+ *          "get",
+ *          "put"={"security"="is_granted('ROLE_USER')"},
+ *          "delete"={"security"="is_granted('ROLE_USER')"}
+ *      },
+ *     shortName="Review"
+ * )
  */
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
 class Review
@@ -21,6 +45,7 @@ class Review
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(["review:read", "review:write", "user:read"])]
     #[ORM\Column(length: 8000, nullable: true)]
     private ?string $text = null;
 
@@ -30,13 +55,16 @@ class Review
         min: 1,
         max: 10
     )]
+    #[Groups(["review:read", "review:write", "user:read"])]
     #[ORM\Column(nullable: false)]
     private int $rating;
 
     #[Assert\NotNull]
+    #[Groups(["review:read", "review:write", "user:read"])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: false)]
     private DateTimeInterface $date_updated;
 
+    #[Groups(["review:read", "review:write"])]
     #[Assert\Image(
         maxSize: '8M',
         minWidth: 200,
@@ -47,11 +75,13 @@ class Review
     private File $image;
 
     #[Assert\NotNull]
+    #[Groups(["review:read", "review:write"])]
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'reviews')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner;
 
     #[Assert\NotNull]
+    #[Groups(["review:read", "review:write"])]
     #[ORM\ManyToOne(targetEntity: Game::class, inversedBy: 'reviews')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Game $game;

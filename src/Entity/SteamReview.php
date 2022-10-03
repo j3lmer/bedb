@@ -10,7 +10,29 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ApiResource
+ * @ApiResource(
+ *     normalizationContext={
+ *          "groups"={
+ *              "steam_review:read",
+ *              "steam_review:item:get"
+ *          }
+ *     },
+ *
+ *     denormalizationContext={
+ *          "groups"={"steam_review:write"}
+ *     },
+ *
+ *     collectionOperations={
+ *          "get",
+ *          "post"={"security"="is_granted('ROLE_ADMIN')"}
+ *      },
+ *
+ *     itemOperations={
+ *          "get",
+ *          "put"={"security"="is_granted('ROLE_ADMIN')"}
+ *      },
+ *     shortName="SteamReview"
+ * )
  */
 #[ORM\Entity(repositoryClass: TeamReviewRepository::class)]
 class SteamReview

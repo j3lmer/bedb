@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\GenresRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
@@ -15,10 +16,12 @@ class Genre
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(["genre:read", "genre:write", "game:read"])]
     #[ORM\Column(length: 255)]
     private ?string $description = null;
 
     #[Assert\NotNull]
+    #[Groups(["genre:read", "genre:write"])]
     #[ORM\ManyToOne(targetEntity: Game::class, inversedBy: 'genres')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Game $game;

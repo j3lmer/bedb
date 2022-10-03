@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\MetacriticRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: MetacriticRepository::class)]
@@ -15,15 +16,18 @@ class Metacritic
     private ?int $id = null;
 
     #[Assert\NotNull]
+    #[Groups(["metacritic:read", "metacritic:write", "game:read"])]
     #[ORM\Column]
     private int $score;
 
-    #[Assert\NotNull]
-    #[ORM\OneToOne(inversedBy: 'metacritic', targetEntity: Game::class)]
-    private Game $game;
-
+    #[Groups(["metacritic:read", "metacritic:write", "game:read"])]
     #[ORM\Column(length: 500)]
     private ?string $url = null;
+
+    #[Assert\NotNull]
+    #[Groups(["metacritic:read", "metacritic:write"])]
+    #[ORM\OneToOne(inversedBy: 'metacritic', targetEntity: Game::class)]
+    private Game $game;
 
     public function getId(): ?int
     {

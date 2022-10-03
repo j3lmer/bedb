@@ -163,7 +163,7 @@ Hier volgt een lijst van entiteiten (database-tabellen) en hun properties
 
 - recommended (string) (1000 karakters)
 
-- game (onetoone -> Game) (verplicht)
+- game (one to one -> Game) (verplicht)
 
 #### Platform
 

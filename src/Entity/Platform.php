@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\PlatformRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PlatformRepository::class)]
@@ -15,18 +16,22 @@ class Platform
     private ?int $id = null;
 
     #[Assert\NotNull]
+    #[Groups(["platform:read", "platform:write", "game:read"])]
     #[ORM\Column(nullable: false)]
     private bool $windows;
 
     #[Assert\NotNull]
+    #[Groups(["platform:read", "platform:write", "game:read"])]
     #[ORM\Column(nullable: false)]
     private bool $mac;
 
     #[Assert\NotNull]
+    #[Groups(["platform:read", "platform:write", "game:read"])]
     #[ORM\Column(nullable: false)]
     private bool $linux;
 
     #[Assert\NotNull]
+    #[Groups(["platform:read", "platform:write"])]
     #[ORM\OneToOne(inversedBy: 'pc_requirement', targetEntity: Game::class)]
     private Game $game;
 

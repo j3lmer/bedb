@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\PcRequirementRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PcRequirementRepository::class)]
@@ -14,13 +15,16 @@ class PcRequirement
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(["pc_requirement:read", "pc_requirement:write", "game:read"])]
     #[ORM\Column(length: 1000, nullable: false)]
     private string $minimum;
 
+    #[Groups(["pc_requirement:read", "pc_requirement:write", "game:read"])]
     #[ORM\Column(length: 1000, nullable: false)]
     private string $recommended;
 
     #[Assert\NotNull]
+    #[Groups(["pc_requirement:read", "pc_requirement:write"])]
     #[ORM\OneToOne(inversedBy: 'pc_requirement', targetEntity: Game::class)]
     private Game $game;
 

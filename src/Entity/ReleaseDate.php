@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ReleaseDateRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ReleaseDateRepository::class)]
@@ -14,13 +15,17 @@ class ReleaseDate
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
+    #[Groups(["release_date:read", "release_date:write", "game:read"])]
+    #[ORM\Column(length: 500)]
+    private ?string $url = null;#[ORM\Column]
     private ?bool $coming_soon = null;
 
+    #[Groups(["release_date:read", "release_date:write", "game:read"])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $date = null;
 
     #[Assert\NotNull]
+    #[Groups(["release_date:read", "release_date:write"])]
     #[ORM\OneToOne(inversedBy: 'release_date', targetEntity: Game::class)]
     private Game $game;
 
