@@ -19,4 +19,14 @@ class FilestructureHelper
     {
         return glob("{$this->package->getUrl("assets/steam/games/**")}");
     }
+
+    public function getAppIds(): array
+    {
+        $appids = [];
+
+        foreach ($this->getGamePaths() as $path) {
+            $appids[] = explode("assets/steam/games/", $path);
+        }
+        return $appids;
+    }
 }

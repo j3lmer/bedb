@@ -28,6 +28,8 @@ class UpdateJsonsALL extends Command
         $removeNonGames->run($input, $output);
         $getReviews = $this->getApplication()->find('app:get-reviews');
         $getReviews->run($input, $output);
+        $generateEnums = $this->getApplication()->find("app:generate-game-enums");
+        $generateEnums->run($input, $output);
 
         return Command::SUCCESS;
 

@@ -1,0 +1,290 @@
+[
+  {
+    "id": 2,
+    "description": "Single-player"
+  },
+  {
+    "id": 1,
+    "description": "Multi-player"
+  },
+  {
+    "id": 49,
+    "description": "PvP"
+  },
+  {
+    "id": 36,
+    "description": "Online PvP"
+  },
+  {
+    "id": 27,
+    "description": "Cross-Platform Multiplayer"
+  },
+  {
+    "id": 37,
+    "description": "Shared\/Split Screen PvP"
+  },
+  {
+    "id": 24,
+    "description": "Shared\/Split Screen"
+  },
+  {
+    "id": 44,
+    "description": "Remote Play Together"
+  },
+  {
+    "id": 18,
+    "description": "Partial Controller Support"
+  },
+  {
+    "id": 28,
+    "description": "Full controller support"
+  },
+  {
+    "id": 22,
+    "description": "Steam Achievements"
+  },
+  {
+    "id": 29,
+    "description": "Steam Trading Cards"
+  },
+  {
+    "id": 9,
+    "description": "Co-op"
+  },
+  {
+    "id": 39,
+    "description": "Shared\/Split Screen Co-op"
+  },
+  {
+    "id": 23,
+    "description": "Steam Cloud"
+  },
+  {
+    "id": 25,
+    "description": "Steam Leaderboards"
+  },
+  {
+    "id": 41,
+    "description": "Remote Play on Phone"
+  },
+  {
+    "id": 42,
+    "description": "Remote Play on Tablet"
+  },
+  {
+    "id": 47,
+    "description": "LAN PvP"
+  },
+  {
+    "id": 38,
+    "description": "Online Co-op"
+  },
+  {
+    "id": 48,
+    "description": "LAN Co-op"
+  },
+  {
+    "id": 30,
+    "description": "Steam Workshop"
+  },
+  {
+    "id": 15,
+    "description": "Stats"
+  },
+  {
+    "id": 17,
+    "description": "Includes level editor"
+  },
+  {
+    "id": 13,
+    "description": "Captions available"
+  },
+  {
+    "id": 35,
+    "description": "In-App Purchases"
+  },
+  {
+    "id": 20,
+    "description": "MMO"
+  },
+  {
+    "id": 43,
+    "description": "Remote Play on TV"
+  },
+  {
+    "id": 14,
+    "description": "Commentary available"
+  },
+  {
+    "id": 2,
+    "description": "Einzelspieler"
+  },
+  {
+    "id": 29,
+    "description": "Steam-Sammelkarten"
+  },
+  {
+    "id": 32,
+    "description": "Steam Turn Notifications"
+  },
+  {
+    "id": 16,
+    "description": "Includes Source SDK"
+  },
+  {
+    "id": 2,
+    "description": "\u0414\u043b\u044f \u043e\u0434\u043d\u043e\u0433\u043e \u0438\u0433\u0440\u043e\u043a\u0430"
+  },
+  {
+    "id": 1,
+    "description": "\u0414\u043b\u044f \u043d\u0435\u0441\u043a\u043e\u043b\u044c\u043a\u0438\u0445 \u0438\u0433\u0440\u043e\u043a\u043e\u0432"
+  },
+  {
+    "id": 9,
+    "description": "\u041a\u043e\u043e\u043f\u0435\u0440\u0430\u0442\u0438\u0432\u043d\u0430\u044f \u0438\u0433\u0440\u0430"
+  },
+  {
+    "id": 39,
+    "description": "\u041a\u043e\u043e\u043f\u0435\u0440\u0430\u0442\u0438\u0432 (\u043e\u0431\u0449\u0438\u0439 \u044d\u043a\u0440\u0430\u043d)"
+  },
+  {
+    "id": 24,
+    "description": "\u041e\u0431\u0449\u0438\u0439 \u044d\u043a\u0440\u0430\u043d"
+  },
+  {
+    "id": 22,
+    "description": "\u0414\u043e\u0441\u0442\u0438\u0436\u0435\u043d\u0438\u044f Steam"
+  },
+  {
+    "id": 18,
+    "description": "\u041a\u043e\u043d\u0442\u0440\u043e\u043b\u043b\u0435\u0440 (\u0447\u0430\u0441\u0442\u0438\u0447\u043d\u043e)"
+  },
+  {
+    "id": 51,
+    "description": "Steam Workshop"
+  },
+  {
+    "id": 8,
+    "description": "Valve Anti-Cheat enabled"
+  },
+  {
+    "id": 31,
+    "description": "VR Support"
+  },
+  {
+    "id": 28,
+    "description": "\u041a\u043e\u043d\u0442\u0440\u043e\u043b\u043b\u0435\u0440 (\u043f\u043e\u043b\u043d\u043e\u0441\u0442\u044c\u044e)"
+  },
+  {
+    "id": 29,
+    "description": "\u041a\u043e\u043b\u043b\u0435\u043a\u0446\u0438\u043e\u043d\u043d\u044b\u0435 \u043a\u0430\u0440\u0442\u043e\u0447\u043a\u0438"
+  },
+  {
+    "id": 43,
+    "description": "Remote Play \u043d\u0430 \u0442\u0435\u043b\u0435\u0432\u0438\u0437\u043e\u0440\u0435"
+  },
+  {
+    "id": 49,
+    "description": "\u041f\u0440\u043e\u0442\u0438\u0432 \u0438\u0433\u0440\u043e\u043a\u043e\u0432"
+  },
+  {
+    "id": 36,
+    "description": "\u041f\u0440\u043e\u0442\u0438\u0432 \u0438\u0433\u0440\u043e\u043a\u043e\u0432 (\u043f\u043e \u0441\u0435\u0442\u0438)"
+  },
+  {
+    "id": 37,
+    "description": "\u041f\u0440\u043e\u0442\u0438\u0432 \u0438\u0433\u0440\u043e\u043a\u043e\u0432 (\u043e\u0431\u0449\u0438\u0439 \u044d\u043a\u0440\u0430\u043d)"
+  },
+  {
+    "id": 13,
+    "description": "\u0418\u043c\u0435\u044e\u0442\u0441\u044f \u0441\u0443\u0431\u0442\u0438\u0442\u0440\u044b"
+  },
+  {
+    "id": 25,
+    "description": "\u0414\u043e\u0441\u043a\u0438 \u043f\u043e\u0447\u0435\u0442\u0430 Steam"
+  },
+  {
+    "id": 14,
+    "description": "\u0418\u043c\u0435\u044e\u0442\u0441\u044f \u043a\u043e\u043c\u043c\u0435\u043d\u0442\u0430\u0440\u0438\u0438"
+  },
+  {
+    "id": 38,
+    "description": "\u041a\u043e\u043e\u043f\u0435\u0440\u0430\u0442\u0438\u0432 (\u043f\u043e \u0441\u0435\u0442\u0438)"
+  },
+  {
+    "id": 30,
+    "description": "\u041c\u0430\u0441\u0442\u0435\u0440\u0441\u043a\u0430\u044f Steam"
+  },
+  {
+    "id": 35,
+    "description": "\u041f\u043e\u043a\u0443\u043f\u043a\u0438 \u0432\u043d\u0443\u0442\u0440\u0438 \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u044f"
+  },
+  {
+    "id": 41,
+    "description": "Remote Play \u043d\u0430 \u0442\u0435\u043b\u0435\u0444\u043e\u043d\u0435"
+  },
+  {
+    "id": 42,
+    "description": "Remote Play \u043d\u0430 \u043f\u043b\u0430\u043d\u0448\u0435\u0442\u0435"
+  },
+  {
+    "id": 15,
+    "description": "\u0421\u0442\u0430\u0442\u0438\u0441\u0442\u0438\u043a\u0430"
+  },
+  {
+    "id": 17,
+    "description": "\u0412\u043a\u043b\u044e\u0447\u0430\u0435\u0442 \u0440\u0435\u0434\u0430\u043a\u0442\u043e\u0440 \u0443\u0440\u043e\u0432\u043d\u0435\u0439"
+  },
+  {
+    "id": 40,
+    "description": "SteamVR Collectibles"
+  },
+  {
+    "id": 22,
+    "description": "Steam-Errungenschaften"
+  },
+  {
+    "id": 17,
+    "description": "Enth\u00e4lt Level-Editor"
+  },
+  {
+    "id": 2,
+    "description": "Un jugador"
+  },
+  {
+    "id": 22,
+    "description": "Logros de Steam"
+  },
+  {
+    "id": 28,
+    "description": "Compat. total con control"
+  },
+  {
+    "id": 29,
+    "description": "Cromos de Steam"
+  },
+  {
+    "id": 25,
+    "description": "Marcadores de Steam"
+  },
+  {
+    "id": 41,
+    "description": "Remote Play para m\u00f3viles"
+  },
+  {
+    "id": 42,
+    "description": "Remote Play para tabletas"
+  },
+  {
+    "id": 43,
+    "description": "Remote Play para TV"
+  },
+  {
+    "id": 2,
+    "description": "Um jogador"
+  },
+  {
+    "id": 23,
+    "description": "Nuvem Steam"
+  }
+]
