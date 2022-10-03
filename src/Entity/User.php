@@ -36,7 +36,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Assert\NotNull]
     #[Assert\NotBlank]
-    #[Groups(["user:read", "user:write"])]
+    #[Groups(["user:read", "user:write", "review:item:get"])]
     #[ORM\Column(type: 'string', length: 255, unique: true, nullable: false)]
     private string $username;
 

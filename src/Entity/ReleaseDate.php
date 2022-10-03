@@ -17,7 +17,6 @@ class ReleaseDate
 
     #[Groups(["release_date:read", "release_date:write", "game:read"])]
     #[ORM\Column(length: 500)]
-    private ?string $url = null;#[ORM\Column]
     private ?bool $coming_soon = null;
 
     #[Groups(["release_date:read", "release_date:write", "game:read"])]

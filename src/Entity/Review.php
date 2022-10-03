@@ -30,7 +30,7 @@ use Symfony\Component\HttpFoundation\File\File;
  *      },
  *
  *     itemOperations={
- *          "get",
+ *          "get"={"normalization_context"={"groups"={"review:read", "review:item:get"}},},
  *          "put"={"security"="is_granted('ROLE_USER')"},
  *          "delete"={"security"="is_granted('ROLE_USER')"}
  *      },
