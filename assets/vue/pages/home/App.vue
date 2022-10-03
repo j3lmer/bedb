@@ -5,17 +5,25 @@
             :items="items"
             @updated-tab="selectComponent"
         />
+        <v-card flat>
+            <Home   v-if="selectedComponent === items.Home"/>
+            <Games  v-if="selectedComponent === items.Games"/>
+        </v-card>
     </v-app>
 </template>
 
 <script lang="ts">
 const {Component, VueComponent} = require('@/common/VueComponent');
-import Header from "@/pages/home/components/Header.vue";
 import {HomepageTabs} from "@/common/components/Enums/HomepageTabs";
+import Header from "@/pages/home/components/Header.vue";
+import Home from "@/pages/home/components/Home.vue";
+import Games from "@/pages/home/components/Games.vue";
 
 @Component({
     components: {
-        Header
+        Header,
+        Home,
+        Games
     }
 })
 export default class App extends VueComponent {

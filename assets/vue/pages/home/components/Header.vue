@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="mb-8">
 <!--        <div v-if="$vuetify.breakpoint.mobile">-->
 <!--            <v-row class="ma-5">-->
 <!--                <v-spacer/>-->
@@ -61,7 +61,7 @@
                         </v-col>
 
                         <v-col
-                            class="text-right pt-0 mr-4"
+                            class="text-right pt-0 mr-8"
                             cols="1"
                         >
                             <v-icon

@@ -30,6 +30,8 @@ class UpdateJsonsALL extends Command
         $getReviews->run($input, $output);
         $generateEnums = $this->getApplication()->find("app:generate-game-enums");
         $generateEnums->run($input, $output);
+        $getFeaturedGames = $this->getApplication()->find("app:get-featured-games");
+        $getFeaturedGames->run($input, $output);
 
         return Command::SUCCESS;
 

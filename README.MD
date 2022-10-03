@@ -3,3 +3,4 @@
 `npm i`
 `npm run dev`
 `bin/console doctrine:migrations:migrate`
+`bin/console app:update-jsons-all` 
