@@ -37,5 +37,5 @@ export default class App extends VueComponent {
     private selectComponent(component: any): void {
         this.selectedComponent = component;
     }
-};
+}
 </script>
