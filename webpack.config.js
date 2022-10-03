@@ -1,6 +1,6 @@
 const Encore = require('@symfony/webpack-encore');
-const glob   = require('glob');
-const path   = require('path');
+const glob = require('glob');
+const path = require('path');
 
 const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin');
 
@@ -41,9 +41,8 @@ Encore
      */
     .addEntry('app', './assets/app.js')
 
-// enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
-// .enableStimulusBridge('./assets/controllers.json')
-
+    // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
+    // .enableStimulusBridge('./assets/controllers.json')
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()
 
@@ -76,11 +75,14 @@ Encore
         options.implementation = require('sass')
     })
 
-// enables Sass/SCSS support
-//.enableSassLoader()
-
-// uncomment if you use React
-//.enableReactPreset()
+    .configureMiniCssExtractPlugin(
+        function (loaderConfig) {
+        },
+        function (pluginConfig) {
+            // change the plugin's config
+            pluginConfig.ignoreOrder = true;
+        }
+    );
 
 // uncomment to get integrity="..." attributes on your script & link tags
 // requires WebpackEncoreBundle 1.4 or higher
@@ -89,14 +91,11 @@ Encore
 // uncomment if you're having problems with a jQuery plugin
 //.autoProvidejQuery()
 
-
-
-
-
 // export the final configuration
 let config = Encore.getWebpackConfig();
 config.resolve.alias = {
     '@': path.resolve(__dirname, './assets/vue/')
 };
+
 module.exports = config;
 

@@ -4,8 +4,12 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\GameRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\OneToMany;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
@@ -38,11 +42,12 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 class Game
 {
     #[ORM\Id]
-    #[ORM\Column(unique: true)]
-    private ?int $appid = null;
+    #[ORM\Column(unique: true, nullable: false)]
+    private int $id; // steam appid
 
-    #[ORM\Column(length: 255)]
-    private ?string $name = null;
+    #[Assert\NotNull]
+    #[ORM\Column(length: 255, nullable: false)]
+    private string $name;
 
     #[ORM\Column(length: 1000, nullable: true)]
     private ?string $detailed_description = null;
@@ -74,22 +79,75 @@ class Game
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $notes = null;
 
-    #[ORM\Column]
+    #[Assert\NotNull]
+    #[ORM\Column(nullable: false)]
     private bool $nsfw = true;
+
+    #[Groups(["game:read"])]
+    #[ORM\OneToOne(mappedBy: 'game', targetEntity: PcRequirement::class)]
+    private ?PcRequirement $pc_requirement = null;
+
+    #[Groups(["game:read"])]
+    #[ORM\OneToOne(mappedBy: 'game', targetEntity: Platform::class)]
+    private Platform $platform;
+
+    #[Groups(["game:read"])]
+    #[ORM\OneToOne(mappedBy: 'game', targetEntity: Metacritic::class)]
+    private Metacritic $metacritic;
+
+    #[Groups(["game:read"])]
+    #[ORM\OneToOne(mappedBy: 'game', targetEntity: ReleaseDate::class)]
+    private ReleaseDate $release_date;
+
+    #[Groups(["game:read"])]
+    #[OnetoMany(
+        mappedBy: 'owner',
+        targetEntity: Review::class,
+        cascade: ["persist", "remove"])
+    ]
+    private iterable $reviews = [];
+
+    #[Groups(["game:read"])]
+    #[OnetoMany(
+        mappedBy: 'game',
+        targetEntity: Category::class,
+        cascade: ["persist", "remove"])
+    ]
+    private iterable $categories;
+
+    #[Groups(["game:read"])]
+    #[OnetoMany(
+        mappedBy: 'game',
+        targetEntity: Genre::class,
+        cascade: ["persist", "remove"])
+    ]
+    private iterable $genres;
+
+    #[Groups(["game:read"])]
+    #[OnetoMany(
+        mappedBy: 'game',
+        targetEntity: Screenshot::class,
+        cascade: ["persist", "remove"])
+    ]
+    private iterable $screenshots;
+
+
+    public function __construct()
+    {
+        $this->reviews = new ArrayCollection();
+        $this->categories = new ArrayCollection();
+        $this->genres = new ArrayCollection();
+        $this->screenshots = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getAppid(): ?int
+    public function setId(int $id): self
     {
-        return $this->appid;
-    }
-
-    public function setAppid(int $appid): self
-    {
-        $this->appid = $appid;
+        $this->id = $id;
 
         return $this;
     }
@@ -235,6 +293,119 @@ class Game
     {
         $this->nsfw = $nsfw;
 
+        return $this;
+    }
+
+    public function getReviews(): ?array
+    {
+        return $this->reviews;
+    }
+
+    public function addReview(Review $review): self
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews[] = $review;
+            $review->setGame($this);
+        }
+        return $this;
+    }
+
+    public function removeReview(Review $review): self
+    {
+        if ($this->reviews->contains($review)) {
+            $this->reviews->removeElement($review);
+            // set the owning side to null (unless already changed)
+            if ($review->getGame() === $this) {
+                $review->setGame(null);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * @return iterable
+     */
+    public function getCategories(): iterable
+    {
+        return $this->categories;
+    }
+
+    public function addCategory(Category $review): self
+    {
+        if (!$this->categories->contains($review)) {
+            $this->categories[] = $review;
+            $review->setGame($this);
+        }
+        return $this;
+    }
+
+    public function removeCategory(Category $category): self
+    {
+        if ($this->categories->contains($category)) {
+            $this->categories->removeElement($category);
+            // set the owning side to null (unless already changed)
+            if ($category->getGame() === $this) {
+                $category->setGame(null);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * @return iterable
+     */
+    public function getGenres(): iterable
+    {
+        return $this->genres;
+    }
+
+    public function addGenre(Genre $genre): self
+    {
+        if (!$this->genres->contains($genre)) {
+            $this->genres[] = $genre;
+            $genre->setGame($this);
+        }
+        return $this;
+    }
+
+    public function removeGenre(Genre $genre): self
+    {
+        if ($this->genres->contains($genre)) {
+            $this->genres->removeElement($genre);
+            // set the owning side to null (unless already changed)
+            if ($genre->getGame() === $this) {
+                $genre->setGame(null);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * @return iterable
+     */
+    public function getScreenshots(): iterable
+    {
+        return $this->screenshots;
+    }
+
+    public function addScreenshot(Screenshot $screenshot): self
+    {
+        if (!$this->screenshots->contains($screenshot)) {
+            $this->screenshots[] = $screenshot;
+            $screenshot->setGame($this);
+        }
+        return $this;
+    }
+
+    public function removeScreenshot(Screenshot $screenshot): self
+    {
+        if ($this->screenshots->contains($screenshot)) {
+            $this->screenshots->removeElement($screenshot);
+            // set the owning side to null (unless already changed)
+            if ($screenshot->getGame() === $this) {
+                $screenshot->setGame(null);
+            }
+        }
         return $this;
     }
 }

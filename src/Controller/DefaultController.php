@@ -19,10 +19,10 @@ class DefaultController extends AbstractController
     #[Route('/', name: 'home')]
     public function index(): Response
     {
-        $user = $this->isGranted('IS_AUTHENTICATED_FULLY') ? $this->getUser() : null;
-
         return $this->render('default/index.html.twig',[
-            'user' => $this->serializer->serialize($this->getUser(), 'jsonld')
+            'user' => $this->isGranted('IS_AUTHENTICATED_FULLY') ?
+                $this->serializer->serialize($this->getUser(), 'jsonld') :
+                null
         ]);
     }
 }

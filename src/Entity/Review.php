@@ -1,0 +1,162 @@
+<?php
+
+namespace App\Entity;
+
+use ApiPlatform\Core\Annotation\ApiResource;
+use App\Repository\ReviewRepository;
+use DateTimeInterface;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\File;
+
+/**
+ * @ApiResource(
+ *     normalizationContext={
+ *          "groups"={
+ *              "review:read",
+ *              "review:item:get",
+ *          }
+ *     },
+ *
+ *     denormalizationContext={
+ *          "groups"={"review:write"}
+ *     },
+ *
+ *     collectionOperations={
+ *          "get",
+ *          "post"={"security"="is_granted('ROLE_USER')"}
+ *      },
+ *
+ *     itemOperations={
+ *          "get"={"normalization_context"={"groups"={"review:read", "review:item:get"}},},
+ *          "put"={"security"="is_granted('ROLE_USER')"},
+ *          "delete"={"security"="is_granted('ROLE_USER')"}
+ *      },
+ *     shortName="Review"
+ * )
+ */
+#[ORM\Entity(repositoryClass: ReviewRepository::class)]
+class Review
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    #[Groups(["review:read", "review:write", "user:read"])]
+    #[ORM\Column(length: 8000, nullable: true)]
+    private ?string $text = null;
+
+    #[Assert\NotNull]
+    #[Assert\Range(
+        notInRangeMessage: "Rating must be between 1 and 10",
+        min: 1,
+        max: 10
+    )]
+    #[Groups(["review:read", "review:write", "user:read"])]
+    #[ORM\Column(nullable: false)]
+    private int $rating;
+
+    #[Assert\NotNull]
+    #[Groups(["review:read", "review:write", "user:read"])]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: false)]
+    private DateTimeInterface $date_updated;
+
+    #[Groups(["review:read", "review:write"])]
+    #[Assert\Image(
+        maxSize: '8M',
+        minWidth: 200,
+        maxWidth: 1080,
+        maxHeight: 1920,
+        minHeight: 200
+    )]
+    private File $image;
+
+    #[Assert\NotNull]
+    #[Groups(["review:read", "review:write"])]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'reviews')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $owner;
+
+    #[Assert\NotNull]
+    #[Groups(["review:read", "review:write"])]
+    #[ORM\ManyToOne(targetEntity: Game::class, inversedBy: 'reviews')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Game $game;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getText(): ?string
+    {
+        return $this->text;
+    }
+
+    public function setText(?string $text): self
+    {
+        $this->text = $text;
+
+        return $this;
+    }
+
+    public function getRating(): ?int
+    {
+        return $this->rating;
+    }
+
+    public function setRating(int $rating): self
+    {
+        $this->rating = $rating;
+
+        return $this;
+    }
+
+    public function getDateUpdated(): ?DateTimeInterface
+    {
+        return $this->date_updated;
+    }
+
+    public function setDateUpdated(DateTimeInterface $date_updated): self
+    {
+        $this->date_updated = $date_updated;
+
+        return $this;
+    }
+
+    public function setImage(File $file = null): self
+    {
+        $this->image = $file;
+        return $this;
+    }
+
+    public function getImage(): File
+    {
+        return $this->image;
+    }
+
+    public function getOwner(): User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): self
+    {
+        $this->owner = $owner;
+        return $this;
+    }
+
+    public function getGame(): Game
+    {
+        return $this->game;
+    }
+
+    public function setGame(?Game $game): self
+    {
+        $this->game = $game;
+        return $this;
+    }
+}
