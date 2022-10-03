@@ -98,7 +98,7 @@ Hier volgt een lijst van entiteiten (database-tabellen) en hun properties
 
 - owner (many to one -> User) (verplicht) (inversedby: 'reviews')
 
-- game (many to one -> Game) (verplicht)
+- game (many to one -> Game) (verplicht) (inversedby: 'reviews')
 
 #### SteamReview
 
