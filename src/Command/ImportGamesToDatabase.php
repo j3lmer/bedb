@@ -53,6 +53,10 @@ class ImportGamesToDatabase extends Command
             $data = $this->replaceKeys('steam_appid', 'id', $data);
             unset($data["reviews"]);
 
+            for ($i = 0; $i < count($data["genres"]); $i++) {
+                $data["genres"][$i]["id"] = (int) $data["genres"][$i]["id"];
+            }
+
             printf("\n posting {$id} to internal api.. \n");
             $this->postToApi($data);
         }

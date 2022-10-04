@@ -17,11 +17,11 @@ class Screenshot
     private ?int $id = null;
 
 //    #[Groups(["screenshot:read", "screenshot:write", "game:read"])]
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $thumbnail = null;
 
 //    #[Groups(["screenshot:read", "screenshot:write", "game:read"])]
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $full = null;
 
     #[Assert\NotNull]

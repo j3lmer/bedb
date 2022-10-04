@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\GameRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\OneToMany;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -40,7 +41,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ApiResource()
  */
-#[UniqueEntity(fields: ["appid"], message: 'Another game already has this appid')]
+#[UniqueEntity(fields: ["id"], message: 'Another game already has this appid')]
 #[ORM\Table(name: '`game`')]
 #[ORM\Entity(repositoryClass: GameRepository::class)]
 class Game
@@ -48,6 +49,12 @@ class Game
     #[ORM\Id]
     #[ORM\Column(unique: true, nullable: false)]
     private int $id; // steam appid
+
+    #[ORM\Column(type: Types::SIMPLE_ARRAY, nullable: true)]
+    private ?array $developers = [];
+
+    #[ORM\Column(type: Types::SIMPLE_ARRAY, nullable: true)]
+    private ?array $publishers = [];
 
     #[Assert\NotNull]
     #[ORM\Column(length: 255, nullable: false)]
@@ -90,22 +97,6 @@ class Game
     private ?PcRequirement $pc_requirement = null;
 
     #[Groups(["game:read"])]
-    #[OnetoMany(
-        mappedBy: 'game',
-        targetEntity: Developer::class,
-        cascade: ["persist", "remove"])
-    ]
-    private ?iterable $developers = [];
-
-    #[Groups(["game:read"])]
-    #[OnetoMany(
-        mappedBy: 'game',
-        targetEntity: Publisher::class,
-        cascade: ["persist", "remove"])
-    ]
-    private ?iterable $publishers = [];
-
-    #[Groups(["game:read"])]
     #[ORM\OneToOne(
         mappedBy: 'game',
         targetEntity: Platform::class,
@@ -146,20 +137,20 @@ class Game
     private ?iterable $steam_reviews = [];
 
     #[Groups(["game:read"])]
-    #[OnetoMany(
-        mappedBy: 'game',
+    #[ORM\ManyToMany(
         targetEntity: Category::class,
+        inversedBy: 'games',
         cascade: ["persist", "remove"])
     ]
     private iterable $categories;
 
     #[Groups(["game:read"])]
-    #[OnetoMany(
-        mappedBy: 'game',
+    #[ORM\ManyToMany(
         targetEntity: Genre::class,
+        inversedBy: 'games',
         cascade: ["persist", "remove"])
     ]
-    private iterable $genres;
+    private ?iterable $genres;
 
     #[Groups(["game:read"])]
     #[OnetoMany(
@@ -167,7 +158,23 @@ class Game
         targetEntity: Screenshot::class,
         cascade: ["persist", "remove"])
     ]
-    private iterable $screenshots;
+    private ?iterable $screenshots;
+
+//    #[Groups(["game:read"])]
+//    #[OnetoMany(
+//        mappedBy: 'game',
+//        targetEntity: Developer::class,
+//        cascade: ["persist", "remove"])
+//    ]
+//    private ?iterable $developers = [];
+//
+//    #[Groups(["game:read"])]
+//    #[OnetoMany(
+//        mappedBy: 'game',
+//        targetEntity: Publisher::class,
+//        cascade: ["persist", "remove"])
+//    ]
+//    private ?iterable $publishers = [];
 
 
     public function __construct()
@@ -176,6 +183,9 @@ class Game
         $this->categories = new ArrayCollection();
         $this->genres = new ArrayCollection();
         $this->screenshots = new ArrayCollection();
+//        $this->developers = new ArrayCollection();
+//        $this->publishers = new ArrayCollection();
+        $this->steam_reviews = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -310,7 +320,7 @@ class Game
         return $this;
     }
 
-    public function getReviews(): ?array
+    public function getReviews(): ArrayCollection|iterable
     {
         return $this->reviews;
     }
@@ -336,29 +346,23 @@ class Game
         return $this;
     }
 
-    public function getCategories(): iterable
+    /**
+     * @return iterable|ArrayCollection
+     */
+    public function getCategories(): ArrayCollection|iterable
     {
         return $this->categories;
     }
-
-    public function addCategory(Category $review): self
+    public function addCategory(Category $category): self
     {
-        if (!$this->categories->contains($review)) {
-            $this->categories[] = $review;
-            $review->setGame($this);
+        if (!$this->categories->contains($category)) {
+            $this->categories[] = $category;
         }
         return $this;
     }
-
     public function removeCategory(Category $category): self
     {
-        if ($this->categories->contains($category)) {
-            $this->categories->removeElement($category);
-            // set the owning side to null (unless already changed)
-            if ($category->getGame() === $this) {
-                $category->setGame(null);
-            }
-        }
+        $this->categories->removeElement($category);
         return $this;
     }
 
@@ -414,59 +418,59 @@ class Game
         }
         return $this;
     }
-
-    public function getDevelopers(): iterable
-    {
-        return $this->developers;
-    }
-
-    public function addDeveloper(Developer $developer): self
-    {
-        if (!$this->developers->contains($developer)) {
-            $this->developers[] = $developer;
-            $developer->setGame($this);
-        }
-        return $this;
-    }
-
-    public function removeDevelopers(Developer $developer): self
-    {
-        if ($this->developers->contains($developer)) {
-            $this->developers->removeElement($developer);
-            // set the owning side to null (unless already changed)
-            if ($developer->getGame() === $this) {
-                $developer->setGame(null);
-            }
-        }
-        return $this;
-    }
-
-
-    public function getPublishers(): iterable
-    {
-        return $this->publishers;
-    }
-
-    public function addPublisher(Publisher $publisher): self
-    {
-        if (!$this->publishers->contains($publisher)) {
-            $this->publishers[] = $publisher;
-            $publisher->setGame($this);
-        }
-        return $this;
-    }
-
-    public function removePublisher(Publisher $publisher): self
-    {
-        if ($this->publishers->contains($publisher)) {
-            $this->publishers->removeElement($publisher);
-            // set the owning side to null (unless already changed)
-            if ($publisher->getGame() === $this) {
-                $publisher->setGame(null);
-            }
-        }
-        return $this;
-    }
+//
+//    public function getDevelopers(): iterable
+//    {
+//        return $this->developers;
+//    }
+//
+//    public function addDeveloper(Developer $developer): self
+//    {
+//        if (!$this->developers->contains($developer)) {
+//            $this->developers[] = $developer;
+//            $developer->setGame($this);
+//        }
+//        return $this;
+//    }
+//
+//    public function removeDevelopers(Developer $developer): self
+//    {
+//        if ($this->developers->contains($developer)) {
+//            $this->developers->removeElement($developer);
+//            // set the owning side to null (unless already changed)
+//            if ($developer->getGame() === $this) {
+//                $developer->setGame(null);
+//            }
+//        }
+//        return $this;
+//    }
+//
+//
+//    public function getPublishers(): iterable
+//    {
+//        return $this->publishers;
+//    }
+//
+//    public function addPublisher(Publisher $publisher): self
+//    {
+//        if (!$this->publishers->contains($publisher)) {
+//            $this->publishers[] = $publisher;
+//            $publisher->setGame($this);
+//        }
+//        return $this;
+//    }
+//
+//    public function removePublisher(Publisher $publisher): self
+//    {
+//        if ($this->publishers->contains($publisher)) {
+//            $this->publishers->removeElement($publisher);
+//            // set the owning side to null (unless already changed)
+//            if ($publisher->getGame() === $this) {
+//                $publisher->setGame(null);
+//            }
+//        }
+//        return $this;
+//    }
 
     public function getSteamReviews(): iterable
     {
