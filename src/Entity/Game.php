@@ -10,31 +10,35 @@ use Doctrine\ORM\Mapping\OneToMany;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+//
+///**
+// * @ApiResource(
+// *     normalizationContext={
+// *          "groups"={
+// *              "game:read",
+// *              "game:item:get"
+// *          }
+// *     },
+// *
+// *     denormalizationContext={
+// *          "groups"={"game:write"}
+// *     },
+// *
+// *     collectionOperations={
+// *          "get",
+// *          "post"={"security"="is_granted('ROLE_ADMIN')"}
+// *      },
+// *
+// *     itemOperations={
+// *          "get",
+// *          "put"={"security"="is_granted('ROLE_ADMIN')"}
+// *      },
+// *     shortName="Games"
+// * )
+// */
 
 /**
- * @ApiResource(
- *     normalizationContext={
- *          "groups"={
- *              "game:read",
- *              "game:item:get"
- *          }
- *     },
- *
- *     denormalizationContext={
- *          "groups"={"game:write"}
- *     },
- *
- *     collectionOperations={
- *          "get",
- *          "post"={"security"="is_granted('ROLE_ADMIN')"}
- *      },
- *
- *     itemOperations={
- *          "get",
- *          "put"={"security"="is_granted('ROLE_ADMIN')"}
- *      },
- *     shortName="Games"
- * )
+ * @ApiResource()
  */
 #[UniqueEntity(fields: ["appid"], message: 'Another game already has this appid')]
 #[ORM\Table(name: '`game`')]
@@ -67,12 +71,6 @@ class Game
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $website = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $developers = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $publishers = null;
-
     #[ORM\Column]
     private int $recommendations_total = 0;
 
@@ -84,28 +82,68 @@ class Game
     private bool $nsfw = true;
 
     #[Groups(["game:read"])]
-    #[ORM\OneToOne(mappedBy: 'game', targetEntity: PcRequirement::class)]
+    #[ORM\OneToOne(
+        mappedBy: 'game',
+        targetEntity: PcRequirement::class,
+        cascade: ["persist", "remove"]
+    )]
     private ?PcRequirement $pc_requirement = null;
 
     #[Groups(["game:read"])]
-    #[ORM\OneToOne(mappedBy: 'game', targetEntity: Platform::class)]
+    #[OnetoMany(
+        mappedBy: 'game',
+        targetEntity: Developer::class,
+        cascade: ["persist", "remove"])
+    ]
+    private ?iterable $developers = [];
+
+    #[Groups(["game:read"])]
+    #[OnetoMany(
+        mappedBy: 'game',
+        targetEntity: Publisher::class,
+        cascade: ["persist", "remove"])
+    ]
+    private ?iterable $publishers = [];
+
+    #[Groups(["game:read"])]
+    #[ORM\OneToOne(
+        mappedBy: 'game',
+        targetEntity: Platform::class,
+        cascade: ["persist", "remove"]
+    )]
     private Platform $platform;
 
     #[Groups(["game:read"])]
-    #[ORM\OneToOne(mappedBy: 'game', targetEntity: Metacritic::class)]
+    #[ORM\OneToOne(
+        mappedBy: 'game',
+        targetEntity: Metacritic::class,
+        cascade: ["persist", "remove"]
+    )]
     private Metacritic $metacritic;
 
     #[Groups(["game:read"])]
-    #[ORM\OneToOne(mappedBy: 'game', targetEntity: ReleaseDate::class)]
+    #[ORM\OneToOne(
+        mappedBy: 'game',
+        targetEntity: ReleaseDate::class,
+        cascade: ["persist", "remove"]
+    )]
     private ReleaseDate $release_date;
 
     #[Groups(["game:read"])]
     #[OnetoMany(
-        mappedBy: 'owner',
+        mappedBy: 'game',
         targetEntity: Review::class,
         cascade: ["persist", "remove"])
     ]
-    private iterable $reviews = [];
+    private ?iterable $reviews = [];
+
+    #[Groups(["game:read"])]
+    #[OnetoMany(
+        mappedBy: 'game',
+        targetEntity: SteamReview::class,
+        cascade: ["persist", "remove"]),
+    ]
+    private ?iterable $steam_reviews = [];
 
     #[Groups(["game:read"])]
     #[OnetoMany(
@@ -232,30 +270,6 @@ class Game
     public function setWebsite(?string $website): self
     {
         $this->website = $website;
-
-        return $this;
-    }
-
-    public function getDevelopers(): ?string
-    {
-        return $this->developers;
-    }
-
-    public function setDevelopers(string $developers): self
-    {
-        $this->developers = $developers;
-
-        return $this;
-    }
-
-    public function getPublishers(): ?string
-    {
-        return $this->publishers;
-    }
-
-    public function setPublishers(string $publishers): self
-    {
-        $this->publishers = $publishers;
 
         return $this;
     }
@@ -399,5 +413,148 @@ class Game
             }
         }
         return $this;
+    }
+
+    public function getDevelopers(): iterable
+    {
+        return $this->developers;
+    }
+
+    public function addDeveloper(Developer $developer): self
+    {
+        if (!$this->developers->contains($developer)) {
+            $this->developers[] = $developer;
+            $developer->setGame($this);
+        }
+        return $this;
+    }
+
+    public function removeDevelopers(Developer $developer): self
+    {
+        if ($this->developers->contains($developer)) {
+            $this->developers->removeElement($developer);
+            // set the owning side to null (unless already changed)
+            if ($developer->getGame() === $this) {
+                $developer->setGame(null);
+            }
+        }
+        return $this;
+    }
+
+
+    public function getPublishers(): iterable
+    {
+        return $this->publishers;
+    }
+
+    public function addPublisher(Publisher $publisher): self
+    {
+        if (!$this->publishers->contains($publisher)) {
+            $this->publishers[] = $publisher;
+            $publisher->setGame($this);
+        }
+        return $this;
+    }
+
+    public function removePublisher(Publisher $publisher): self
+    {
+        if ($this->publishers->contains($publisher)) {
+            $this->publishers->removeElement($publisher);
+            // set the owning side to null (unless already changed)
+            if ($publisher->getGame() === $this) {
+                $publisher->setGame(null);
+            }
+        }
+        return $this;
+    }
+
+    public function getSteamReviews(): iterable
+    {
+        return $this->steam_reviews;
+    }
+
+    public function addSteamReview(SteamReview $steamReview): self
+    {
+        if (!$this->steam_reviews->contains($steamReview)) {
+            $this->steam_reviews[] = $steamReview;
+            $steamReview->setGame($this);
+        }
+        return $this;
+    }
+
+    public function removeSteamReview(SteamReview $steamReview): self
+    {
+        if ($this->steam_reviews->contains($steamReview)) {
+            $this->steam_reviews->removeElement($steamReview);
+            // set the owning side to null (unless already changed)
+            if ($steamReview->getGame() === $this) {
+                $steamReview->setGame(null);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * @return Platform
+     */
+    public function getPlatform(): Platform
+    {
+        return $this->platform;
+    }
+
+    /**
+     * @param Platform $platform
+     */
+    public function setPlatform(Platform $platform): void
+    {
+        $this->platform = $platform;
+    }
+
+    /**
+     * @return Metacritic
+     */
+    public function getMetacritic(): Metacritic
+    {
+        return $this->metacritic;
+    }
+
+    /**
+     * @param Metacritic $metacritic
+     */
+    public function setMetacritic(Metacritic $metacritic): void
+    {
+        $this->metacritic = $metacritic;
+    }
+
+    /**
+     * @return ReleaseDate
+     */
+    public function getReleaseDate(): ReleaseDate
+    {
+        return $this->release_date;
+    }
+
+    /**
+     * @param ReleaseDate $release_date
+     */
+    public function setReleaseDate(ReleaseDate $release_date): void
+    {
+        $this->release_date = $release_date;
+    }
+
+    /**
+     * @return PcRequirement|null
+     */
+    public function getPcRequirement(): ?PcRequirement
+    {
+        return $this->pc_requirement;
+    }
+
+    /**
+     * @param PcRequirement|null $pc_requirement
+     */
+    public function setPcRequirement(?PcRequirement $pc_requirement): void
+    {
+        $this->pc_requirement = $pc_requirement;
     }
 }
