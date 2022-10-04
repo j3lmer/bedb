@@ -2,27 +2,24 @@
 
 namespace App\Entity;
 
-use App\Repository\GenresRepository;
+use App\Repository\PublisherRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-
-#[ORM\Entity(repositoryClass: GenresRepository::class)]
-class Genre
+#[ORM\Entity(repositoryClass: PublisherRepository::class)]
+class Publisher
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-//    #[Groups(["genre:read", "genre:write", "game:read"])]
     #[ORM\Column(length: 255)]
-    private ?string $description = null;
+    private string $name;
 
     #[Assert\NotNull]
-//    #[Groups(["genre:read", "genre:write"])]
-    #[ORM\ManyToOne(targetEntity: Game::class, inversedBy: 'genres')]
+//    #[Groups(["review:read", "review:write"])]
+    #[ORM\ManyToOne(targetEntity: Game::class, inversedBy: 'publishers')]
     #[ORM\JoinColumn(name: 'game_id', nullable: false)]
     private ?Game $game;
 
@@ -31,14 +28,14 @@ class Genre
         return $this->id;
     }
 
-    public function getDescription(): ?string
+    public function getName(): ?string
     {
-        return $this->description;
+        return $this->name;
     }
 
-    public function setDescription(string $description): self
+    public function setName(string $name): self
     {
-        $this->description = $description;
+        $this->name = $name;
 
         return $this;
     }

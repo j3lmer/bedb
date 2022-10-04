@@ -16,23 +16,24 @@ class Platform
     private ?int $id = null;
 
     #[Assert\NotNull]
-    #[Groups(["platform:read", "platform:write", "game:read"])]
+//    #[Groups(["platform:read", "platform:write", "game:read"])]
     #[ORM\Column(nullable: false)]
-    private bool $windows;
+    private bool $windows = false;
 
     #[Assert\NotNull]
-    #[Groups(["platform:read", "platform:write", "game:read"])]
+//    #[Groups(["platform:read", "platform:write", "game:read"])]
     #[ORM\Column(nullable: false)]
-    private bool $mac;
+    private bool $mac = false;
 
     #[Assert\NotNull]
-    #[Groups(["platform:read", "platform:write", "game:read"])]
+//    #[Groups(["platform:read", "platform:write", "game:read"])]
     #[ORM\Column(nullable: false)]
-    private bool $linux;
+    private bool $linux = false;
 
     #[Assert\NotNull]
-    #[Groups(["platform:read", "platform:write"])]
+//    #[Groups(["platform:read", "platform:write"])]
     #[ORM\OneToOne(inversedBy: 'pc_requirement', targetEntity: Game::class)]
+    #[ORM\JoinColumn(name: 'game_id', nullable: false)]
     private Game $game;
 
     public function getId(): ?int

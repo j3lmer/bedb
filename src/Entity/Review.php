@@ -11,31 +11,34 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\File;
 
+///**
+// * @ApiResource(
+// *     normalizationContext={
+// *          "groups"={
+// *              "review:read",
+// *              "review:item:get",
+// *          }
+// *     },
+// *
+// *     denormalizationContext={
+// *          "groups"={"review:write"}
+// *     },
+// *
+// *     collectionOperations={
+// *          "get",
+// *          "post"={"security"="is_granted('ROLE_USER')"}
+// *      },
+// *
+// *     itemOperations={
+// *          "get"={"normalization_context"={"groups"={"review:read", "review:item:get"}},},
+// *          "put"={"security"="is_granted('ROLE_USER')"},
+// *          "delete"={"security"="is_granted('ROLE_USER')"}
+// *      },
+// *     shortName="Review"
+// * )
+// */
 /**
- * @ApiResource(
- *     normalizationContext={
- *          "groups"={
- *              "review:read",
- *              "review:item:get",
- *          }
- *     },
- *
- *     denormalizationContext={
- *          "groups"={"review:write"}
- *     },
- *
- *     collectionOperations={
- *          "get",
- *          "post"={"security"="is_granted('ROLE_USER')"}
- *      },
- *
- *     itemOperations={
- *          "get"={"normalization_context"={"groups"={"review:read", "review:item:get"}},},
- *          "put"={"security"="is_granted('ROLE_USER')"},
- *          "delete"={"security"="is_granted('ROLE_USER')"}
- *      },
- *     shortName="Review"
- * )
+ * @ApiResource()
  */
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
 class Review
@@ -55,16 +58,16 @@ class Review
         min: 1,
         max: 10
     )]
-    #[Groups(["review:read", "review:write", "user:read"])]
+//    #[Groups(["review:read", "review:write", "user:read", "game:read"])]
     #[ORM\Column(nullable: false)]
     private int $rating;
 
     #[Assert\NotNull]
-    #[Groups(["review:read", "review:write", "user:read"])]
+//    #[Groups(["review:read", "review:write", "user:read"])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: false)]
     private DateTimeInterface $date_updated;
 
-    #[Groups(["review:read", "review:write"])]
+//    #[Groups(["review:read", "review:write"])]
     #[Assert\Image(
         maxSize: '8M',
         minWidth: 200,
@@ -75,15 +78,15 @@ class Review
     private File $image;
 
     #[Assert\NotNull]
-    #[Groups(["review:read", "review:write"])]
+//    #[Groups(["review:read", "review:write"])]
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'reviews')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(name: 'owner_id', nullable: false)]
     private ?User $owner;
 
     #[Assert\NotNull]
-    #[Groups(["review:read", "review:write"])]
+//    #[Groups(["review:read", "review:write"])]
     #[ORM\ManyToOne(targetEntity: Game::class, inversedBy: 'reviews')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(name: 'game_id', nullable: false)]
     private ?Game $game;
 
     public function getId(): ?int

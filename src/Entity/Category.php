@@ -15,14 +15,14 @@ class Category
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(["category:read", "category:write", "game:read"])]
+//    #[Groups(["category:read", "category:write", "game:read"])]
     #[ORM\Column(length: 255)]
     private ?string $description = null;
 
     #[Assert\NotNull]
-    #[Groups(["category:read", "category:write"])]
+//    #[Groups(["category:read", "category:write"])]
     #[ORM\ManyToOne(targetEntity: Game::class, inversedBy: 'categories')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(name: 'game_id', nullable: false)]
     private ?Game $game;
 
     public function getId(): ?int

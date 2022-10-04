@@ -16,18 +16,18 @@ class Screenshot
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(["screenshot:read", "screenshot:write", "game:read"])]
+//    #[Groups(["screenshot:read", "screenshot:write", "game:read"])]
     #[ORM\Column(length: 255)]
     private ?string $thumbnail = null;
 
-    #[Groups(["screenshot:read", "screenshot:write", "game:read"])]
+//    #[Groups(["screenshot:read", "screenshot:write", "game:read"])]
     #[ORM\Column(length: 255)]
     private ?string $full = null;
 
     #[Assert\NotNull]
-    #[Groups(["screenshot:read", "screenshot:write"])]
+//    #[Groups(["screenshot:read", "screenshot:write"])]
     #[ORM\ManyToOne(targetEntity: Game::class, inversedBy: 'screenshots')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(name: 'game_id', nullable: false)]
     private ?Game $game;
 
     public function getId(): ?int

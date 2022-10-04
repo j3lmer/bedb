@@ -11,6 +11,7 @@
         <v-row class="mx-4">
             <v-col
                 v-for="item in featuredWinIds"
+                v-bind:key="item"
             >
                 <v-card
                     max-width="200"
@@ -39,9 +40,9 @@ export default class Games extends VueComponent {
     }
 
 
-    private getGameAppDetails: void {
+    private getGameAppDetails(): void {
 
-}
+    }
 
 
 }
