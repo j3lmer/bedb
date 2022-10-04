@@ -12,7 +12,7 @@ use Symfony\Component\Filesystem\Filesystem;
 
 #[AsCommand(
     name: 'app:get-featured-games',
-    description: 'gets the reviews for all games currently in filesystem',
+    description: 'Stores the currently featured steam games in a json',
     aliases: ["app:get-featured"],
     hidden: false
 )]

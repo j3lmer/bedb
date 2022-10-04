@@ -31,3 +31,4 @@ yarn-error.log
 
 assets/steam/games
 assets/steam/featuredGames.json
+assets/steam/logs/*

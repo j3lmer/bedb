@@ -322,9 +322,6 @@ class Game
         return $this;
     }
 
-    /**
-     * @return iterable
-     */
     public function getCategories(): iterable
     {
         return $this->categories;
@@ -351,9 +348,6 @@ class Game
         return $this;
     }
 
-    /**
-     * @return iterable
-     */
     public function getGenres(): iterable
     {
         return $this->genres;
@@ -380,9 +374,7 @@ class Game
         return $this;
     }
 
-    /**
-     * @return iterable
-     */
+
     public function getScreenshots(): iterable
     {
         return $this->screenshots;
