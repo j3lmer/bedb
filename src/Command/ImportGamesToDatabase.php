@@ -10,6 +10,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 #[AsCommand(
     name: 'app:import-games-to-db',
@@ -26,18 +30,22 @@ class ImportGamesToDatabase extends Command
     private FilestructureHelper $filestructureHelper;
     private string $logPath = "assets/steam/logs/import.txt";
 
+    /**
+     * @throws ServerExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ClientExceptionInterface
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->filesystem = new Filesystem();
         $this->filestructureHelper = new FilestructureHelper();
 
         $ids = $this->filestructureHelper->getAppIds();
-
-
         $this->createLogFile();
+
         foreach ($ids as $id) {
             $id = $id[1];
-            $path = "assets/steam/games/{$id}/$id.json";
+            $path = "assets/steam/games/{$id}/{$id}.json";
             $data = json_decode(file_get_contents($path), true);
 
             if (!array_key_exists($id, $data)) {
@@ -48,20 +56,39 @@ class ImportGamesToDatabase extends Command
                 $this->appendToLogfile("\n key 'data' does not exist on {$id}.json \n");
                 continue;
             }
-
-            $data = $data[$id]["data"];
-            $data = $this->replaceKeys('steam_appid', 'id', $data);
-            unset($data["reviews"]);
-
-            for ($i = 0; $i < count($data["genres"]); $i++) {
-                $data["genres"][$i]["id"] = (int) $data["genres"][$i]["id"];
-            }
-
+            $data = $this->configureData($data, $id);
             printf("\n posting {$id} to internal api.. \n");
+            $this->trySend($data);
+        }
+        return Command::SUCCESS;
+    }
+
+    protected function trySend(array $data): void
+    {
+        try {
             $this->postToApi($data);
+        } catch (ClientExceptionInterface $e) {
+            $this->appendToLogfile("\n could not post game data to database. ClientException \n");
+        } catch (RedirectionExceptionInterface $e) {
+            $this->appendToLogfile("\n could not post game data to database. RedirectionException \n");
+        } catch (ServerExceptionInterface $e) {
+            $this->appendToLogfile("\n could not post game data to database. ServerException \n");
+        } catch (TransportExceptionInterface $e) {
+            $this->appendToLogfile("\n could not post game data to database. TransportException \n");
+        }
+    }
+
+    protected function configureData(array $data, int $id): array
+    {
+        $data = $data[$id]["data"];
+        $data = $this->replaceKeys('steam_appid', 'id', $data);
+        unset($data["reviews"]);
+
+        for ($i = 0; $i < count($data["genres"]); $i++) {
+            $data["genres"][$i]["id"] = (int)$data["genres"][$i]["id"];
         }
 
-        return Command::SUCCESS;
+        return $data;
     }
 
     protected function createLogFile(): void
@@ -89,18 +116,24 @@ class ImportGamesToDatabase extends Command
         return $return;
     }
 
-    protected function postToApi(array $data)
+    /**
+     * @throws TransportExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ClientExceptionInterface
+     */
+    protected function postToApi(array $data): void
     {
         $client = HttpClient::create();
-
-        var_dump($data);
 
         $response = $client->request('POST', "http://127.0.0.1:8000/api/games", [
             'headers' => ['Content-Type' => 'application/ld+json'],
             'json' => $data,
         ]);
 
-        dd($response);
+        if ($response->getStatusCode() > 299) {
+            $this->appendToLogfile("\n api call to post game failed, content: {$response->getContent()} \n");
+        }
     }
 
 }
