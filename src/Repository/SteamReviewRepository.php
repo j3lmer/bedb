@@ -14,7 +14,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method TeamReview[]    findAll()
  * @method TeamReview[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class TeamReviewRepository extends ServiceEntityRepository
+class SteamReviewRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
