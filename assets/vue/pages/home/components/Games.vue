@@ -8,8 +8,7 @@
             <v-spacer/>
             <v-spacer/>
         </v-row>
-        <v-row class="mx-4">
-
+        <v-row class="mx-4 my-2">
             <v-col
                 v-for="item in featuredWinIds"
                 :key="item"
@@ -25,7 +24,7 @@
             </v-col>
         </v-row>
 
-        <v-divider class="my-4"/>
+        <v-divider class="mt-8 mb-8"/>
 
         <div
             v-for="(category, genre) in categoryGames"
@@ -80,7 +79,6 @@
                         </v-row>
                     </v-carousel-item>
                 </v-carousel>
-
             </v-row>
             <v-divider class="my-10"/>
         </div>
