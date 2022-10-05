@@ -3,7 +3,7 @@
         <v-row align="center" justify="center">
             <v-spacer/>
             <v-col>
-                <h3>Featured</h3>
+                <h1>Featured</h1>
             </v-col>
             <v-spacer/>
             <v-spacer/>
@@ -18,6 +18,7 @@
                     max-width="200"
                     height="250"
                     outlined
+                    elevation="10"
                 >
                     {{item}}
                 </v-card>
@@ -33,7 +34,7 @@
             <v-row align="center" justify="center">
                 <v-spacer/>
                 <v-col>
-                    <h3>{{ genre }}</h3>
+                    <h1>{{ genre }}</h1>
                 </v-col>
                 <v-spacer/>
                 <v-spacer/>
@@ -57,10 +58,12 @@
                             <v-col
                                 v-for="(game, j) in chunk"
                                 :key="j"
+                                class="pt-10"
                             >
                                 <v-card
                                     width="250"
                                     outlined
+                                    elevation="10"
                                 >
                                     <v-card-title class="text-center">
                                         <h4>
