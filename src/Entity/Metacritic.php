@@ -55,14 +55,16 @@ class Metacritic
 
         return $this;
     }
-//
-//    public function getGame(): Game
-//    {
-//        return $this->game;
-//    }
-//
-//    public function setGame(Game $game): void
-//    {
-//        $this->game = $game;
-//    }
+
+    public function getGame(): Game
+    {
+        return $this->game;
+    }
+
+    public function setGame(Game $game): self
+    {
+        $this->game = $game;
+
+        return $this;
+    }
 }

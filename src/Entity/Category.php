@@ -47,28 +47,26 @@ class Category
         return $this;
     }
 
-
     /**
-     * @return iterable|null
+     *   @return iterable|ArrayCollection
      */
-    public function getGames(): ?iterable
+    public function getGames(): ArrayCollection|iterable
     {
         return $this->games;
     }
-
-    public function addGame(Game $game):void
+    public function setGame(Game $game): self
     {
         if (!$this->games->contains($game)) {
+            $this->games[] = $game;
             $game->addCategory($this);
-            $this->games->add($game);
         }
+        return $this;
     }
-
-    public function removeGame(Game $game):void
+    public function removeGame(Game $question): self
     {
-        if ($this->games->contains($game)) {
-            $game->removeCategory($this);
-            $this->games->removeElement($game);
+        if ($this->games->removeElement($question)) {
+            $question->removeCategory($this);
         }
+        return $this;
     }
 }

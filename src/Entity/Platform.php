@@ -28,7 +28,7 @@ class Platform
     private bool $linux = false;
 
     #[Assert\NotNull]
-    #[ORM\OneToOne(inversedBy: 'pc_requirement', targetEntity: Game::class)]
+    #[ORM\OneToOne(inversedBy: 'platform', targetEntity: Game::class)]
     #[ORM\JoinColumn(name: 'game_id', nullable: false)]
     private Game $game;
 
@@ -73,19 +73,21 @@ class Platform
         return $this;
     }
 
-//    /**
-//     * @return Game|null
-//     */
-//    public function getGame(): ?Game
-//    {
-//        return $this->game;
-//    }
-//
-//    /**
-//     * @param Game|null $game
-//     */
-//    public function setGame(?Game $game): void
-//    {
-//        $this->game = $game;
-//    }
+    /**
+     * @return Game|null
+     */
+    public function getGame(): ?Game
+    {
+        return $this->game;
+    }
+
+    /**
+     * @param Game|null $game
+     * @return Platform
+     */
+    public function setGame(?Game $game): self
+    {
+        $this->game = $game;
+        return $this;
+    }
 }

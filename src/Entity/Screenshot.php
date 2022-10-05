@@ -54,4 +54,20 @@ class Screenshot
 
         return $this;
     }
+
+    /**
+     * @return Game|null
+     */
+    public function getGame(): ?Game
+    {
+        return $this->game;
+    }
+
+    /**
+     * @param Game|null $game
+     */
+    public function setGame(?Game $game): void
+    {
+        $this->game = $game;
+    }
 }

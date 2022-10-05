@@ -55,19 +55,21 @@ class ReleaseDate
         return $this;
     }
 
-//    /**
-//     * @return Game
-//     */
-//    public function getGame(): Game
-//    {
-//        return $this->game;
-//    }
-//
-//    /**
-//     * @param Game $game
-//     */
-//    public function setGame(Game $game): void
-//    {
-//        $this->game = $game;
-//    }
+    /**
+     * @return Game
+     */
+    public function getGame(): Game
+    {
+        return $this->game;
+    }
+
+    /**
+     * @param Game $game
+     * @return ReleaseDate
+     */
+    public function setGame(Game $game): self
+    {
+        $this->game = $game;
+        return $this;
+    }
 }
