@@ -1,5 +1,5 @@
 <template>
-    <div class="mb-8">
+    <div>
 <!--        <div v-if="$vuetify.breakpoint.mobile">-->
 <!--            <v-row class="ma-5">-->
 <!--                <v-spacer/>-->

@@ -6,7 +6,9 @@
             @updated-tab="selectComponent"
         />
         <v-card flat>
-            <Home   v-if="selectedComponent === items.Home"/>
+            <Home   v-if="selectedComponent === items.Home"
+                    @updated-tab="selectComponent"
+            />
             <Games  v-if="selectedComponent === items.Games"/>
         </v-card>
     </v-app>

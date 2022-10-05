@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="mt-8">
         <v-row align="center" justify="center">
             <v-spacer/>
             <v-col>
@@ -60,7 +60,6 @@
                             >
                                 <v-card
                                     width="250"
-                                    
                                     outlined
                                 >
                                     <v-card-title class="text-center">
@@ -93,7 +92,7 @@ const featuredWinIds = require("../../../../steam/featuredGames.json")
 export default class Games extends VueComponent {
 
     private featuredWinIds = featuredWinIds;
-    private categoryGames = { // temporary
+    private categoryGames = { // temporary, until working api
         'Action':
             [
                 [
