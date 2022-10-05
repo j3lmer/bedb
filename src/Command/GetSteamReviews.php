@@ -45,19 +45,11 @@ class GetSteamReviews extends Command
         return Command::SUCCESS;
     }
 
-    protected function getAppIds(): array
-    {
-        $appids = [];
 
-        foreach ($this->filestructureHelper->getGamePaths() as $path) {
-            $appids[] = explode("assets/steam/games/", $path);
-        }
-        return $appids;
-    }
 
     protected function getReviews(Filesystem $filesystem, int $numReviewsPerChunk, $numTotalReviewsPerGame) // only for test purposes
     {
-        $appids = $this->getAppIds();
+        $appids = $this->filestructureHelper->getAppIds();
         $cursor = '*';
 
         foreach ($appids as $appid) {

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\GenresRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -16,15 +17,20 @@ class Genre
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(["genre:read", "genre:write", "game:read"])]
+//    #[Groups(["genre:read", "genre:write", "game:read"])]
     #[ORM\Column(length: 255)]
     private ?string $description = null;
 
     #[Assert\NotNull]
-    #[Groups(["genre:read", "genre:write"])]
-    #[ORM\ManyToOne(targetEntity: Game::class, inversedBy: 'genres')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Game $game;
+//    #[Groups(["category:read", "category:write"])]
+    #[ORM\ManyToMany(targetEntity: Game::class, mappedBy: 'genres')]
+    #[ORM\JoinColumn(name: 'game_id', nullable: false)]
+    private ?iterable $games;
+
+    public function __construct()
+    {
+        $this->games = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -44,18 +50,25 @@ class Genre
     }
 
     /**
-     * @return Game|null
+     *   @return iterable|ArrayCollection
      */
-    public function getGame(): ?Game
+    public function getGames(): ArrayCollection|iterable
     {
-        return $this->game;
+        return $this->games;
     }
-
-    /**
-     * @param Game|null $game
-     */
-    public function setGame(?Game $game): void
+    public function setGame(Game $game): self
     {
-        $this->game = $game;
+        if (!$this->games->contains($game)) {
+            $this->games[] = $game;
+            $game->addGenre($this);
+        }
+        return $this;
+    }
+    public function removeGame(Game $question): self
+    {
+        if ($this->games->removeElement($question)) {
+            $question->removeGenre($this);
+        }
+        return $this;
     }
 }

@@ -30,3 +30,5 @@ yarn-error.log
 .env.test
 
 assets/steam/games
+assets/steam/featuredGames.json
+assets/steam/logs/*

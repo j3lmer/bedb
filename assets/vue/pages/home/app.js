@@ -15,7 +15,9 @@ Vue.use(VueCookies);
 const app = new Vue({
     vuetify: new Vuetify(),
     el: '#app',
-    // ...bootstrap,
+    icons: {
+        iconFont: 'mdi'
+    },
     render: (h) => h(App),
 });
 

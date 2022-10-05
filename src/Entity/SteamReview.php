@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\TeamReviewRepository;
+use App\Repository\SteamReviewRepository;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -34,7 +34,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     shortName="SteamReview"
  * )
  */
-#[ORM\Entity(repositoryClass: TeamReviewRepository::class)]
+#[ORM\Entity(repositoryClass: SteamReviewRepository::class)]
 class SteamReview
 {
     #[Assert\NotNull]
@@ -58,6 +58,11 @@ class SteamReview
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: false)]
     private ?DateTimeInterface $date;
+
+    #[Assert\NotNull]
+    #[ORM\ManyToOne(targetEntity: Game::class, inversedBy: 'steam_reviews')]
+    #[ORM\JoinColumn(name: 'game_id', nullable: false)]
+    private ?Game $game;
 
     public function getId(): ?int
     {
@@ -121,6 +126,24 @@ class SteamReview
     {
         $this->date = $date;
 
+        return $this;
+    }
+
+    /**
+     * @return Game|null
+     */
+    public function getGame(): ?Game
+    {
+        return $this->game;
+    }
+
+    /**
+     * @param Game|null $game
+     * @return SteamReview
+     */
+    public function setGame(?Game $game): self
+    {
+        $this->game = $game;
         return $this;
     }
 }

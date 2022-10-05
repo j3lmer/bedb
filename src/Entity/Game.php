@@ -5,38 +5,15 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\GameRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\OneToMany;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ApiResource(
- *     normalizationContext={
- *          "groups"={
- *              "game:read",
- *              "game:item:get"
- *          }
- *     },
- *
- *     denormalizationContext={
- *          "groups"={"game:write"}
- *     },
- *
- *     collectionOperations={
- *          "get",
- *          "post"={"security"="is_granted('ROLE_ADMIN')"}
- *      },
- *
- *     itemOperations={
- *          "get",
- *          "put"={"security"="is_granted('ROLE_ADMIN')"}
- *      },
- *     shortName="Games"
- * )
- */
-#[UniqueEntity(fields: ["appid"], message: 'Another game already has this appid')]
+#[ApiResource]
+#[UniqueEntity(fields: ["id"], message: 'Another game already has this appid')]
 #[ORM\Table(name: '`game`')]
 #[ORM\Entity(repositoryClass: GameRepository::class)]
 class Game
@@ -45,14 +22,20 @@ class Game
     #[ORM\Column(unique: true, nullable: false)]
     private int $id; // steam appid
 
+    #[ORM\Column(type: Types::SIMPLE_ARRAY, nullable: true)]
+    private ?array $developers = [];
+
+    #[ORM\Column(type: Types::SIMPLE_ARRAY, nullable: true)]
+    private ?array $publishers = [];
+
     #[Assert\NotNull]
     #[ORM\Column(length: 255, nullable: false)]
     private string $name;
 
-    #[ORM\Column(length: 1000, nullable: true)]
+    #[ORM\Column(length: 8000, nullable: true)]
     private ?string $detailed_description = null;
 
-    #[ORM\Column(length: 1000, nullable: true)]
+    #[ORM\Column(length: 8000, nullable: true)]
     private ?string $about = null;
 
     #[ORM\Column(length: 500, nullable: true)]
@@ -61,17 +44,11 @@ class Game
     #[ORM\Column(length: 1000, nullable: true)]
     private ?string $supported_languages = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $header_image = null;
+    #[ORM\Column(length: 255, nullable: false)]
+    private string $header_image;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $website = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $developers = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $publishers = null;
 
     #[ORM\Column]
     private int $recommendations_total = 0;
@@ -83,54 +60,99 @@ class Game
     #[ORM\Column(nullable: false)]
     private bool $nsfw = true;
 
-    #[Groups(["game:read"])]
-    #[ORM\OneToOne(mappedBy: 'game', targetEntity: PcRequirement::class)]
+    #[ORM\OneToOne(
+        mappedBy: 'game',
+        targetEntity: PcRequirement::class,
+        cascade: ["persist", "remove"],
+        orphanRemoval: true
+    )]
     private ?PcRequirement $pc_requirement = null;
 
-    #[Groups(["game:read"])]
-    #[ORM\OneToOne(mappedBy: 'game', targetEntity: Platform::class)]
+    #[ORM\OneToOne(
+        mappedBy: 'game',
+        targetEntity: Platform::class,
+        cascade: ["persist", "remove"],
+        orphanRemoval: true
+    )]
     private Platform $platform;
 
-    #[Groups(["game:read"])]
-    #[ORM\OneToOne(mappedBy: 'game', targetEntity: Metacritic::class)]
+    #[ORM\OneToOne(
+        mappedBy: 'game',
+        targetEntity: Metacritic::class,
+        cascade: ["persist", "remove"],
+        orphanRemoval: true
+    )]
     private Metacritic $metacritic;
 
-    #[Groups(["game:read"])]
-    #[ORM\OneToOne(mappedBy: 'game', targetEntity: ReleaseDate::class)]
+    #[ORM\OneToOne(
+        mappedBy: 'game',
+        targetEntity: ReleaseDate::class,
+        cascade: ["persist", "remove"],
+        orphanRemoval: true
+    )]
     private ReleaseDate $release_date;
 
-    #[Groups(["game:read"])]
     #[OnetoMany(
-        mappedBy: 'owner',
+        mappedBy: 'game',
         targetEntity: Review::class,
-        cascade: ["persist", "remove"])
-    ]
-    private iterable $reviews = [];
+        cascade: ["persist", "remove"],
+        orphanRemoval: true
+    )]
+    private ?iterable $reviews = [];
 
-    #[Groups(["game:read"])]
     #[OnetoMany(
         mappedBy: 'game',
-        targetEntity: Category::class,
-        cascade: ["persist", "remove"])
-    ]
-    private iterable $categories;
+        targetEntity: SteamReview::class,
+        cascade: ["persist", "remove"],
+        orphanRemoval: true
+    )]
+    private ?iterable $steam_reviews = [];
 
-    #[Groups(["game:read"])]
-    #[OnetoMany(
-        mappedBy: 'game',
-        targetEntity: Genre::class,
-        cascade: ["persist", "remove"])
-    ]
-    private iterable $genres;
-
-    #[Groups(["game:read"])]
     #[OnetoMany(
         mappedBy: 'game',
         targetEntity: Screenshot::class,
-        cascade: ["persist", "remove"])
-    ]
-    private iterable $screenshots;
+        cascade: ["persist", "remove"],
+        orphanRemoval: true
+    )]
+    private ?iterable $screenshots;
 
+    #[ORM\ManyToMany(
+        targetEntity: Category::class,
+        inversedBy: 'games',
+        cascade: ["persist", "remove"],
+        orphanRemoval: true
+    )]
+    /**
+     * @ORM\JoinTable(
+     *      name="game_category",
+     *      joinColumns={
+     *          @ORM\JoinColumn(name="game_id", referencedColumnName="id")
+     *      },
+     *      inverseJoinColumns={
+     *          @ORM\JoinColumn(name="category_id", referencedColumnName="id")
+     *      }
+     * )
+     */
+    private iterable $categories;
+
+    #[ORM\ManyToMany(
+        targetEntity: Genre::class,
+        inversedBy: 'games',
+        cascade: ["persist", "remove"],
+        orphanRemoval: true
+    )]
+    /**
+     * @ORM\JoinTable(
+     *      name="game_genre",
+     *      joinColumns={
+     *          @ORM\JoinColumn(name="game_id", referencedColumnName="id")
+     *      },
+     *      inverseJoinColumns={
+     *          @ORM\JoinColumn(name="genre_id", referencedColumnName="id")
+     *      }
+     * )
+     */
+    private ?iterable $genres;
 
     public function __construct()
     {
@@ -138,6 +160,7 @@ class Game
         $this->categories = new ArrayCollection();
         $this->genres = new ArrayCollection();
         $this->screenshots = new ArrayCollection();
+        $this->steam_reviews = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -236,30 +259,6 @@ class Game
         return $this;
     }
 
-    public function getDevelopers(): ?string
-    {
-        return $this->developers;
-    }
-
-    public function setDevelopers(string $developers): self
-    {
-        $this->developers = $developers;
-
-        return $this;
-    }
-
-    public function getPublishers(): ?string
-    {
-        return $this->publishers;
-    }
-
-    public function setPublishers(string $publishers): self
-    {
-        $this->publishers = $publishers;
-
-        return $this;
-    }
-
     public function getRecommendationsTotal(): ?int
     {
         return $this->recommendations_total;
@@ -296,7 +295,78 @@ class Game
         return $this;
     }
 
-    public function getReviews(): ?array
+    /**
+     * @return PcRequirement|null
+     */
+    public function getPcRequirement(): ?PcRequirement
+    {
+        return $this->pc_requirement;
+    }
+
+    /**
+     * @param PcRequirement|null $pc_requirement
+     */
+    public function setPcRequirement(?PcRequirement $pc_requirement): void
+    {
+        $pc_requirement->setGame($this);
+        $this->pc_requirement = $pc_requirement;
+    }
+
+    /**
+     * @return Platform
+     */
+    public function getPlatform(): Platform
+    {
+        return $this->platform;
+    }
+
+    /**
+     * @param Platform $platform
+     */
+    public function setPlatform(Platform $platform): void
+    {
+        $platform->setGame($this);
+        $this->platform = $platform;
+    }
+
+    /**
+     * @return Metacritic
+     */
+    public function getMetacritic(): Metacritic
+    {
+        return $this->metacritic;
+    }
+
+    /**
+     * @param Metacritic $metacritic
+     */
+    public function setMetacritic(Metacritic $metacritic): void
+    {
+        $metacritic->setGame($this);
+        $this->metacritic = $metacritic;
+    }
+
+    /**
+     * @return ReleaseDate
+     */
+    public function getReleaseDate(): ReleaseDate
+    {
+        return $this->release_date;
+    }
+
+    /**
+     * @param ReleaseDate $release_date
+     */
+    public function setReleaseDate(ReleaseDate $release_date): void
+    {
+        $release_date->setGame($this);
+        $this->release_date = $release_date;
+    }
+
+    /**
+     * @return iterable|null
+     */
+    public function getReviews(): ?iterable
     {
         return $this->reviews;
     }
@@ -309,7 +379,6 @@ class Game
         }
         return $this;
     }
-
     public function removeReview(Review $review): self
     {
         if ($this->reviews->contains($review)) {
@@ -323,37 +392,63 @@ class Game
     }
 
     /**
-     * @return iterable
+     * @return iterable|null
      */
-    public function getCategories(): iterable
+    public function getSteamReviews(): ?iterable
+    {
+        return $this->steam_reviews;
+    }
+
+    /**
+     * @param iterable|null $steam_reviews
+     */
+    public function setSteamReviews(?iterable $steam_reviews): void
+    {
+        $this->steam_reviews = $steam_reviews;
+    }
+
+    /**
+     * @return iterable|null
+     */
+    public function getScreenshots(): ?iterable
+    {
+        return $this->screenshots;
+    }
+
+    /**
+     * @param iterable|null $screenshots
+     */
+    public function setScreenshots(?iterable $screenshots): void
+    {
+        $this->screenshots = $screenshots;
+    }
+
+    /**
+     * @return iterable|ArrayCollection
+     */
+    public function getCategories(): ArrayCollection|iterable
     {
         return $this->categories;
     }
-
-    public function addCategory(Category $review): self
+    public function addCategory(Category $category): self
     {
-        if (!$this->categories->contains($review)) {
-            $this->categories[] = $review;
-            $review->setGame($this);
+        if (!$this->categories->contains($category)) {
+            $this->categories[] = $category;
+            $category->setGame($this);
         }
         return $this;
     }
-
     public function removeCategory(Category $category): self
     {
-        if ($this->categories->contains($category)) {
-            $this->categories->removeElement($category);
-            // set the owning side to null (unless already changed)
-            if ($category->getGame() === $this) {
-                $category->setGame(null);
+        if ($this->genres->contains($category)) {
+            $this->genres->removeElement($category);
+            if (in_array($this, (array)$category->getGames())) {
+                $category->removeGame($this);
             }
         }
         return $this;
     }
 
-    /**
-     * @return iterable
-     */
     public function getGenres(): iterable
     {
         return $this->genres;
@@ -372,38 +467,8 @@ class Game
     {
         if ($this->genres->contains($genre)) {
             $this->genres->removeElement($genre);
-            // set the owning side to null (unless already changed)
-            if ($genre->getGame() === $this) {
-                $genre->setGame(null);
-            }
-        }
-        return $this;
-    }
-
-    /**
-     * @return iterable
-     */
-    public function getScreenshots(): iterable
-    {
-        return $this->screenshots;
-    }
-
-    public function addScreenshot(Screenshot $screenshot): self
-    {
-        if (!$this->screenshots->contains($screenshot)) {
-            $this->screenshots[] = $screenshot;
-            $screenshot->setGame($this);
-        }
-        return $this;
-    }
-
-    public function removeScreenshot(Screenshot $screenshot): self
-    {
-        if ($this->screenshots->contains($screenshot)) {
-            $this->screenshots->removeElement($screenshot);
-            // set the owning side to null (unless already changed)
-            if ($screenshot->getGame() === $this) {
-                $screenshot->setGame(null);
+            if (in_array($this, (array)$genre->getGames())) {
+                $genre->removeGame($this);
             }
         }
         return $this;
