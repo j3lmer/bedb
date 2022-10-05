@@ -12,36 +12,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-//
-///**
-// * @ApiResource(
-// *     normalizationContext={
-// *          "groups"={
-// *              "game:read",
-// *              "game:item:get"
-// *          }
-// *     },
-// *
-// *     denormalizationContext={
-// *          "groups"={"game:write"}
-// *     },
-// *
-// *     collectionOperations={
-// *          "get",
-// *          "post"={"security"="is_granted('ROLE_ADMIN')"}
-// *      },
-// *
-// *     itemOperations={
-// *          "get",
-// *          "put"={"security"="is_granted('ROLE_ADMIN')"}
-// *      },
-// *     shortName="Games"
-// * )
-// */
-
-/**
- * @ApiResource()
- */
+#[ApiResource]
 #[UniqueEntity(fields: ["id"], message: 'Another game already has this appid')]
 #[ORM\Table(name: '`game`')]
 #[ORM\Entity(repositoryClass: GameRepository::class)]
@@ -73,8 +44,8 @@ class Game
     #[ORM\Column(length: 1000, nullable: true)]
     private ?string $supported_languages = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $header_image = null;
+    #[ORM\Column(length: 255, nullable: false)]
+    private string $header_image;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $website = null;

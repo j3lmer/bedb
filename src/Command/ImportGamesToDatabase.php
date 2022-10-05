@@ -31,6 +31,7 @@ class ImportGamesToDatabase extends Command
     private string $localServer = "http://127.0.0.1:8000/";
 
     //TODO: iets maken wat er voor zorgt dat genres (en categorieen) niet allemaal los in de db zitten
+    // (main foreach loop in een functie zetten en die een array laten returnen, hierna doorheen loopen en dat fixen en dan pas versturen)
 
 
     public function __construct(GameRepository $siteDataRepository)
@@ -114,18 +115,22 @@ class ImportGamesToDatabase extends Command
         $data = $this->replaceKeys('path_thumbnail', 'thumbnail', $data);
         $data = $this->replaceKeys('path_full', 'full', $data);
         $data = $this->replaceKeys('pc_requirements', 'pc_requirement', $data);
+        $data = $this->replaceKeys('header_image', 'headerImage', $data);
 
         /**
          * possible useful resources:
-         * https://stackoverflow.com/questions/64661753/api-platform-post-embedded-document-in-manytomany-relation-using-id-not-iris
+         * https://symfonycasts.com/screencast/api-platform/serialization-groups?cid=apip
+         * https://symfonycasts.com/screencast/api-platform/collections-create
          * https://symfonycasts.com/screencast/api-platform/embedded
+         * https://symfonycasts.com/screencast/api-platform/embedded-write#play
+         * https://api-platform.com/docs/core/serialization/#the-serialization-context-groups-and-relations
          */
         $data["nsfw"] = $data["nsfw"] >= 18;
-        $data["pc_requirement"]["game"] =  "/api/games/" . $id;
-        $data["platform"]["game"] =  "/api/games/" . $id;
-        $data["metacritic"]["game"] =  "/api/games/" . $id;
-        $data["release_date"]["game"] =  "/api/games/" . $id;
-        $data["screenshots"]["game"] =  "/api/games/" . $id;
+//        $data["pc_requirement"]["game"] =  "/api/games/" . $id;
+//        $data["platform"]["game"] =  "/api/games/" . $id;
+//        $data["metacritic"]["game"] =  "/api/games/" . $id;
+//        $data["release_date"]["game"] =  "/api/games/" . $id;
+//        $data["screenshots"]["game"] =  "/api/games/" . $id;
 
         return $data;
     }

@@ -12,15 +12,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ApiResource(
- *     normalizationContext={"groups"={"user:read"}},
- *     denormalizationContext={"groups"={"user:write"}},
- *     collectionOperations={"get", "post"},
- *     itemOperations={"get", "put", "delete"},
- *     shortName="Users"
- * )
- */
+#[ApiResource]
 #[UniqueEntity(fields: ["username"], message: 'There is already an account with this username.')]
 #[UniqueEntity(fields: ["email"], message: 'There is already an account with this email.')]
 #[ORM\Table(name: '`user`')]
@@ -36,14 +28,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Assert\NotNull]
     #[Assert\NotBlank]
-//    #[Groups(["user:read", "user:write", "review:item:get"])]
     #[ORM\Column(type: 'string', length: 255, unique: true, nullable: false)]
     private string $username;
 
     #[Assert\NotNull]
     #[Assert\NotBlank]
     #[Assert\Email]
-//    #[Groups(["user:read", "user:write"])]
     #[ORM\Column(type: 'string', length: 255, unique: true, nullable: false)]
     private string $email;
 
@@ -52,7 +42,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private iterable $roles = [];
 
     #[Assert\NotNull]
-//    #[Groups("user:write")]
     #[ORM\Column(type: 'string', length: 255, nullable: false)]
     private string $password;
 
@@ -60,13 +49,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean', nullable: false)]
     private bool $isVerified = false;
 
-//    #[Groups("user:read")]
     #[OnetoMany(
         mappedBy: 'owner',
         targetEntity: Review::class,
         cascade: ["persist", "remove"])
     ]
-    private iterable $reviews = [];
+    private ?iterable $reviews = [];
 
     public function getId(): ?int
     {
