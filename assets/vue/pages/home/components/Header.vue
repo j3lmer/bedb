@@ -1,37 +1,5 @@
 <template>
     <div>
-<!--        <div v-if="$vuetify.breakpoint.mobile">-->
-<!--            <v-row class="ma-5">-->
-<!--                <v-spacer/>-->
-<!--                <v-app-bar-nav-icon-->
-<!--                    @click.stop="drawer = !drawer">-->
-<!--                </v-app-bar-nav-icon>-->
-<!--            </v-row>-->
-<!--            <v-navigation-drawer-->
-<!--                v-model="drawer"-->
-<!--                absolute-->
-<!--                temporary-->
-<!--            >-->
-<!--                <v-list-->
-<!--                    nav-->
-<!--                    dense-->
-<!--                >-->
-<!--                    <v-list-item-group-->
-<!--                        v-model="group"-->
-<!--                        active-class="indigo&#45;&#45;text text&#45;&#45;accent-4"-->
-<!--                    >-->
-<!--                        <v-list-item-->
-<!--                            v-for="(item, i) in items"-->
-<!--                            :key="i"-->
-<!--                            @click="closeDrawer(item)"-->
-<!--                        >-->
-<!--                            <v-list-item-title>{{ item }}</v-list-item-title>-->
-<!--                        </v-list-item>-->
-<!--                    </v-list-item-group>-->
-<!--                </v-list>-->
-<!--            </v-navigation-drawer>-->
-<!--        </div>-->
-
         <v-card
             v-if="items"
             app
@@ -74,8 +42,6 @@
                     </v-row>
                 </v-col>
             </v-row>
-
-<!-- v-if="!$vuetify.breakpoint.mobile"-->
             <v-tabs
                 v-model="tab"
                 grow
@@ -89,7 +55,6 @@
                     {{ item }}
                 </v-tab>
             </v-tabs>
-<!--            v-if="$vuetify.breakpoint.mobile"-->
             <v-divider />
         </v-card>
     </div>
