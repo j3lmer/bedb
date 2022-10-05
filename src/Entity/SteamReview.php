@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\TeamReviewRepository;
+use App\Repository\SteamReviewRepository;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -34,7 +34,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     shortName="SteamReview"
  * )
  */
-#[ORM\Entity(repositoryClass: TeamReviewRepository::class)]
+#[ORM\Entity(repositoryClass: SteamReviewRepository::class)]
 class SteamReview
 {
     #[Assert\NotNull]
