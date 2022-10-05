@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use App\Repository\ScreenshotRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
@@ -16,18 +15,15 @@ class Screenshot
     #[ORM\Column]
     private ?int $id = null;
 
-//    #[Groups(["screenshot:read", "screenshot:write", "game:read"])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $thumbnail = null;
 
-//    #[Groups(["screenshot:read", "screenshot:write", "game:read"])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $full = null;
 
     #[Assert\NotNull]
-//    #[Groups(["screenshot:read", "screenshot:write"])]
     #[ORM\ManyToOne(targetEntity: Game::class, inversedBy: 'screenshots')]
-    #[ORM\JoinColumn(name: 'game_id', nullable: false)]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Game $game;
 
     public function getId(): ?int
@@ -57,21 +53,5 @@ class Screenshot
         $this->full = $full;
 
         return $this;
-    }
-
-    /**
-     * @return Game|null
-     */
-    public function getGame(): ?Game
-    {
-        return $this->game;
-    }
-
-    /**
-     * @param Game|null $game
-     */
-    public function setGame(?Game $game): void
-    {
-        $this->game = $game;
     }
 }

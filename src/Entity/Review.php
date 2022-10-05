@@ -48,26 +48,18 @@ class Review
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(["review:read", "review:write", "user:read"])]
     #[ORM\Column(length: 8000, nullable: true)]
     private ?string $text = null;
 
     #[Assert\NotNull]
-    #[Assert\Range(
-        notInRangeMessage: "Rating must be between 1 and 10",
-        min: 1,
-        max: 10
-    )]
-//    #[Groups(["review:read", "review:write", "user:read", "game:read"])]
+    #[Assert\Range(notInRangeMessage: "Rating must be between 1 and 10", min: 1, max: 10)]
     #[ORM\Column(nullable: false)]
     private int $rating;
 
     #[Assert\NotNull]
-//    #[Groups(["review:read", "review:write", "user:read"])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: false)]
     private DateTimeInterface $date_updated;
 
-//    #[Groups(["review:read", "review:write"])]
     #[Assert\Image(
         maxSize: '8M',
         minWidth: 200,
@@ -78,13 +70,11 @@ class Review
     private File $image;
 
     #[Assert\NotNull]
-//    #[Groups(["review:read", "review:write"])]
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'reviews')]
     #[ORM\JoinColumn(name: 'owner_id', nullable: false)]
     private ?User $owner;
 
     #[Assert\NotNull]
-//    #[Groups(["review:read", "review:write"])]
     #[ORM\ManyToOne(targetEntity: Game::class, inversedBy: 'reviews')]
     #[ORM\JoinColumn(name: 'game_id', nullable: false)]
     private ?Game $game;
@@ -152,14 +142,14 @@ class Review
         return $this;
     }
 
-    public function getGame(): Game
-    {
-        return $this->game;
-    }
-
-    public function setGame(?Game $game): self
-    {
-        $this->game = $game;
-        return $this;
-    }
+//    public function getGame(): Game
+//    {
+//        return $this->game;
+//    }
+//
+//    public function setGame(?Game $game): self
+//    {
+//        $this->game = $game;
+//        return $this;
+//    }
 }

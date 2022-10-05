@@ -15,16 +15,13 @@ class ReleaseDate
     #[ORM\Column]
     private ?int $id = null;
 
-//    #[Groups(["release_date:read", "release_date:write", "game:read"])]
     #[ORM\Column(length: 500)]
     private ?bool $coming_soon = null;
 
-//    #[Groups(["release_date:read", "release_date:write", "game:read"])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $date = null;
 
     #[Assert\NotNull]
-//    #[Groups(["release_date:read", "release_date:write"])]
     #[ORM\OneToOne(inversedBy: 'release_date', targetEntity: Game::class)]
     #[ORM\JoinColumn(name: 'game_id', nullable: false)]
     private Game $game;
@@ -58,19 +55,19 @@ class ReleaseDate
         return $this;
     }
 
-    /**
-     * @return Game
-     */
-    public function getGame(): Game
-    {
-        return $this->game;
-    }
-
-    /**
-     * @param Game $game
-     */
-    public function setGame(Game $game): void
-    {
-        $this->game = $game;
-    }
+//    /**
+//     * @return Game
+//     */
+//    public function getGame(): Game
+//    {
+//        return $this->game;
+//    }
+//
+//    /**
+//     * @param Game $game
+//     */
+//    public function setGame(Game $game): void
+//    {
+//        $this->game = $game;
+//    }
 }

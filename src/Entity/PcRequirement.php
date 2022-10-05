@@ -15,30 +15,13 @@ class PcRequirement
     #[ORM\Column]
     private ?int $id = null;
 
-//    #[Groups([
-//        "pc_requirement:read",
-//        "pc_requirement:write",
-//        "game:read",
-//        "game:write"
-//    ])]
     #[ORM\Column(length: 1000, nullable: false)]
     private string $minimum;
 
-//    #[Groups([
-//        "pc_requirement:read",
-//        "pc_requirement:write",
-//        "game:read",
-//        "game:write"
-//    ])]
     #[ORM\Column(length: 1000, nullable: false)]
     private string $recommended;
 
     #[Assert\NotNull]
-//    #[Groups([
-//        "pc_requirement:read",
-//        "pc_requirement:write",
-//        "game:write"
-//    ])]
     #[ORM\OneToOne(inversedBy: 'pc_requirement', targetEntity: Game::class)]
     #[ORM\JoinColumn(name: 'game_id', nullable: false)]
     private Game $game;
@@ -72,19 +55,19 @@ class PcRequirement
         return $this;
     }
 
-    /**
-     * @return Game
-     */
-    public function getGame(): Game
-    {
-        return $this->game;
-    }
-
-    /**
-     * @param Game $game
-     */
-    public function setGame(Game $game): void
-    {
-        $this->game = $game;
-    }
+//    /**
+//     * @return Game
+//     */
+//    public function getGame(): Game
+//    {
+//        return $this->game;
+//    }
+//
+//    /**
+//     * @param Game $game
+//     */
+//    public function setGame(Game $game): void
+//    {
+//        $this->game = $game;
+//    }
 }

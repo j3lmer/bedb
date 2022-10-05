@@ -16,16 +16,13 @@ class Metacritic
     private ?int $id = null;
 
     #[Assert\NotNull]
-//    #[Groups(["metacritic:read", "metacritic:write", "game:read"])]
     #[ORM\Column]
     private int $score;
 
-//    #[Groups(["metacritic:read", "metacritic:write", "game:read"])]
     #[ORM\Column(length: 500)]
     private ?string $url = null;
 
     #[Assert\NotNull]
-//    #[Groups(["metacritic:read", "metacritic:write"])]
     #[ORM\OneToOne(inversedBy: 'metacritic', targetEntity: Game::class)]
     #[ORM\JoinColumn(name: 'game_id', nullable: false)]
     private Game $game;
@@ -58,14 +55,14 @@ class Metacritic
 
         return $this;
     }
-
-    public function getGame(): Game
-    {
-        return $this->game;
-    }
-
-    public function setGame(Game $game): void
-    {
-        $this->game = $game;
-    }
+//
+//    public function getGame(): Game
+//    {
+//        return $this->game;
+//    }
+//
+//    public function setGame(Game $game): void
+//    {
+//        $this->game = $game;
+//    }
 }

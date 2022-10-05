@@ -60,7 +60,6 @@ class SteamReview
     private ?DateTimeInterface $date;
 
     #[Assert\NotNull]
-//    #[Groups(["review:read", "review:write"])]
     #[ORM\ManyToOne(targetEntity: Game::class, inversedBy: 'steam_reviews')]
     #[ORM\JoinColumn(name: 'game_id', nullable: false)]
     private ?Game $game;
@@ -130,19 +129,19 @@ class SteamReview
         return $this;
     }
 
-    /**
-     * @return Game|null
-     */
-    public function getGame(): ?Game
-    {
-        return $this->game;
-    }
-
-    /**
-     * @param Game|null $game
-     */
-    public function setGame(?Game $game): void
-    {
-        $this->game = $game;
-    }
+//    /**
+//     * @return Game|null
+//     */
+//    public function getGame(): ?Game
+//    {
+//        return $this->game;
+//    }
+//
+//    /**
+//     * @param Game|null $game
+//     */
+//    public function setGame(?Game $game): void
+//    {
+//        $this->game = $game;
+//    }
 }

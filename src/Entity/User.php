@@ -36,14 +36,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Assert\NotNull]
     #[Assert\NotBlank]
-    #[Groups(["user:read", "user:write", "review:item:get"])]
+//    #[Groups(["user:read", "user:write", "review:item:get"])]
     #[ORM\Column(type: 'string', length: 255, unique: true, nullable: false)]
     private string $username;
 
     #[Assert\NotNull]
     #[Assert\NotBlank]
     #[Assert\Email]
-    #[Groups(["user:read", "user:write"])]
+//    #[Groups(["user:read", "user:write"])]
     #[ORM\Column(type: 'string', length: 255, unique: true, nullable: false)]
     private string $email;
 
@@ -52,7 +52,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private iterable $roles = [];
 
     #[Assert\NotNull]
-    #[Groups("user:write")]
+//    #[Groups("user:write")]
     #[ORM\Column(type: 'string', length: 255, nullable: false)]
     private string $password;
 
@@ -60,7 +60,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean', nullable: false)]
     private bool $isVerified = false;
 
-    #[Groups("user:read")]
+//    #[Groups("user:read")]
     #[OnetoMany(
         mappedBy: 'owner',
         targetEntity: Review::class,

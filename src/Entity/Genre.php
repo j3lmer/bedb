@@ -23,7 +23,7 @@ class Genre
 
     #[Assert\NotNull]
 //    #[Groups(["category:read", "category:write"])]
-    #[ORM\ManyToMany(targetEntity: Game::class, mappedBy: 'genres' )]
+    #[ORM\ManyToMany(targetEntity: Game::class, mappedBy: 'genres')]
     #[ORM\JoinColumn(name: 'game_id', nullable: false)]
     private ?iterable $games;
 
@@ -49,26 +49,28 @@ class Genre
         return $this;
     }
 
+
     /**
-    *   @return iterable|ArrayCollection
-    */
-    public function getGames(): ArrayCollection|iterable
+     * @return iterable|null
+     */
+    public function getGames(): ?iterable
     {
         return $this->games;
     }
-    public function setGame(Game $game): self
+
+    public function addGame(Game $game):void
     {
         if (!$this->games->contains($game)) {
-            $this->games[] = $game;
             $game->addGenre($this);
+            $this->games->add($game);
         }
-        return $this;
     }
-    public function removeGame(Game $question): self
+
+    public function removeGame(Game $game):void
     {
-        if ($this->games->removeElement($question)) {
-            $question->removeGenre($this);
+        if ($this->games->contains($game)) {
+            $game->addGenre($this);
+            $this->games->removeElement($game);
         }
-        return $this;
     }
 }

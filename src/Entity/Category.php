@@ -23,7 +23,6 @@ class Category
     #[Assert\NotNull]
 //    #[Groups(["category:read", "category:write"])]
     #[ORM\ManyToMany(targetEntity: Game::class, mappedBy: 'categories' )]
-    #[ORM\JoinColumn(name: 'game_id', nullable: false)]
     private ?iterable $games;
 
     public function __construct()
@@ -48,26 +47,28 @@ class Category
         return $this;
     }
 
+
     /**
-     * @return iterable|ArrayCollection
+     * @return iterable|null
      */
-    public function getGames(): ArrayCollection|iterable
+    public function getGames(): ?iterable
     {
         return $this->games;
     }
-    public function setGame(Game $game): self
+
+    public function addGame(Game $game):void
     {
         if (!$this->games->contains($game)) {
-            $this->games[] = $game;
             $game->addCategory($this);
+            $this->games->add($game);
         }
-        return $this;
     }
-    public function removeGame(Game $question): self
+
+    public function removeGame(Game $game):void
     {
-        if ($this->games->removeElement($question)) {
-            $question->removeCategory($this);
+        if ($this->games->contains($game)) {
+            $game->removeCategory($this);
+            $this->games->removeElement($game);
         }
-        return $this;
     }
 }
