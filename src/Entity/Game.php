@@ -455,7 +455,7 @@ class Game
     {
         if (!$this->genres->contains($genre)) {
             $this->genres[] = $genre;
-            $genre->setGame($this);
+            $genre->addGame($this);
         }
         return $this;
     }

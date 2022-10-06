@@ -68,7 +68,7 @@ class Genre
         return null;
     }
 
-    public function setGame(Game $game): self
+    public function addGame($game): self
     {
         if (!$this->games->contains($game)) {
             $this->games[] = $game;
