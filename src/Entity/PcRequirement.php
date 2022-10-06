@@ -8,22 +8,29 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ApiResource]
+#[ApiResource(
+    denormalizationContext: ['groups' => ['pc_requirement:write'], "swagger_definition_name" => "read"],
+    normalizationContext: ['groups' => ['pc_requirement:read'], "swagger_definition_name" => "write"],
+)]
 #[ORM\Entity(repositoryClass: PcRequirementRepository::class)]
 class PcRequirement
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
+    #[Groups(["release_date:read"])]
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(["release_date:read", "release_date:write"])]
     #[ORM\Column(length: 1000, nullable: false)]
     private string $minimum;
 
-    #[ORM\Column(length: 1000, nullable: false)]
-    private string $recommended;
+    #[Groups(["release_date:read", "release_date:write"])]
+    #[ORM\Column(length: 1000, nullable: true)]
+    private ?string $recommended = null;
 
     #[Assert\NotNull]
+    #[Groups(["release_date:read", "release_date:write"])]
     #[ORM\OneToOne(inversedBy: 'pc_requirement', targetEntity: Game::class)]
     #[ORM\JoinColumn(name: 'game_id', nullable: false)]
     private Game $game;

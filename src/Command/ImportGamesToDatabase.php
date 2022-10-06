@@ -107,10 +107,13 @@ class ImportGamesToDatabase extends Command
         $platform = $this->getSubEntity('platform', $data, $id);
         $pc_requirement = $this->getSubEntity('pc_requirement', $data, $id);
 
-        if(isset($metacritic["score"])) {
-            dd(json_encode($metacritic));
-        }
+//        if(isset($pc_requirement["minimum"])) {
+//            dd(json_encode($pc_requirement));
+//        }
         $this->trySend($release_date, $this->localServer . "api/release_dates", $id);
+        $this->trySend($metacritic, $this->localServer . "api/metacritics", $id);
+        $this->trySend($platform, $this->localServer . "api/platforms", $id);
+        $this->trySend($pc_requirement, $this->localServer . "api/pc_requirements", $id);
     }
 
     protected function getSubEntity(string $entityKeyName, array $data, string $id): array

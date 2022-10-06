@@ -8,28 +8,36 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ApiResource]
+#[ApiResource(
+    denormalizationContext: ['groups' => ['platform:write'], "swagger_definition_name" => "read"],
+    normalizationContext: ['groups' => ['platform:read'], "swagger_definition_name" => "write"],
+)]
 #[ORM\Entity(repositoryClass: PlatformRepository::class)]
 class Platform
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
+    #[Groups(["release_date:read"])]
     #[ORM\Column]
     private ?int $id = null;
 
     #[Assert\NotNull]
+    #[Groups(["release_date:read", "release_date:write"])]
     #[ORM\Column(nullable: false)]
-    private bool $windows = false;
+    private bool $windows;
 
     #[Assert\NotNull]
+    #[Groups(["release_date:read", "release_date:write"])]
     #[ORM\Column(nullable: false)]
-    private bool $mac = false;
+    private bool $mac;
 
     #[Assert\NotNull]
+    #[Groups(["release_date:read", "release_date:write"])]
     #[ORM\Column(nullable: false)]
-    private bool $linux = false;
+    private bool $linux;
 
     #[Assert\NotNull]
+    #[Groups(["release_date:read", "release_date:write"])]
     #[ORM\OneToOne(inversedBy: 'platform', targetEntity: Game::class)]
     #[ORM\JoinColumn(name: 'game_id', nullable: false)]
     private Game $game;
