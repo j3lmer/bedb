@@ -4,26 +4,34 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\ReleaseDateRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ApiResource]
+#[ApiResource(
+    denormalizationContext: ['groups' => ['release_date:write'], "swagger_definition_name" => "read"],
+    normalizationContext: ['groups' => ['release_date:read'], "swagger_definition_name" => "write"],
+)]
 #[ORM\Entity(repositoryClass: ReleaseDateRepository::class)]
 class ReleaseDate
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
+    #[Groups(["release_date:read"])]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 500)]
-    private ?bool $coming_soon = null;
+    #[Groups(["release_date:read", "release_date:write"])]
+    #[ORM\Column(type: Types::BOOLEAN, nullable: false)]
+    private bool $comingSoon;
 
+    #[Groups(["release_date:read", "release_date:write"])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $date = null;
 
     #[Assert\NotNull]
+    #[Groups(["release_date:read", "release_date:write"])]
     #[ORM\OneToOne(inversedBy: 'release_date', targetEntity: Game::class)]
     #[ORM\JoinColumn(name: 'game_id', nullable: false)]
     private Game $game;
@@ -33,15 +41,20 @@ class ReleaseDate
         return $this->id;
     }
 
-    public function isComingSoon(): ?bool
+    /**
+     * @return bool
+     */
+    public function isComingSoon(): bool
     {
-        return $this->coming_soon;
+        return $this->comingSoon;
     }
 
-    public function setComingSoon(bool $coming_soon): self
+    /**
+     * @param bool $comingSoon
+     */
+    public function setComingSoon(bool $comingSoon): self
     {
-        $this->coming_soon = $coming_soon;
-
+        $this->comingSoon = $comingSoon;
         return $this;
     }
 
