@@ -154,3 +154,12 @@ Hier volgt een lijst aan de software die ik nodig heb om dit project te realiser
 - vue2-leaflet 2.7.1
 
 - vuetify 2.6.10
+
+
+Supported browsers:
+
+- Librewolf 105.0.1-1
+
+- Firefox 105.0 (64-bit)
+
+- (ungoogled) Chromium 106.0.5249.91
