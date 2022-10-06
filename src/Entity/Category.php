@@ -48,14 +48,26 @@ class Category
         return $this;
     }
 
+
     /**
-     * @return iterable|ArrayCollection
+     * @return ArrayCollection|iterable
      */
     public function getGames(): ArrayCollection|iterable
     {
         return $this->games;
     }
-    public function addGame(Game $game): self
+
+    public function getGame(int $id): Game|null
+    {
+        foreach($this->games as $game) {
+            if ($game->getId() === $id) {
+                return $game;
+            }
+        }
+        return null;
+    }
+
+    public function setGame(Game $game): self
     {
         if (!$this->games->contains($game)) {
             $this->games[] = $game;
@@ -63,10 +75,17 @@ class Category
         }
         return $this;
     }
-    public function removeGame(Game $question): self
+
+    public function setGameToNull(Game $game): self
     {
-        if ($this->games->removeElement($question)) {
-            $question->removeCategory($this);
+        $this->games->removeElement($game);
+        return $this;
+    }
+
+    public function removeGame(Game $game): self
+    {
+        if ($this->games->removeElement($game)) {
+            $game->removeCategory($this);
         }
         return $this;
     }

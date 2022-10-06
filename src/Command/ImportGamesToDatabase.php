@@ -91,6 +91,7 @@ class ImportGamesToDatabase extends Command
 
     protected function postToApi(array $data)
     {
+        dd(json_encode($data));
         $client = HttpClient::create();
 
         var_dump($data);

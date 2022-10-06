@@ -160,31 +160,12 @@ class Game
     ]
     private ?iterable $screenshots;
 
-//    #[Groups(["game:read"])]
-//    #[OnetoMany(
-//        mappedBy: 'game',
-//        targetEntity: Developer::class,
-//        cascade: ["persist", "remove"])
-//    ]
-//    private ?iterable $developers = [];
-//
-//    #[Groups(["game:read"])]
-//    #[OnetoMany(
-//        mappedBy: 'game',
-//        targetEntity: Publisher::class,
-//        cascade: ["persist", "remove"])
-//    ]
-//    private ?iterable $publishers = [];
-
-
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
         $this->categories = new ArrayCollection();
         $this->genres = new ArrayCollection();
         $this->screenshots = new ArrayCollection();
-//        $this->developers = new ArrayCollection();
-//        $this->publishers = new ArrayCollection();
         $this->steam_reviews = new ArrayCollection();
     }
 
@@ -320,6 +301,72 @@ class Game
         return $this;
     }
 
+    /**
+     * @return PcRequirement|null
+     */
+    public function getPcRequirement(): ?PcRequirement
+    {
+        return $this->pc_requirement;
+    }
+
+    /**
+     * @param PcRequirement|null $pc_requirement
+     */
+    public function setPcRequirement(?PcRequirement $pc_requirement): void
+    {
+        $this->pc_requirement = $pc_requirement;
+    }
+
+    /**
+     * @return Platform
+     */
+    public function getPlatform(): Platform
+    {
+        return $this->platform;
+    }
+
+    /**
+     * @param Platform $platform
+     */
+    public function setPlatform(Platform $platform): void
+    {
+        $this->platform = $platform;
+    }
+
+    /**
+     * @return Metacritic
+     */
+    public function getMetacritic(): Metacritic
+    {
+        return $this->metacritic;
+    }
+
+    /**
+     * @param Metacritic $metacritic
+     */
+    public function setMetacritic(Metacritic $metacritic): void
+    {
+        $this->metacritic = $metacritic;
+    }
+
+
+    /**
+     * @return ReleaseDate
+     */
+    public function getReleaseDate(): ReleaseDate
+    {
+        return $this->release_date;
+    }
+
+    /**
+     * @param ReleaseDate $release_date
+     */
+    public function setReleaseDate(ReleaseDate $release_date): void
+    {
+        $this->release_date = $release_date;
+    }
+
+
     public function getReviews(): ArrayCollection|iterable
     {
         return $this->reviews;
@@ -338,6 +385,33 @@ class Game
     {
         if ($this->reviews->contains($review)) {
             $this->reviews->removeElement($review);
+            // set the owning side to null (unless already changed)
+            if ($review->getGame() === $this) {
+                $review->setGame(null);
+            }
+        }
+        return $this;
+    }
+
+
+    public function getSteamReviews(): ArrayCollection|iterable
+    {
+        return $this->steam_reviews;
+    }
+
+    public function addSteamReview(SteamReview $review): self
+    {
+        if (!$this->steam_reviews->contains($review)) {
+            $this->steam_reviews[] = $review;
+            $review->setGame($this);
+        }
+        return $this;
+    }
+
+    public function removeSteamReview(SteamReview $review): self
+    {
+        if ($this->steam_reviews->contains($review)) {
+            $this->steam_reviews->removeElement($review);
             // set the owning side to null (unless already changed)
             if ($review->getGame() === $this) {
                 $review->setGame(null);
@@ -385,13 +459,12 @@ class Game
         if ($this->genres->contains($genre)) {
             $this->genres->removeElement($genre);
             // set the owning side to null (unless already changed)
-            if ($genre->getGame() === $this) {
-                $genre->setGame(null);
+            if ($genre->getGames()->contains($this)) {
+                $genre->setGameToNull($this);
             }
         }
         return $this;
     }
-
 
     public function getScreenshots(): iterable
     {
@@ -417,148 +490,5 @@ class Game
             }
         }
         return $this;
-    }
-//
-//    public function getDevelopers(): iterable
-//    {
-//        return $this->developers;
-//    }
-//
-//    public function addDeveloper(Developer $developer): self
-//    {
-//        if (!$this->developers->contains($developer)) {
-//            $this->developers[] = $developer;
-//            $developer->setGame($this);
-//        }
-//        return $this;
-//    }
-//
-//    public function removeDevelopers(Developer $developer): self
-//    {
-//        if ($this->developers->contains($developer)) {
-//            $this->developers->removeElement($developer);
-//            // set the owning side to null (unless already changed)
-//            if ($developer->getGame() === $this) {
-//                $developer->setGame(null);
-//            }
-//        }
-//        return $this;
-//    }
-//
-//
-//    public function getPublishers(): iterable
-//    {
-//        return $this->publishers;
-//    }
-//
-//    public function addPublisher(Publisher $publisher): self
-//    {
-//        if (!$this->publishers->contains($publisher)) {
-//            $this->publishers[] = $publisher;
-//            $publisher->setGame($this);
-//        }
-//        return $this;
-//    }
-//
-//    public function removePublisher(Publisher $publisher): self
-//    {
-//        if ($this->publishers->contains($publisher)) {
-//            $this->publishers->removeElement($publisher);
-//            // set the owning side to null (unless already changed)
-//            if ($publisher->getGame() === $this) {
-//                $publisher->setGame(null);
-//            }
-//        }
-//        return $this;
-//    }
-
-    public function getSteamReviews(): iterable
-    {
-        return $this->steam_reviews;
-    }
-
-    public function addSteamReview(SteamReview $steamReview): self
-    {
-        if (!$this->steam_reviews->contains($steamReview)) {
-            $this->steam_reviews[] = $steamReview;
-            $steamReview->setGame($this);
-        }
-        return $this;
-    }
-
-    public function removeSteamReview(SteamReview $steamReview): self
-    {
-        if ($this->steam_reviews->contains($steamReview)) {
-            $this->steam_reviews->removeElement($steamReview);
-            // set the owning side to null (unless already changed)
-            if ($steamReview->getGame() === $this) {
-                $steamReview->setGame(null);
-            }
-        }
-        return $this;
-    }
-
-    /**
-     * @return Platform
-     */
-    public function getPlatform(): Platform
-    {
-        return $this->platform;
-    }
-
-    /**
-     * @param Platform $platform
-     */
-    public function setPlatform(Platform $platform): void
-    {
-        $this->platform = $platform;
-    }
-
-    /**
-     * @return Metacritic
-     */
-    public function getMetacritic(): Metacritic
-    {
-        return $this->metacritic;
-    }
-
-    /**
-     * @param Metacritic $metacritic
-     */
-    public function setMetacritic(Metacritic $metacritic): void
-    {
-        $this->metacritic = $metacritic;
-    }
-
-    /**
-     * @return ReleaseDate
-     */
-    public function getReleaseDate(): ReleaseDate
-    {
-        return $this->release_date;
-    }
-
-    /**
-     * @param ReleaseDate $release_date
-     */
-    public function setReleaseDate(ReleaseDate $release_date): void
-    {
-        $this->release_date = $release_date;
-    }
-
-    /**
-     * @return PcRequirement|null
-     */
-    public function getPcRequirement(): ?PcRequirement
-    {
-        return $this->pc_requirement;
-    }
-
-    /**
-     * @param PcRequirement|null $pc_requirement
-     */
-    public function setPcRequirement(?PcRequirement $pc_requirement): void
-    {
-        $this->pc_requirement = $pc_requirement;
     }
 }

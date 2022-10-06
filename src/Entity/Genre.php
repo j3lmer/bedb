@@ -17,12 +17,10 @@ class Genre
     #[ORM\Column]
     private ?int $id = null;
 
-//    #[Groups(["genre:read", "genre:write", "game:read"])]
     #[ORM\Column(length: 255)]
     private ?string $description = null;
 
     #[Assert\NotNull]
-//    #[Groups(["category:read", "category:write"])]
     #[ORM\ManyToMany(targetEntity: Game::class, mappedBy: 'genres' )]
     #[ORM\JoinColumn(name: 'game_id', nullable: false)]
     private ?iterable $games;
@@ -50,12 +48,23 @@ class Genre
     }
 
     /**
-    *   @return iterable|ArrayCollection
-    */
+     * @return ArrayCollection|iterable
+     */
     public function getGames(): ArrayCollection|iterable
     {
         return $this->games;
     }
+
+    public function getGame(int $id): Game|null
+    {
+        foreach($this->games as $game) {
+            if ($game->getId() === $id) {
+                return $game;
+            }
+        }
+        return null;
+    }
+
     public function setGame(Game $game): self
     {
         if (!$this->games->contains($game)) {
@@ -64,6 +73,13 @@ class Genre
         }
         return $this;
     }
+
+    public function setGameToNull(Game $game): self
+    {
+        $this->games->removeElement($game);
+        return $this;
+    }
+
     public function removeGame(Game $question): self
     {
         if ($this->games->removeElement($question)) {
