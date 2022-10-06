@@ -34,6 +34,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     shortName="SteamReview"
  * )
  */
+#[ApiResource]
 #[ORM\Entity(repositoryClass: SteamReviewRepository::class)]
 class SteamReview
 {

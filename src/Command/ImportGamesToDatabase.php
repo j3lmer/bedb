@@ -71,25 +71,37 @@ class ImportGamesToDatabase extends Command
                 continue;
             }
             $data = $this->configureData($data, $id);
-            printf("\n posting {$id} to internal api.. \n");
-            $this->trySend($data, $id);
+            $this->handleSubEntities($data, $id);
+
         }
         return Command::SUCCESS;
     }
 
-    protected function trySend(array $data, string $id): void
+    protected function handleSubEntities(array $data, string $id)
     {
-        try {
-            $this->postToApi($data);
-        } catch (ClientExceptionInterface $e) {
-            $this->appendToLogfile("\n could not post game data for id {$id} to database. ClientException \n");
-        } catch (RedirectionExceptionInterface $e) {
-            $this->appendToLogfile("\n could not post game data for id {$id} to database. RedirectionException \n");
-        } catch (ServerExceptionInterface $e) {
-            $this->appendToLogfile("\n could not post game data for id {$id} to database. ServerException \n");
-        } catch (TransportExceptionInterface $e) {
-            $this->appendToLogfile("\n could not post game data for id {$id} to database. TransportException \n");
+        $genres = $this->getSubEntity('genres', $data, $id);
+        $categories = $this->getSubEntity('categories', $data, $id);
+        $screenshots = $this->getSubEntity('screenshots', $data, $id);
+
+
+        $release_date = $this->getSubEntity('release_date', $data, $id);
+        $metacritic = $this->getSubEntity('metacritic', $data, $id);
+        $platform = $this->getSubEntity('platform', $data, $id);
+        $pc_requirement = $this->getSubEntity('pc_requirement', $data, $id);
+        dd(json_encode($platform));
+    }
+
+    protected function getSubEntity(string $entityKeyName, array $data, string $id): array
+    {
+        $return = [];
+        foreach ($data as $key => $value) {
+            if($key === $entityKeyName){
+                unset($value["game"]);
+                return $value;
+            }
         }
+        $this->appendToLogfile("was not able to find key {$entityKeyName} in {$id}");
+        return $return;
     }
 
     protected function configureData(array $data, string $id): array
@@ -116,24 +128,37 @@ class ImportGamesToDatabase extends Command
         $data = $this->replaceKeys('path_full', 'full', $data);
         $data = $this->replaceKeys('pc_requirements', 'pc_requirement', $data);
         $data = $this->replaceKeys('header_image', 'headerImage', $data);
-
-        /**
-         * possible useful resources:
-         * https://symfonycasts.com/screencast/api-platform/serialization-groups?cid=apip
-         * https://symfonycasts.com/screencast/api-platform/collections-create
-         * https://symfonycasts.com/screencast/api-platform/embedded
-         * https://symfonycasts.com/screencast/api-platform/embedded-write#play
-         * https://api-platform.com/docs/core/serialization/#the-serialization-context-groups-and-relations
-         */
         $data["nsfw"] = $data["nsfw"] >= 18;
-        $data["pc_requirement"]["game"] = $id;
-        $data["platform"]["game"] =  $id;
-        $data["metacritic"]["game"] =  $id;
-        $data["release_date"]["game"] =   $id;
-        $data["screenshots"]["game"] =  $id;
+        $data["pc_requirement"]["game"] = "api/games/" . $id;
+        $data["platform"]["game"] = "api/games/" .  $id;
+        $data["metacritic"]["game"] = "api/games/" . $id;
+        $data["release_date"]["game"] = "api/games/" .  $id;
+        $data["screenshots"]["game"] = "api/games/" . $id;
 
         return $data;
     }
+
+    /**
+     * @throws TransportExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ClientExceptionInterface
+     */
+    protected function postToApi(array $data, string $url): void
+    {
+        dd(json_encode($data));
+        $client = HttpClient::create();
+
+        $response = $client->request('POST', $this->localServer . "api/games", [
+            'headers' => ['Content-Type' => 'application/ld+json'],
+            'json' => $data,
+        ]);
+
+        if ($response->getStatusCode() > 299) {
+            $this->appendToLogfile("\n api call to post game failed, content: {$response->getContent()} \n");
+        }
+    }
+
 
     protected function createLogFile(): void
     {
@@ -144,6 +169,7 @@ class ImportGamesToDatabase extends Command
     {
         $this->filesystem->appendToFile($this->logPath, $text);
     }
+
 
     protected function replaceKeys($oldKey, $newKey, array $input): array
     {
@@ -158,28 +184,6 @@ class ImportGamesToDatabase extends Command
             $return[$key] = $value;
         }
         return $return;
-    }
-
-    /**
-     * @throws TransportExceptionInterface
-     * @throws ServerExceptionInterface
-     * @throws RedirectionExceptionInterface
-     * @throws ClientExceptionInterface
-     */
-    protected function postToApi(array $data): void
-    {
-        dd(json_encode($data));
-        $client = HttpClient::create();
-
-        $response = $client->request('POST', $this->localServer . "api/games", [
-            'headers' => ['Content-Type' => 'application/ld+json'],
-            'json' => $data,
-        ]);
-
-        if ($response->getStatusCode() > 299) {
-            $this->appendToLogfile("\n api call to post game failed, content: {$response->getContent()} \n");
-        }
-
     }
 
 }

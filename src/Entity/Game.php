@@ -286,7 +286,6 @@ class Game
      */
     public function setPcRequirement(?PcRequirement $pc_requirement): void
     {
-        $pc_requirement->setGame($this);
         $this->pc_requirement = $pc_requirement;
     }
 
@@ -303,7 +302,6 @@ class Game
      */
     public function setPlatform(Platform $platform): void
     {
-        $platform->setGame($this);
         $this->platform = $platform;
     }
 
@@ -320,9 +318,9 @@ class Game
      */
     public function setMetacritic(Metacritic $metacritic): void
     {
-        $metacritic->setGame($this);
         $this->metacritic = $metacritic;
     }
+
 
     /**
      * @return ReleaseDate
@@ -337,14 +335,11 @@ class Game
      */
     public function setReleaseDate(ReleaseDate $release_date): void
     {
-        $release_date->setGame($this);
         $this->release_date = $release_date;
     }
 
-    /**
-     * @return iterable|null
-     */
-    public function getReviews(): ?iterable
+
+    public function getReviews(): ArrayCollection|iterable
     {
         return $this->reviews;
     }
@@ -357,6 +352,7 @@ class Game
         }
         return $this;
     }
+
     public function removeReview(Review $review): self
     {
         if ($this->reviews->contains($review)) {
@@ -369,36 +365,58 @@ class Game
         return $this;
     }
 
-    /**
-     * @return iterable|null
-     */
-    public function getSteamReviews(): ?iterable
+
+    public function getSteamReviews(): ArrayCollection|iterable
     {
         return $this->steam_reviews;
     }
 
-    /**
-     * @param iterable|null $steam_reviews
-     */
-    public function setSteamReviews(?iterable $steam_reviews): void
+    public function addSteamReview(SteamReview $review): self
     {
-        $this->steam_reviews = $steam_reviews;
+        if (!$this->steam_reviews->contains($review)) {
+            $this->steam_reviews[] = $review;
+            $review->setGame($this);
+        }
+        return $this;
     }
 
-    /**
-     * @return iterable|null
-     */
-    public function getScreenshots(): ?iterable
+    public function removeSteamReview(SteamReview $review): self
+    {
+        if ($this->steam_reviews->contains($review)) {
+            $this->steam_reviews->removeElement($review);
+            // set the owning side to null (unless already changed)
+            if ($review->getGame() === $this) {
+                $review->setGame(null);
+            }
+        }
+        return $this;
+    }
+
+
+    public function getScreenshots(): iterable
     {
         return $this->screenshots;
     }
 
-    /**
-     * @param iterable|null $screenshots
-     */
-    public function setScreenshots(?iterable $screenshots): void
+    public function addScreenshot(Screenshot $screenshot): self
     {
-        $this->screenshots = $screenshots;
+        if (!$this->screenshots->contains($screenshot)) {
+            $this->screenshots[] = $screenshot;
+            $screenshot->setGame($this);
+        }
+        return $this;
+    }
+
+    public function removeScreenshot(Screenshot $screenshot): self
+    {
+        if ($this->screenshots->contains($screenshot)) {
+            $this->screenshots->removeElement($screenshot);
+            // set the owning side to null (unless already changed)
+            if ($screenshot->getGame() === $this) {
+                $screenshot->setGame(null);
+            }
+        }
+        return $this;
     }
 
     /**
@@ -420,7 +438,8 @@ class Game
     {
         if ($this->genres->contains($category)) {
             $this->genres->removeElement($category);
-            if (in_array($this, (array)$category->getGames())) {
+            // set the owning side to null (unless already changed)
+            if ($category->getGames()->contains($this)) {
                 $category->removeGame($this);
             }
         }
@@ -445,7 +464,8 @@ class Game
     {
         if ($this->genres->contains($genre)) {
             $this->genres->removeElement($genre);
-            if (in_array($this, (array)$genre->getGames())) {
+            // set the owning side to null (unless already changed)
+            if ($genre->getGames()->contains($this)) {
                 $genre->removeGame($this);
             }
         }

@@ -2,11 +2,12 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\ScreenshotRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-
+#[ApiResource]
 #[ORM\Entity(repositoryClass: ScreenshotRepository::class)]
 class Screenshot
 {

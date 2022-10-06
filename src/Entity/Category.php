@@ -48,12 +48,23 @@ class Category
     }
 
     /**
-     *   @return iterable|ArrayCollection
+     * @return ArrayCollection|iterable
      */
     public function getGames(): ArrayCollection|iterable
     {
         return $this->games;
     }
+
+    public function getGame(int $id): Game|null
+    {
+        foreach($this->games as $game) {
+            if ($game->getId() === $id) {
+                return $game;
+            }
+        }
+        return null;
+    }
+
     public function setGame(Game $game): self
     {
         if (!$this->games->contains($game)) {
@@ -62,6 +73,7 @@ class Category
         }
         return $this;
     }
+
     public function removeGame(Game $question): self
     {
         if ($this->games->removeElement($question)) {

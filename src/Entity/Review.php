@@ -37,9 +37,7 @@ use Symfony\Component\HttpFoundation\File\File;
 // *     shortName="Review"
 // * )
 // */
-/**
- * @ApiResource()
- */
+#[ApiResource]
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
 class Review
 {

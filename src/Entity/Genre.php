@@ -2,13 +2,14 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\GenresRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-
+#[ApiResource]
 #[ORM\Entity(repositoryClass: GenresRepository::class)]
 class Genre
 {
@@ -50,12 +51,23 @@ class Genre
     }
 
     /**
-     *   @return iterable|ArrayCollection
+     * @return ArrayCollection|iterable
      */
     public function getGames(): ArrayCollection|iterable
     {
         return $this->games;
     }
+
+    public function getGame(int $id): Game|null
+    {
+        foreach($this->games as $game) {
+            if ($game->getId() === $id) {
+                return $game;
+            }
+        }
+        return null;
+    }
+
     public function setGame(Game $game): self
     {
         if (!$this->games->contains($game)) {
@@ -64,10 +76,11 @@ class Genre
         }
         return $this;
     }
-    public function removeGame(Game $question): self
+
+    public function removeGame(Game $game): self
     {
-        if ($this->games->removeElement($question)) {
-            $question->removeGenre($this);
+        if ($this->games->removeElement($game)) {
+            $game->removeGenre($this);
         }
         return $this;
     }
