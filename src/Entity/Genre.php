@@ -9,7 +9,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ApiResource]
+#[ApiResource(
+    denormalizationContext: ['groups' => ['genre:write'], "swagger_definition_name" => "read"],
+    normalizationContext: ['groups' => ['genre:read'], "swagger_definition_name" => "write"],
+)]
 #[ORM\Entity(repositoryClass: GenresRepository::class)]
 class Genre
 {
@@ -18,12 +21,12 @@ class Genre
     #[ORM\Column]
     private ?int $id = null;
 
-//    #[Groups(["genre:read", "genre:write", "game:read"])]
+    #[Groups(["genre:read", "genre:write"])]
     #[ORM\Column(length: 255)]
     private ?string $description = null;
 
     #[Assert\NotNull]
-//    #[Groups(["category:read", "category:write"])]
+    #[Groups(["genre:read", "genre:write"])]
     #[ORM\ManyToMany(targetEntity: Game::class, mappedBy: 'genres')]
     #[ORM\JoinColumn(name: 'game_id', nullable: false)]
     private ?iterable $games;
