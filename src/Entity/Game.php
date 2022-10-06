@@ -112,7 +112,7 @@ class Game
         mappedBy: 'game',
         targetEntity: Screenshot::class,
         cascade: ["persist", "remove"],
-//        orphanRemoval: true
+        orphanRemoval: true
     )]
     private ?iterable $screenshots;
 
@@ -120,7 +120,7 @@ class Game
         targetEntity: Category::class,
         inversedBy: 'games',
         cascade: ["persist", "remove"],
-//        orphanRemoval: true
+        orphanRemoval: true
     )]
     private iterable $categories;
 
@@ -128,7 +128,7 @@ class Game
         targetEntity: Genre::class,
         inversedBy: 'games',
         cascade: ["persist", "remove"],
-//        orphanRemoval: true
+        orphanRemoval: true
     )]
     private ?iterable $genres;
 

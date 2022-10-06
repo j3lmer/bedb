@@ -5,24 +5,32 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\ScreenshotRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ApiResource]
+#[ApiResource(
+    denormalizationContext: ['groups' => ['screenshot:write'], "swagger_definition_name" => "read"],
+    normalizationContext: ['groups' => ['screenshot:read'], "swagger_definition_name" => "write"],
+)]
 #[ORM\Entity(repositoryClass: ScreenshotRepository::class)]
 class Screenshot
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
+    #[Groups("screenshot:read")]
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(["screenshot:read", "screenshot:write"])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $thumbnail = null;
 
+    #[Groups(["screenshot:read", "screenshot:write"])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $full = null;
 
     #[Assert\NotNull]
+    #[Groups(["screenshot:read", "screenshot:write"])]
     #[ORM\ManyToOne(targetEntity: Game::class, inversedBy: 'screenshots')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Game $game;

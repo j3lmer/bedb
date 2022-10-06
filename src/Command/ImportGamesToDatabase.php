@@ -72,11 +72,10 @@ class ImportGamesToDatabase extends Command
             }
 
             $data = $this->configureData($data, $id);
-
             $truncatedData = $this->getTruncatedData($data);
             $this->trySend($truncatedData, $this->localServer . "api/games", $id);
 
-            printf("\n \n");
+            printf("\n sent game {$id}, handling subEntities. \n");
 
             $this->handleSubEntities($data, $id);
         }
@@ -88,7 +87,7 @@ class ImportGamesToDatabase extends Command
         $subEntities = ['genres', 'categories', 'screenshots', 'release_date', 'metacritic', 'platform', 'pc_requirement'];
 
         foreach ($data as $key => $value) {
-            if(in_array($key, $subEntities)) {
+            if (in_array($key, $subEntities)) {
                 unset($data[$key]);
             }
         }
@@ -101,19 +100,25 @@ class ImportGamesToDatabase extends Command
         $genres = $this->getSubEntity('genres', $data, $id);
         $categories = $this->getSubEntity('categories', $data, $id);
         $screenshots = $this->getSubEntity('screenshots', $data, $id);
-
         $release_date = $this->getSubEntity('release_date', $data, $id);
         $metacritic = $this->getSubEntity('metacritic', $data, $id);
         $platform = $this->getSubEntity('platform', $data, $id);
         $pc_requirement = $this->getSubEntity('pc_requirement', $data, $id);
 
-
         $this->trySend($release_date, $this->localServer . "api/release_dates", $id);
         $this->trySend($metacritic, $this->localServer . "api/metacritics", $id);
         $this->trySend($platform, $this->localServer . "api/platforms", $id);
         $this->trySend($pc_requirement, $this->localServer . "api/pc_requirements", $id);
+
         foreach ($genres as $genre) {
             $this->trySend($genre, $this->localServer . "api/genres", $id);
+        }
+        foreach ($categories as $category) {
+            $this->trySend($category, $this->localServer . "api/categories", $id);
+        }
+        unset($screenshots["game"]);
+        foreach ($screenshots as $screenshot) {
+            $this->trySend($screenshot, $this->localServer . "api/sceenshots", $id);
         }
     }
 
@@ -161,10 +166,26 @@ class ImportGamesToDatabase extends Command
         $data["release_date"]["game"] = "api/games/" . $id;
         $data["screenshots"]["game"] = "api/games/" . $id;
 
-        for($i = 0; $i < count($data["genres"]); $i++) {
-            $data["genres"][$i]["games"] = ["api/games/" . $id];
-        }
 
+        $out = max(
+            (max(
+                count($data["genres"]),
+                count($data["categories"] ?? $data["screenshots"])
+            )),
+            count($data["screenshots"])
+        );
+
+        for ($i = 0; $i < $out; $i++) {
+            if (isset($data["genres"][$i])) {
+                $data["genres"][$i]["games"] = ["api/games/" . $id];
+            }
+            if (isset($data["categories"][$i])) {
+                $data["categories"][$i]["games"] = ["api/games/" . $id];
+            }
+            if (isset($data["screenshots"][$i])) {
+                $data["screenshots"][$i]["game"] = "api/games/" . $id;
+            }
+        }
         return $data;
     }
 

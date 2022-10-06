@@ -18,6 +18,7 @@ class Genre
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
+    #[Groups(["genre:read"])]
     #[ORM\Column]
     private ?int $id = null;
 

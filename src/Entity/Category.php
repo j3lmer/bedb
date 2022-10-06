@@ -2,26 +2,32 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
+#[ApiResource(
+    denormalizationContext: ['groups' => ['category:write'], "swagger_definition_name" => "read"],
+    normalizationContext: ['groups' => ['category:read'], "swagger_definition_name" => "write"],
+)]
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 class Category
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
+    #[Groups(["category:read", "category:write"])]
     #[ORM\Column]
     private ?int $id = null;
 
-//    #[Groups(["category:read", "category:write", "game:read"])]
+    #[Groups(["category:read", "category:write"])]
     #[ORM\Column(length: 255)]
     private ?string $description = null;
 
     #[Assert\NotNull]
-//    #[Groups(["category:read", "category:write"])]
+    #[Groups(["category:read", "category:write"])]
     #[ORM\ManyToMany(targetEntity: Game::class, mappedBy: 'categories' )]
     private ?iterable $games;
 
