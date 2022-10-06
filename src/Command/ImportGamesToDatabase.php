@@ -126,11 +126,11 @@ class ImportGamesToDatabase extends Command
          * https://api-platform.com/docs/core/serialization/#the-serialization-context-groups-and-relations
          */
         $data["nsfw"] = $data["nsfw"] >= 18;
-//        $data["pc_requirement"]["game"] =  "/api/games/" . $id;
-//        $data["platform"]["game"] =  "/api/games/" . $id;
-//        $data["metacritic"]["game"] =  "/api/games/" . $id;
-//        $data["release_date"]["game"] =  "/api/games/" . $id;
-//        $data["screenshots"]["game"] =  "/api/games/" . $id;
+        $data["pc_requirement"]["game"] = $id;
+        $data["platform"]["game"] =  $id;
+        $data["metacritic"]["game"] =  $id;
+        $data["release_date"]["game"] =   $id;
+        $data["screenshots"]["game"] =  $id;
 
         return $data;
     }

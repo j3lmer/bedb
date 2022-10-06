@@ -112,7 +112,7 @@ class Game
         mappedBy: 'game',
         targetEntity: Screenshot::class,
         cascade: ["persist", "remove"],
-        orphanRemoval: true
+//        orphanRemoval: true
     )]
     private ?iterable $screenshots;
 
@@ -120,38 +120,16 @@ class Game
         targetEntity: Category::class,
         inversedBy: 'games',
         cascade: ["persist", "remove"],
-        orphanRemoval: true
+//        orphanRemoval: true
     )]
-    /**
-     * @ORM\JoinTable(
-     *      name="game_category",
-     *      joinColumns={
-     *          @ORM\JoinColumn(name="game_id", referencedColumnName="id")
-     *      },
-     *      inverseJoinColumns={
-     *          @ORM\JoinColumn(name="category_id", referencedColumnName="id")
-     *      }
-     * )
-     */
     private iterable $categories;
 
     #[ORM\ManyToMany(
         targetEntity: Genre::class,
         inversedBy: 'games',
         cascade: ["persist", "remove"],
-        orphanRemoval: true
+//        orphanRemoval: true
     )]
-    /**
-     * @ORM\JoinTable(
-     *      name="game_genre",
-     *      joinColumns={
-     *          @ORM\JoinColumn(name="game_id", referencedColumnName="id")
-     *      },
-     *      inverseJoinColumns={
-     *          @ORM\JoinColumn(name="genre_id", referencedColumnName="id")
-     *      }
-     * )
-     */
     private ?iterable $genres;
 
     public function __construct()
