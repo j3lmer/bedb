@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Command\Helper\FilestructureHelper;
+use App\Entity\Game;
 use App\Repository\GameRepository;
 use App\Repository\GenresRepository;
 use Doctrine\ORM\NonUniqueResultException;
@@ -80,32 +81,22 @@ class ImportGamesToDatabase extends Command
 
             $data = $this->configureData($data, $id);
             $truncatedData = $this->getTruncatedData($data);
-            $this->trySend($truncatedData, $this->localServer . "api/games", $id);
+            $game = $this->trySend($truncatedData, $this->localServer . "api/games", $id);
+
+            if(!isset($game["@id"])) {
+                $this->appendToLogfile("Game was sent but did not come back correctly for id " .  $id);
+            }
+            $game = $this->gameRepository->find($game["id"]);
 
             printf("\n sent game {$id}, handling subEntities. \n");
 
-            $this->handleSubEntities($data, $id);
+            $this->handleSubEntities($data, $id, $game);
         }
         return Command::SUCCESS;
     }
 
-    protected function getTruncatedData(array $data): array
-    {
-        $subEntities = ['genres', 'categories', 'screenshots', 'release_date', 'metacritic', 'platform', 'pc_requirement'];
 
-        foreach ($data as $key => $value) {
-            if (in_array($key, $subEntities)) {
-                unset($data[$key]);
-            }
-        }
-
-        return $data;
-    }
-
-    /**
-     * @throws NonUniqueResultException
-     */
-    protected function handleSubEntities(array $data, string $id)
+    protected function handleSubEntities(array $data, string $id, Game $game)
     {
         $genres = $this->getSubEntity('genres', $data, $id);
         $categories = $this->getSubEntity('categories', $data, $id);
@@ -123,7 +114,7 @@ class ImportGamesToDatabase extends Command
         foreach ($genres as $genre) {
             $possibleExisingGenre = $this->genresRepository->findOneByDescription($genre["description"]);
             if($possibleExisingGenre !== null) {
-                $possibleExisingGenre->addGame($this->gameRepository->findOneBy(['id' => $id]));
+                $possibleExisingGenre->addGame($game);
                 $this->genresRepository->save($possibleExisingGenre, true);
             } else {
                 $this->trySend($genre, $this->localServer . "api/genres", $id);
@@ -208,10 +199,10 @@ class ImportGamesToDatabase extends Command
         return $data;
     }
 
-    protected function trySend(array $data, string $endpoint, string $id): void
+    protected function trySend(array $data, string $endpoint, string $id): array|null
     {
         try {
-            $this->postToApi($data, $endpoint);
+            return $this->postToApi($data, $endpoint);
         } catch (ClientExceptionInterface $e) {
             $message = $e->getMessage();
             $code = $e->getCode();
@@ -229,6 +220,7 @@ class ImportGamesToDatabase extends Command
             $code = $e->getCode();
             $this->appendToLogfile("\n could not post data" . json_encode($data) . "for id {$id} to database. TransportExceptionInterface" . $code . $message . "\n");
         }
+        return null;
     }
 
     /**
@@ -237,7 +229,7 @@ class ImportGamesToDatabase extends Command
      * @throws RedirectionExceptionInterface
      * @throws ClientExceptionInterface
      */
-    protected function postToApi(array $data, string $url): void
+    protected function postToApi(array $data, string $url): array
     {
         $client = HttpClient::create();
 
@@ -249,6 +241,7 @@ class ImportGamesToDatabase extends Command
         if ($response->getStatusCode() > 299) {
             $this->appendToLogfile("\n api call to post failed, content: {$response->getContent()} \n");
         }
+        return $response->toArray();
     }
 
     protected function createLogFile(): void
@@ -275,4 +268,19 @@ class ImportGamesToDatabase extends Command
         }
         return $return;
     }
+
+
+    protected function getTruncatedData(array $data): array
+    {
+        $subEntities = ['genres', 'categories', 'screenshots', 'release_date', 'metacritic', 'platform', 'pc_requirement'];
+
+        foreach ($data as $key => $value) {
+            if (in_array($key, $subEntities)) {
+                unset($data[$key]);
+            }
+        }
+
+        return $data;
+    }
+
 }
