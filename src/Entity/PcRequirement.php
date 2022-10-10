@@ -17,20 +17,20 @@ class PcRequirement
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[Groups(["release_date:read"])]
+    #[Groups(["pc_requirement:read"])]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(["release_date:read", "release_date:write"])]
+    #[Groups(["pc_requirement:read", "pc_requirement:write"])]
     #[ORM\Column(length: 1000, nullable: false)]
     private string $minimum;
 
-    #[Groups(["release_date:read", "release_date:write"])]
+    #[Groups(["pc_requirement:read", "pc_requirement:write"])]
     #[ORM\Column(length: 1000, nullable: true)]
     private ?string $recommended = null;
 
     #[Assert\NotNull]
-    #[Groups(["release_date:read", "release_date:write"])]
+    #[Groups(["pc_requirement:read", "pc_requirement:write"])]
     #[ORM\OneToOne(inversedBy: 'pc_requirement', targetEntity: Game::class)]
     #[ORM\JoinColumn(name: 'game_id', nullable: false)]
     private Game $game;

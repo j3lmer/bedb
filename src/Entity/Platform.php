@@ -17,27 +17,27 @@ class Platform
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[Groups(["release_date:read"])]
+    #[Groups(["platform:read"])]
     #[ORM\Column]
     private ?int $id = null;
 
     #[Assert\NotNull]
-    #[Groups(["release_date:read", "release_date:write"])]
+    #[Groups(["platform:read", "platform:write"])]
     #[ORM\Column(nullable: false)]
     private bool $windows;
 
     #[Assert\NotNull]
-    #[Groups(["release_date:read", "release_date:write"])]
+    #[Groups(["platform:read", "platform:write"])]
     #[ORM\Column(nullable: false)]
     private bool $mac;
 
     #[Assert\NotNull]
-    #[Groups(["release_date:read", "release_date:write"])]
+    #[Groups(["platform:read", "platform:write"])]
     #[ORM\Column(nullable: false)]
     private bool $linux;
 
     #[Assert\NotNull]
-    #[Groups(["release_date:read", "release_date:write"])]
+    #[Groups(["platform:read", "platform:write"])]
     #[ORM\OneToOne(inversedBy: 'platform', targetEntity: Game::class)]
     #[ORM\JoinColumn(name: 'game_id', nullable: false)]
     private Game $game;
@@ -84,18 +84,18 @@ class Platform
     }
 
     /**
-     * @return Game|null
+     * @return Game
      */
-    public function getGame(): ?Game
+    public function getGame(): Game
     {
         return $this->game;
     }
 
     /**
-     * @param Game|null $game
+     * @param Game $game
      * @return Platform
      */
-    public function setGame(?Game $game): self
+    public function setGame(Game $game): self
     {
         $this->game = $game;
         return $this;

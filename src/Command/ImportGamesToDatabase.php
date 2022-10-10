@@ -37,9 +37,6 @@ class ImportGamesToDatabase extends Command
     private CategoryRepository $categoryRepository;
     private string $localServer = "http://127.0.0.1:8000/";
 
-    //TODO: iets maken wat er voor zorgt dat genres (en categorieen) niet allemaal los in de db zitten
-    // (main foreach loop in een functie zetten en die een array laten returnen, hierna doorheen loopen en dat fixen en dan pas versturen)
-    //TODO: WORDEN NIET GEIMPORTEERD: platform, pc_requirement
     //TODO: game en alle andere entities beheren qua access e.d.
 
 
@@ -230,6 +227,10 @@ class ImportGamesToDatabase extends Command
             $message = $e->getMessage();
             $code = $e->getCode();
             $this->appendToLogfile("\n could not post data" . json_encode($data) . "for id {$id} to database. TransportExceptionInterface" . $code . $message . "\n");
+        } catch (DecodingExceptionInterface $e) {
+            $message = $e->getMessage();
+            $code = $e->getCode();
+            $this->appendToLogfile("\n could not post data" . json_encode($data) . "for id {$id} to database. DecodingExceptionInterface" . $code . $message . "\n");
         }
         return null;
     }
@@ -239,6 +240,7 @@ class ImportGamesToDatabase extends Command
      * @throws ServerExceptionInterface
      * @throws RedirectionExceptionInterface
      * @throws ClientExceptionInterface
+     * @throws DecodingExceptionInterface
      */
     protected function postToApi(array $data, string $url): array
     {
