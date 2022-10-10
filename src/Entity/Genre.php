@@ -74,7 +74,7 @@ class Genre
 
     public function addGame($game): self
     {
-        if (!$this->games->contains($game)) {
+        if (!$this->games->contains($game) && $game !== null) {
             $this->games[] = $game;
             $game->addGenre($this);
         }

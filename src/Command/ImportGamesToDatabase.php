@@ -134,7 +134,7 @@ class ImportGamesToDatabase extends Command
         }
         unset($screenshots["game"]);
         foreach ($screenshots as $screenshot) {
-            $this->trySend($screenshot, $this->localServer . "api/sceenshots", $id);
+            $this->trySend($screenshot, $this->localServer . "api/screenshots", $id);
         }
     }
 
