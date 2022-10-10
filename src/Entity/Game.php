@@ -108,6 +108,7 @@ class Game
     )]
     private ?iterable $steam_reviews = [];
 
+    #[Assert\NotNull]
     #[OnetoMany(
         mappedBy: 'game',
         targetEntity: Screenshot::class,

@@ -32,6 +32,8 @@ class ImportGamesToDatabase extends Command
 
     //TODO: iets maken wat er voor zorgt dat genres (en categorieen) niet allemaal los in de db zitten
     // (main foreach loop in een functie zetten en die een array laten returnen, hierna doorheen loopen en dat fixen en dan pas versturen)
+    //TODO: WORDEN NIET GEIMPORTEERD: publishers, developers, notes, supported languages
+    //TODO: game en alle andere entities beheren qua access e.d.
 
 
     public function __construct(GameRepository $siteDataRepository)
@@ -57,11 +59,11 @@ class ImportGamesToDatabase extends Command
             $path = "assets/steam/games/{$id}/{$id}.json";
             $data = json_decode(file_get_contents($path), true);
 
+            //TODO: checken of alle values die er bij horen ook te vinden zijn
             if ($this->gameRepository->find($id) !== null) {
                 printf("\n Game with id {$id} is already in database, skipping");
                 continue;
             }
-
             if (!array_key_exists($id, $data)) {
                 $this->appendToLogfile("\n key {$id} does not exist on {$id}.json \n");
                 continue;
@@ -149,6 +151,7 @@ class ImportGamesToDatabase extends Command
         }
 
         $data = $this->replaceKeys('detailed_description', 'detailedDescription', $data);
+        $data = $this->replaceKeys('supported_languages', 'supportedLanguages', $data);
         $data = $this->replaceKeys('short_description', 'shortDescription', $data);
         $data = $this->replaceKeys('about_the_game', 'about', $data);
         $data = $this->replaceKeys('required_age', 'nsfw', $data);
@@ -165,7 +168,9 @@ class ImportGamesToDatabase extends Command
         $data["metacritic"]["game"] = "api/games/" . $id;
         $data["release_date"]["game"] = "api/games/" . $id;
         $data["screenshots"]["game"] = "api/games/" . $id;
-
+        if(array_key_exists("content_descriptors", $data) && array_key_exists("notes", $data["content_descriptors"])){
+            $data["notes"] = $data["content_descriptors"]["notes"];
+        }
 
         $out = max(
             (max(

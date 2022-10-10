@@ -56,7 +56,7 @@
                         >
                             <v-col
                                 v-for="(game, j) in chunk"
-                                :key="j"
+                                :key="j + i"
                                 class="pt-10"
                             >
                                 <v-card
@@ -87,12 +87,14 @@
 
 <script lang="ts">
 const {Component, VueComponent} = require('@/common/VueComponent');
-const featuredWinIds = require("../../../../steam/featuredGames.json")
+const featuredWinIds = require("../../../../steam/featuredGames.json");
+import axios from "axios";
 
 @Component
 export default class Games extends VueComponent {
 
     private featuredWinIds = featuredWinIds;
+    private featuredWinGames = [];
     private categoryGames = { // temporary, until working api
         'Action':
             [
@@ -118,15 +120,27 @@ export default class Games extends VueComponent {
         'Multiplayer': []
     };
 
-    public created(): void {
+    public async created(): void {
+        await this.loadFeaturedGames();
+    }
 
+    private loadFeaturedGames()
+    {
+        for(let id in featuredWinIds) {
+            this.featuredWinGames.push(this.getGameAppDetails(featuredWinIds[id]));
+        }
     }
 
 
-    private getGameAppDetails(): void {
-
+    private getGameAppDetails(id: integer): any {
+        return axios
+            .get(`/api/games/${id}`)
+            .then(response => {
+                console.log(response.data);
+            })
+            .catch(error => {
+                console.log(error);
+            })
     }
-
-
 }
 </script>
