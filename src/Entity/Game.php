@@ -153,6 +153,38 @@ class Game
 
         return $this;
     }
+    
+    /**
+     * @return array|null
+     */
+    public function getDevelopers(): ?array
+    {
+        return $this->developers;
+    }
+
+    /**
+     * @param array|null $developers
+     */
+    public function setDevelopers(?array $developers): void
+    {
+        $this->developers = $developers;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getPublishers(): ?array
+    {
+        return $this->publishers;
+    }
+
+    /**
+     * @param array|null $publishers
+     */
+    public function setPublishers(?array $publishers): void
+    {
+        $this->publishers = $publishers;
+    }
 
     public function getName(): ?string
     {
