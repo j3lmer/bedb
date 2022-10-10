@@ -72,7 +72,7 @@ class Category
         return null;
     }
 
-    public function setGame(Game $game): self
+    public function addGame(Game $game): self
     {
         if (!$this->games->contains($game)) {
             $this->games[] = $game;

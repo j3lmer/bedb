@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Category;
+use App\Entity\Genre;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -37,6 +39,19 @@ class CategoryRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function findOneByDescription(string $value): ?Category
+    {
+        return $this->createQueryBuilder('g')
+            ->andWhere('g.description = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
     }
 
 //    /**

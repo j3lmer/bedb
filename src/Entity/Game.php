@@ -390,7 +390,6 @@ class Game
     {
         if ($this->reviews->contains($review)) {
             $this->reviews->removeElement($review);
-            // set the owning side to null (unless already changed)
             if ($review->getGame() === $this) {
                 $review->setGame(null);
             }
@@ -417,7 +416,6 @@ class Game
     {
         if ($this->steam_reviews->contains($review)) {
             $this->steam_reviews->removeElement($review);
-            // set the owning side to null (unless already changed)
             if ($review->getGame() === $this) {
                 $review->setGame(null);
             }
@@ -444,7 +442,6 @@ class Game
     {
         if ($this->screenshots->contains($screenshot)) {
             $this->screenshots->removeElement($screenshot);
-            // set the owning side to null (unless already changed)
             if ($screenshot->getGame() === $this) {
                 $screenshot->setGame(null);
             }
@@ -463,7 +460,7 @@ class Game
     {
         if (!$this->categories->contains($category)) {
             $this->categories[] = $category;
-            $category->setGame($this);
+            $category->addGame($this);
         }
         return $this;
     }

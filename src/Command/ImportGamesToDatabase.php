@@ -5,6 +5,7 @@ namespace App\Command;
 
 use App\Command\Helper\FilestructureHelper;
 use App\Entity\Game;
+use App\Repository\CategoryRepository;
 use App\Repository\GameRepository;
 use App\Repository\GenresRepository;
 use Doctrine\ORM\NonUniqueResultException;
@@ -33,19 +34,21 @@ class ImportGamesToDatabase extends Command
     private string $logPath = "assets/steam/logs/import.txt";
     private GameRepository $gameRepository;
     private GenresRepository $genresRepository;
+    private CategoryRepository $categoryRepository;
     private string $localServer = "http://127.0.0.1:8000/";
 
     //TODO: iets maken wat er voor zorgt dat genres (en categorieen) niet allemaal los in de db zitten
     // (main foreach loop in een functie zetten en die een array laten returnen, hierna doorheen loopen en dat fixen en dan pas versturen)
-    //TODO: WORDEN NIET GEIMPORTEERD: publishers, developers, notes, supported languages
+    //TODO: WORDEN NIET GEIMPORTEERD: platform, pc_requirement
     //TODO: game en alle andere entities beheren qua access e.d.
 
 
-    public function __construct(GameRepository $gameRepository, GenresRepository $genresRepository)
+    public function __construct(GameRepository $gameRepository, GenresRepository $genresRepository, CategoryRepository $categoryRepository)
     {
         parent::__construct();
         $this->gameRepository = $gameRepository;
         $this->genresRepository = $genresRepository;
+        $this->categoryRepository = $categoryRepository;
         $this->filesystem = new Filesystem();
         $this->filestructureHelper = new FilestructureHelper();
     }
@@ -83,8 +86,9 @@ class ImportGamesToDatabase extends Command
             $truncatedData = $this->getTruncatedData($data);
             $game = $this->trySend($truncatedData, $this->localServer . "api/games", $id);
 
-            if(!isset($game["@id"])) {
-                $this->appendToLogfile("Game was sent but did not come back correctly for id " .  $id);
+            if (!isset($game["id"])) {
+                $this->appendToLogfile("Game was sent but did not come back correctly for id " . $id);
+                continue;
             }
             $game = $this->gameRepository->find($game["id"]);
 
@@ -113,15 +117,22 @@ class ImportGamesToDatabase extends Command
 
         foreach ($genres as $genre) {
             $possibleExisingGenre = $this->genresRepository->findOneByDescription($genre["description"]);
-            if($possibleExisingGenre !== null) {
+            if ($possibleExisingGenre !== null) {
                 $possibleExisingGenre->addGame($game);
                 $this->genresRepository->save($possibleExisingGenre, true);
             } else {
                 $this->trySend($genre, $this->localServer . "api/genres", $id);
             }
         }
+
         foreach ($categories as $category) {
-            $this->trySend($category, $this->localServer . "api/categories", $id);
+            $possibleExisingCategory = $this->categoryRepository->findOneByDescription($category["description"]);
+            if ($possibleExisingCategory !== null) {
+                $possibleExisingCategory->addGame($game);
+                $this->categoryRepository->save($possibleExisingCategory, true);
+            } else {
+                $this->trySend($category, $this->localServer . "api/categories", $id);
+            }
         }
         unset($screenshots["game"]);
         foreach ($screenshots as $screenshot) {
@@ -173,7 +184,7 @@ class ImportGamesToDatabase extends Command
         $data["metacritic"]["game"] = "api/games/" . $id;
         $data["release_date"]["game"] = "api/games/" . $id;
         $data["screenshots"]["game"] = "api/games/" . $id;
-        if(array_key_exists("content_descriptors", $data) && array_key_exists("notes", $data["content_descriptors"])){
+        if (array_key_exists("content_descriptors", $data) && array_key_exists("notes", $data["content_descriptors"])) {
             $data["notes"] = $data["content_descriptors"]["notes"];
         }
 
