@@ -28,8 +28,9 @@ class Category
 
     #[Assert\NotNull]
     #[Groups(["category:read", "category:write"])]
-    #[ORM\ManyToMany(targetEntity: Game::class, mappedBy: 'categories' )]
-    private ?iterable $games;
+    #[ORM\ManyToMany(targetEntity: Game::class, mappedBy: 'categories')]
+    #[ORM\JoinColumn(name: 'game_id', nullable: false)]
+    private iterable $games;
 
     public function __construct()
     {

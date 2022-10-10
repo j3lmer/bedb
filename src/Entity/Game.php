@@ -153,7 +153,7 @@ class Game
 
         return $this;
     }
-    
+
     /**
      * @return array|null
      */
@@ -471,7 +471,6 @@ class Game
     {
         if ($this->genres->contains($category)) {
             $this->genres->removeElement($category);
-            // set the owning side to null (unless already changed)
             if ($category->getGames()->contains($this)) {
                 $category->removeGame($this);
             }
@@ -497,7 +496,6 @@ class Game
     {
         if ($this->genres->contains($genre)) {
             $this->genres->removeElement($genre);
-            // set the owning side to null (unless already changed)
             if ($genre->getGames()->contains($this)) {
                 $genre->removeGame($this);
             }

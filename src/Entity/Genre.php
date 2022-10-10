@@ -30,7 +30,7 @@ class Genre
     #[Groups(["genre:read", "genre:write"])]
     #[ORM\ManyToMany(targetEntity: Game::class, mappedBy: 'genres')]
     #[ORM\JoinColumn(name: 'game_id', nullable: false)]
-    private ?iterable $games;
+    private iterable $games;
 
     public function __construct()
     {

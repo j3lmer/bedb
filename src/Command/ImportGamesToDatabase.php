@@ -5,6 +5,8 @@ namespace App\Command;
 
 use App\Command\Helper\FilestructureHelper;
 use App\Repository\GameRepository;
+use App\Repository\GenresRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,6 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
@@ -28,6 +31,7 @@ class ImportGamesToDatabase extends Command
     private FilestructureHelper $filestructureHelper;
     private string $logPath = "assets/steam/logs/import.txt";
     private GameRepository $gameRepository;
+    private GenresRepository $genresRepository;
     private string $localServer = "http://127.0.0.1:8000/";
 
     //TODO: iets maken wat er voor zorgt dat genres (en categorieen) niet allemaal los in de db zitten
@@ -36,10 +40,11 @@ class ImportGamesToDatabase extends Command
     //TODO: game en alle andere entities beheren qua access e.d.
 
 
-    public function __construct(GameRepository $siteDataRepository)
+    public function __construct(GameRepository $gameRepository, GenresRepository $genresRepository)
     {
         parent::__construct();
-        $this->gameRepository = $siteDataRepository;
+        $this->gameRepository = $gameRepository;
+        $this->genresRepository = $genresRepository;
         $this->filesystem = new Filesystem();
         $this->filestructureHelper = new FilestructureHelper();
     }
@@ -97,6 +102,9 @@ class ImportGamesToDatabase extends Command
         return $data;
     }
 
+    /**
+     * @throws NonUniqueResultException
+     */
     protected function handleSubEntities(array $data, string $id)
     {
         $genres = $this->getSubEntity('genres', $data, $id);
@@ -113,7 +121,13 @@ class ImportGamesToDatabase extends Command
         $this->trySend($pc_requirement, $this->localServer . "api/pc_requirements", $id);
 
         foreach ($genres as $genre) {
-            $this->trySend($genre, $this->localServer . "api/genres", $id);
+            $possibleExisingGenre = $this->genresRepository->findOneByDescription($genre["description"]);
+            if($possibleExisingGenre !== null) {
+                $possibleExisingGenre->addGame($this->gameRepository->findOneBy(['id' => $id]));
+                $this->genresRepository->save($possibleExisingGenre, true);
+            } else {
+                $this->trySend($genre, $this->localServer . "api/genres", $id);
+            }
         }
         foreach ($categories as $category) {
             $this->trySend($category, $this->localServer . "api/categories", $id);
@@ -199,13 +213,21 @@ class ImportGamesToDatabase extends Command
         try {
             $this->postToApi($data, $endpoint);
         } catch (ClientExceptionInterface $e) {
-            $this->appendToLogfile("\n could not post data" . json_encode($data) . "for id {$id} to database. ClientException \n");
+            $message = $e->getMessage();
+            $code = $e->getCode();
+            $this->appendToLogfile("\n could not post data" . json_encode($data) . "for id {$id} to database. ClientException" . $code . $message . "\n");
         } catch (RedirectionExceptionInterface $e) {
-            $this->appendToLogfile("\n could not post data" . json_encode($data) . "for id {$id} to database. RedirectionException \n");
+            $message = $e->getMessage();
+            $code = $e->getCode();
+            $this->appendToLogfile("\n could not post data" . json_encode($data) . "for id {$id} to database. RedirectionExceptionInterface" . $code . $message . "\n");
         } catch (ServerExceptionInterface $e) {
-            $this->appendToLogfile("\n could not post data" . json_encode($data) . "for id {$id} to database. ServerException \n");
+            $message = $e->getMessage();
+            $code = $e->getCode();
+            $this->appendToLogfile("\n could not post data" . json_encode($data) . "for id {$id} to database. ServerExceptionInterface" . $code . $message . "\n");
         } catch (TransportExceptionInterface $e) {
-            $this->appendToLogfile("\n could not post data" . json_encode($data) . "for id {$id} to database. TransportException \n");
+            $message = $e->getMessage();
+            $code = $e->getCode();
+            $this->appendToLogfile("\n could not post data" . json_encode($data) . "for id {$id} to database. TransportExceptionInterface" . $code . $message . "\n");
         }
     }
 
@@ -225,7 +247,7 @@ class ImportGamesToDatabase extends Command
         ]);
 
         if ($response->getStatusCode() > 299) {
-            $this->appendToLogfile("\n api call to post game failed, content: {$response->getContent()} \n");
+            $this->appendToLogfile("\n api call to post failed, content: {$response->getContent()} \n");
         }
     }
 

@@ -120,7 +120,7 @@ export default class Games extends VueComponent {
         'Multiplayer': []
     };
 
-    public async created(): void {
+    public async created(): Promise<void> {
         await this.loadFeaturedGames();
     }
 
@@ -132,7 +132,7 @@ export default class Games extends VueComponent {
     }
 
 
-    private getGameAppDetails(id: integer): any {
+    private getGameAppDetails(id: number): any {
         return axios
             .get(`/api/games/${id}`)
             .then(response => {
