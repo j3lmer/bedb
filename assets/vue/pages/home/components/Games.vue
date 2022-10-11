@@ -80,29 +80,22 @@ export default class Games extends VueComponent {
 
     //TODO / nice to have: het zo maken dat genres en games worden opgehaald bij scroll
 
-
     private async loadGames(): Promise<void> {
-        let notAllowed = [26, 27, 28];
 
         for (let i = 0; i < 5; i++) {
-            let rand = Math.floor(Math.random() * (30 - 1 + 1) + 1)
-            let k = 1;
-            while (notAllowed.indexOf(rand) !== -1) {
-                rand = k;
-                k++;
-            }
-            notAllowed.push(rand);
+            let rand = Math.floor(Math.random() * (13 - 1 + 1) + 1)
 
             const thisGenre = await this.getGenre(rand) as genre
 
             this.categoryGames[`${thisGenre.description}`] = [];
-            const length = thisGenre.games.length >= 20 ? 20 : thisGenre.games.length;
+            const length = thisGenre.games.length >= 25 ? 25 : thisGenre.games.length;
             for (let j = 0; j < length - 1; j++) {
                 const rand = Math.floor(Math.random() * ((thisGenre.games.length - 2 + 1) + 1))
                 let string = thisGenre.games[rand].replace("/api/games/", "");
                 let number: number = +string;
                 await this.getGameAppDetails(number, thisGenre.description);
             }
+            this.$forceUpdate();
         }
     }
 
