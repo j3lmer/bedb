@@ -589,3 +589,5 @@ Wanneer een user op een game pagina land, word de steam api gecalled om de revie
 ## Nice to haves:
 
 Mobile ui support
+
+Een overzicht van alle games op de homepagina
