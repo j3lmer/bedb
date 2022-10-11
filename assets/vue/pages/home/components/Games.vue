@@ -1,5 +1,5 @@
 <template>
-    <div class="mt-8">
+    <div class="my-8">
         <div
             v-for="(category, genre) in categoryGames"
             :key="genre"
@@ -77,7 +77,6 @@ export default class Games extends VueComponent {
         this.loadGames();
     }
 
-
     //TODO / nice to have: het zo maken dat genres en games worden opgehaald bij scroll
 
     private async loadGames(): Promise<void> {
@@ -96,7 +95,6 @@ export default class Games extends VueComponent {
         }
     }
 
-
     private getGenre(id: number): Promise<genre | void> {
         return axios
             .get(`/api/genres/${id}`)
@@ -109,13 +107,11 @@ export default class Games extends VueComponent {
             })
     }
 
-
     private loadFeaturedGames(): void {
         for (let id in featuredWinIds) {
             this.getGameAppDetails(featuredWinIds[id], "Featured");
         }
     }
-
 
     private async getGameAppDetails(id: number, genre: string): Promise<void> {
         return axios
