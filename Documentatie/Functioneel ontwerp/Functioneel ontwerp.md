@@ -92,21 +92,21 @@ Hier volgt een lijst van entiteiten (database-tabellen) en hun properties
 
 - rating (int) (range tussen 1 en 10) (verplicht)
 
-- image (file) (niet groter dan 8mb)
+- image (file) (niet groter dan 8mb) (min 200 breed) (max 1080 breed) (min 200 hoog) (max 1920 hoog)
 
 - date (datetime) (verplicht) **// date geupload of voor het laatstgewijzigd**
 
-- owner (many to one -> User) (verplicht) (inversedby: 'reviews')
+- owner (many to one -> User) (verplicht)
 
-- game (many to one -> Game) (verplicht) (inversedby: 'reviews')
+- game (many to one -> Game) (verplicht)
 
 #### SteamReview
 
 - id (int) (uniek) **// steam id**
 
-- hours (float) (verplicht)
+- hours (float) (verplicht) (verplicht)
 
-- game (many to one -> Game) (verplicht)
+- game (many to one -> Game) (verplicht) (verplicht)
 
 - recommended (bool) (verplicht)
 
@@ -120,29 +120,31 @@ Hier volgt een lijst van entiteiten (database-tabellen) en hun properties
 
 - id (int) (uniek) (verplicht) **// van steam**
 
+- developers (array)
+
+- publishers (array)
+
 - name (string) (255 karakters) (verplicht)
 
-- detailed description (string) (1000 karakters)
+- detailed description (string) (8000 karakters)
 
-- about (string) (1000 karakters)
+- about (string) (8000 karakters)
 
 - short_description (string) (500 karakters)
 
 - supported_languages (string) (1000 karakters)
 
-- header_image (string) (200 karakters)
+- header_image (string) (255 karakters)
 
-- website (string) (500 karakters)
-
-- developers (string) (100 karakters)
-
-- publishers (string) (100 karakters)
+- website (string) (255 karakters)
 
 - recommendations_total (int)
 
-- notes (string) (100 karakters)
+- notes (string) (255 karakters)
 
-- nsfw (bool)
+- nsfw (bool) (verplicht)
+
+Alle relaties zijn (cascade: persist, remove) (orphanremoval: true)
 
 - pc_requirements (PcRequirements) (one to one -> PcRequirements)
 
@@ -152,12 +154,13 @@ Hier volgt een lijst van entiteiten (database-tabellen) en hun properties
 
 - release_date (ReleaseDate) (one to one -> ReleaseDate)
 
-- categories (iterable) (one to many -> Category)
+- categories (iterable) (many to many -> Category)
 
-- genres (iterable) (one to many -> Genre)
+- genres (iterable) (many to many -> Genre)
 
-- screenshot (iterable) (one to many -> Screenshot)
-#### PcRequirement
+- screenshot (iterable) (one to many -> Screenshot) (niet null)
+  
+  #### PcRequirement
 
 - minimum (string) (1000 karakters)
 
@@ -195,7 +198,7 @@ Hier volgt een lijst van entiteiten (database-tabellen) en hun properties
 
 - id (int) (verplicht)
 
-- description (string) (50 karakters)
+- description (string) (255 karakters)
 
 - game (Game) (many to one -> game)
 
@@ -207,7 +210,7 @@ Hier volgt een lijst van entiteiten (database-tabellen) en hun properties
 
 - full (string)
 
-- game (Game) (many to one -> game)
+- game (Game) (many to one -> game) (niet null)
 
 ### ReleaseDate
 
@@ -215,7 +218,9 @@ Hier volgt een lijst van entiteiten (database-tabellen) en hun properties
 
 - date (string) 
 
-Entiteiten bevatten ook getters en setters voor elke respectieve property
+- game (Game) (one to one -> Game) (verplicht)
+
+Entiteiten bevatten ook getters en setters, soms adders en removers voor elke respectieve property
 
 ---
 
