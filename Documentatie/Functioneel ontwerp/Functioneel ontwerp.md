@@ -70,19 +70,19 @@ Hier volgt een lijst van entiteiten (database-tabellen) en hun properties
 
 #### User
 
-- id (int) (generated value) (uniek) (verplicht)
+- id (int) (generated value) (uniek) (verplicht) (niet null) (niet leeg)
 
-- username (string) (uniek) (255 karakters) (verplicht)
+- username (string) (uniek) (255 karakters) (verplicht) (niet null) (niet leeg)
 
-- email (niet leeg) (string) (uniek) (255 karakters) (verplicht)
+- email (niet leeg) (string) (uniek) (255 karakters) (verplicht) (niet null) (email)
 
-- roles (array) 
+- roles (array) (niet null)
 
-- password (string) (niet leeg) (255 karakters) (verplicht)
+- password (string) (niet leeg) (255 karakters) (verplicht) (niet null)
 
-- isVerified (boolean) (verplicht)
+- isVerified (boolean) (verplicht) (niet null)
 
-- reviews (iterable) (one to many -> Reviews) 
+- reviews (iterable) (one to many -> Reviews) (cascade: persist, remove) 
 
 #### Review
 
