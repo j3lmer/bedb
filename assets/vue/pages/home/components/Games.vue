@@ -4,6 +4,7 @@
             v-for="(category, genre) in categoryGames"
             :key="genre"
         >
+            <v-divider class="my-10" v-if="genre !== 'Featured'"/>
             <v-row align="center" justify="center">
                 <v-spacer/>
                 <v-col>
@@ -54,7 +55,6 @@
                     </v-carousel-item>
                 </v-carousel>
             </v-row>
-            <v-divider class="my-10"/>
         </div>
     </div>
 </template>
@@ -81,21 +81,18 @@ export default class Games extends VueComponent {
     //TODO / nice to have: het zo maken dat genres en games worden opgehaald bij scroll
 
     private async loadGames(): Promise<void> {
-
         for (let i = 0; i < 5; i++) {
             let rand = Math.floor(Math.random() * (13 - 1 + 1) + 1)
-
             const thisGenre = await this.getGenre(rand) as genre
-
             this.categoryGames[`${thisGenre.description}`] = [];
             const length = thisGenre.games.length >= 25 ? 25 : thisGenre.games.length;
             for (let j = 0; j < length - 1; j++) {
                 const rand = Math.floor(Math.random() * ((thisGenre.games.length - 2 + 1) + 1))
-                let string = thisGenre.games[rand].replace("/api/games/", "");
-                let number: number = +string;
+                const string = thisGenre.games[rand].replace("/api/games/", "");
+                const number: number = +string;
                 await this.getGameAppDetails(number, thisGenre.description);
+                this.$forceUpdate();
             }
-            this.$forceUpdate();
         }
     }
 
