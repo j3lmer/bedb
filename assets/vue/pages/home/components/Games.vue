@@ -72,7 +72,7 @@ export default class Games extends VueComponent {
 
     private genreGames = {};
 
-    private async mounted(): Promise<void> {
+    private async beforeMount(): Promise<void> {
         await this.loadGames();
     }
 
@@ -81,16 +81,16 @@ export default class Games extends VueComponent {
             query: `
                 query GetGenreWithGamesAndDescription($id: ID!) {
                     genre(id: $id) {
-                    description
-                    games {
-                        edges {
-                            node {
-                                id
-                                name
-                                headerImage
+                        description
+                        games {
+                            edges {
+                                node {
+                                    id
+                                    name
+                                    headerImage
+                                }
                             }
                         }
-                    }
                     }
                 }`,
                 variables: {
