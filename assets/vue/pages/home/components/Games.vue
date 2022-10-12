@@ -1,5 +1,7 @@
 <template>
     <div class="my-8">
+        {{genreGames}}
+
         <div
             v-for="(category, genre) in categoryGames"
             :key="genre"
@@ -68,30 +70,32 @@ import axios from "axios";
 @Component
 export default class Games extends VueComponent {
 
+    private genreGames = {};
+
     private async mounted(): Promise<void> {
         await this.loadGames();
     }
 
     private async loadGames(): Promise<void> {
-        const data = await axios.post("http://127.0.0.1:8000/api/graphql", {
+        this.genreGames = await axios.post("http://127.0.0.1:8000/api/graphql", {
             query: `
-            query GetGenreWithGamesAndDescription($id: ID!) {
-                genre(id: $id) {
-                description
-                games {
-                    edges {
-                        node {
-                            id
-                            name
-                            headerImage
+                query GetGenreWithGamesAndDescription($id: ID!) {
+                    genre(id: $id) {
+                    description
+                    games {
+                        edges {
+                            node {
+                                id
+                                name
+                                headerImage
+                            }
                         }
                     }
+                    }
+                }`,
+                variables: {
+                    id: "/api/genres/1",
                 }
-                }
-            }`,
-            variables: {
-                id: "/api/genres/1",
-            }
             },
             {
                 headers: {
@@ -99,7 +103,6 @@ export default class Games extends VueComponent {
                 }
             }
         );
-        console.log(data.data);
     }
 }
 </script>
