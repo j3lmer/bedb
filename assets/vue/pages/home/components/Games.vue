@@ -62,22 +62,44 @@
 <script lang="ts">
 const {Component, VueComponent} = require('@/common/VueComponent');
 const featuredWinIds = require("../../../../steam/featuredGames.json");
+import axios from "axios";
 
 
 @Component
 export default class Games extends VueComponent {
 
-    private categoryGames = {
-        'Featured': [],
-    }
-
-    mounted(): void {
-        this.loadGames();
+    private async mounted(): Promise<void> {
+        await this.loadGames();
     }
 
     private async loadGames(): Promise<void> {
-
+        const data = await axios.post("http://127.0.0.1:8000/api/graphql", {
+            query: `
+            query GetGenreWithGamesAndDescription($id: ID!) {
+                genre(id: $id) {
+                description
+                games {
+                    edges {
+                        node {
+                            id
+                            name
+                            headerImage
+                        }
+                    }
+                }
+                }
+            }`,
+            variables: {
+                id: "/api/genres/1",
+            }
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
+        console.log(data.data);
     }
-
 }
 </script>
