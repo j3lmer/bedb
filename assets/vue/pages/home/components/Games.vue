@@ -62,9 +62,6 @@
 <script lang="ts">
 const {Component, VueComponent} = require('@/common/VueComponent');
 const featuredWinIds = require("../../../../steam/featuredGames.json");
-import genre from "@/common/models/genre";
-import axios from "axios";
-import { buildSchema } from "graphql";
 
 
 @Component
@@ -75,11 +72,8 @@ export default class Games extends VueComponent {
     }
 
     mounted(): void {
-        this.loadFeaturedGames();
         this.loadGames();
     }
-
-    //TODO / nice to have: het zo maken dat genres en games worden opgehaald bij scroll
 
     private async loadGames(): Promise<void> {
 
