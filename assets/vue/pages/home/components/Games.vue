@@ -1,5 +1,7 @@
 <template>
     <div class="my-8">
+        {{genreGames}}
+
         <div
             v-for="(category, genre) in categoryGames"
             :key="genre"
@@ -62,75 +64,45 @@
 <script lang="ts">
 const {Component, VueComponent} = require('@/common/VueComponent');
 const featuredWinIds = require("../../../../steam/featuredGames.json");
-import genre from "@/common/models/genre"
 import axios from "axios";
+
 
 @Component
 export default class Games extends VueComponent {
 
-    private categoryGames = {
-        'Featured': [],
-    }
+    private genreGames = {};
 
-    mounted(): void {
-        this.loadFeaturedGames();
-        this.loadGames();
+    private async mounted(): Promise<void> {
+        await this.loadGames();
     }
-
-    //TODO / nice to have: het zo maken dat genres en games worden opgehaald bij scroll
 
     private async loadGames(): Promise<void> {
-        for (let i = 0; i < 5; i++) {
-            let rand = Math.floor(Math.random() * (13 - 1 + 1) + 1)
-            const thisGenre = await this.getGenre(rand) as genre
-            this.categoryGames[`${thisGenre.description}`] = [];
-            const length = thisGenre.games.length >= 25 ? 25 : thisGenre.games.length;
-            for (let j = 0; j < length - 1; j++) {
-                const rand = Math.floor(Math.random() * ((thisGenre.games.length - 2 + 1) + 1))
-                const string = thisGenre.games[rand].replace("/api/games/", "");
-                const number: number = +string;
-                await this.getGameAppDetails(number, thisGenre.description);
-                this.$forceUpdate();
-            }
-        }
-    }
-
-    private getGenre(id: number): Promise<genre | void> {
-        return axios
-            .get(`/api/genres/${id}`)
-            .then(response => {
-                let Genre: genre = response.data;
-                return Genre;
-            })
-            .catch(error => {
-                console.log(error)
-            })
-    }
-
-    private loadFeaturedGames(): void {
-        for (let id in featuredWinIds) {
-            this.getGameAppDetails(featuredWinIds[id], "Featured");
-        }
-    }
-
-    private async getGameAppDetails(id: number, genre: string): Promise<void> {
-        return axios
-            .get(`/api/games/${id}`)
-            .then(response => {
-                let foundASpot = false;
-                for (let i = 0; i < this.categoryGames[genre].length; i++) {
-                    if (this.categoryGames[genre][i].length < 6) {
-                        this.categoryGames[genre][i].push(response.data);
-                        foundASpot = true;
+        this.genreGames = await axios.post("http://127.0.0.1:8000/api/graphql", {
+            query: `
+                query GetGenreWithGamesAndDescription($id: ID!) {
+                    genre(id: $id) {
+                    description
+                    games {
+                        edges {
+                            node {
+                                id
+                                name
+                                headerImage
+                            }
+                        }
                     }
+                    }
+                }`,
+                variables: {
+                    id: "/api/genres/1",
                 }
-                if (!foundASpot) {
-                    this.categoryGames[genre].push([response.data]);
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/json'
                 }
-            })
-            .catch(error => {
-                console.log(error);
-            })
+            }
+        );
     }
 }
 </script>
