@@ -31,8 +31,10 @@
                             <v-col
                                 v-for="(game, j) in chunk"
                                 :key="j + i"
+                                v-if="!game.node.nsfw"
                                 class="pt-10"
                             >
+<!--                                //TODO / FIX: Ja oke dus vet veel games die vrij nsfw lijken, worden alsnog gedisplayed omdat ze in de db staan als niet-nsfw. what to do now.-->
                                 <v-card
                                     width="250"
                                     outlined

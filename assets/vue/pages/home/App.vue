@@ -62,10 +62,12 @@ export default class App extends VueComponent {
 
     //TODO / nth: featured games ook laden
     //TODO: stop using first x and get random games (random cursor?)
+    //TODO / NTH: remove nsfw games and maybe query new ones (recursively until there are no nsfw games anymore?)
     private async loadGames(): Promise<void> {
 
-        const [outerString, variables] = this.setupForQuery();
-        let response = await this.queryPoster(outerString, variables);
+        const [q, variables] = this.setupForQuery();
+        let response = await this.queryPoster(q, variables);
+
 
         for (let i = 0; i < Object.entries(response).length; i++) {
             let thisGenre = response[`genre${i}`];
@@ -85,6 +87,11 @@ export default class App extends VueComponent {
         this.genreGames = response;
     }
 
+    /*  TODO / NTH: Het zo maken dat er eerst 18 games worden opgehaald vanaf een willekeurige cursor plek,
+            vanaf daar dynamisch meer ophaalt met de cursor, wanneer t einde is bereikt,
+            de eerste 18 queryen, totdat je de plek van de eerste cursor hebt bereikt.
+        (vermoedelijk te veel werk voor nu)
+     */
     private setupForQuery(): [string, object] {
         let outerString = `query GetGenreWithGamesAndDescription(`;
         let innerString = ``;
@@ -93,8 +100,8 @@ export default class App extends VueComponent {
         for (let i = 0; i < this.amountOfGenres; i++) {
             variables = this.addRandomGenres(variables, i);
             outerString += i === this.amountOfGenres - 1 ? `$id${i}: ID!` : `$id${i}: ID!, `;
-            // const randOffset = this.randNumber()
-            let genreString = `genre${i} : genre(id: $id${i}) {
+            let genreString = `
+            genre${i} : genre(id: $id${i}) {
                 description
                 games(first:18) {
                     edges {
@@ -102,6 +109,7 @@ export default class App extends VueComponent {
                             id
                             name
                             headerImage
+                            nsfw
                         }
                     }
                 }
@@ -115,7 +123,7 @@ export default class App extends VueComponent {
         return [outerString, variables];
     }
 
-    private addRandomGenres(variables: object, iteration: number) {
+    private addRandomGenres(variables: object, iteration: number): object {
         let randNumber = this.randNumber(1, 13);
         while (this.objectContains(variables, `/api/genres/${randNumber}`)) {
             randNumber = this.randNumber(1, 13);
