@@ -37,20 +37,7 @@ export default class App extends VueComponent {
     private selectedComponent = 'Home';
     private items = HomepageTabs;
     private genreGames = {};
-    private genreGamesQuery = `query GetGenreWithGamesAndDescription($id: ID!) {
-        genre(id: $id) {
-            description
-            games(first:6) {
-                edges {
-                    node {
-                        id
-                        name
-                        headerImage
-                    }
-                }
-            }
-        }
-    }`;
+    private amountOfGenres = 5;
 
     private beforeMount(): void {
         this.loadGames();
@@ -70,15 +57,12 @@ export default class App extends VueComponent {
     }
 
     private async loadGames(): Promise<void> {
-
-        //append aan het einde nog een }
-        //$id: ID!) {
         let outerString = `query GetGenreWithGamesAndDescription(`;
         let innerString = ``;
         let variables = {};
 
-        for (let i = 0; i < 5; i++) {
-            outerString += i === 4 ? `$id${i}: ID!` : `$id${i}: ID!, `;
+        for (let i = 0; i < this.amountOfGenres; i++) {
+            outerString += i === this.amountOfGenres -1 ? `$id${i}: ID!` : `$id${i}: ID!, `;
             const randNumber = this.randNumber(1, 13);
             let genreString = `genre${i} : genre(id: $id${i}) {
                 description
@@ -92,22 +76,17 @@ export default class App extends VueComponent {
                     }
                 }
             }`
-
-            if(i !== 4) {
-                genreString+= ',';
-            }
-
+            genreString += i !== this.amountOfGenres ? ',' : '';
             variables[`id${i}`] = `/api/genres/${randNumber}`;
             innerString += genreString;
         }
         outerString += ") {";
         innerString += '}';
-
         outerString += innerString;
         this.genreGames = await this.queryPoster(outerString, variables);
     }
 
-    private async queryPoster(query: string, variables: object)
+    private async queryPoster(query: string, variables: object): Promise<object>
     {
         console.log(query);
         console.log(variables);
