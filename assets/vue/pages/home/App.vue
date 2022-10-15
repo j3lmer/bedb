@@ -54,7 +54,6 @@ export default class App extends VueComponent {
 
     private selectComponent(component: any): void {
         this.selectedComponent = component;
-        this.$forceUpdate();
     }
 
     //TODO: stop using first 6 and get random games (random cursor?)

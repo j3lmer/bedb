@@ -58,27 +58,13 @@
 </template>
 
 <script lang="ts">
-const {Component, VueComponent, Prop, Watch} = require('@/common/VueComponent');
+const {Component, VueComponent, Prop} = require('@/common/VueComponent');
 const featuredWinIds = require("../../../../steam/featuredGames.json");
-import axios from "axios";
-
-// TODO: change vue layout to fit updated returned schema.
-// TODO: manipulate query and generate random ids to get more / random genres each page refresh.
 
 @Component
 export default class Games extends VueComponent {
 
     @Prop({required: true})
     private genreGames = {};
-
-
-
-    @Watch("genreGames")
-    private consoleLog()
-    {
-        // console.log(this.genreGames);
-        this.$forceUpdate();
-    }
-
 }
 </script>
