@@ -63,7 +63,6 @@ export default class App extends VueComponent {
 
         for (let i = 0; i < this.amountOfGenres; i++) {
             outerString += i === this.amountOfGenres -1 ? `$id${i}: ID!` : `$id${i}: ID!, `;
-            const randNumber = this.randNumber(1, 13);
             let genreString = `genre${i} : genre(id: $id${i}) {
                 description
                 games(first:6) {
@@ -77,8 +76,9 @@ export default class App extends VueComponent {
                 }
             }`
             genreString += i !== this.amountOfGenres ? ',' : '';
-            variables[`id${i}`] = `/api/genres/${randNumber}`;
             innerString += genreString;
+            const randNumber = this.randNumber(1, 13);
+            variables[`id${i}`] = `/api/genres/${randNumber}`;
         }
         outerString += ") {";
         innerString += '}';
@@ -88,9 +88,6 @@ export default class App extends VueComponent {
 
     private async queryPoster(query: string, variables: object): Promise<object>
     {
-        console.log(query);
-        console.log(variables);
-
         const response = await axios.post("http://127.0.0.1:8000/api/graphql", {
                 query: query,
                 variables: variables,
