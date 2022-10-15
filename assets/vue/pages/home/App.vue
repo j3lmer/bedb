@@ -56,6 +56,7 @@ export default class App extends VueComponent {
         this.selectedComponent = component;
     }
 
+    //TODO / nth: featured games ook laden
     //TODO: stop using first 6 and get random games (random cursor?)
     private async loadGames(): Promise<void> {
         let outerString = `query GetGenreWithGamesAndDescription(`;

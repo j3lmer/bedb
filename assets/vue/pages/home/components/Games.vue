@@ -4,7 +4,7 @@
             v-for="(genre, key) in genreGames"
             :key="key"
         >
-            <v-divider class="my-10" v-if="genre !== 'Featured'"/>
+            <v-divider class="my-10" v-if="key !== 'genre0'"/>
             <v-row align="center" justify="center">
                 <v-spacer/>
                 <v-col>
@@ -26,7 +26,7 @@
                             align="center"
                             justify="center"
                         >
-<!--                            width van het scherm meenemen in het bepalen van hoe het word gerendered?-->
+                            <!--                            width van het scherm meenemen in het bepalen van hoe het word gerendered?-->
                             <v-col
                                 v-for="(game, i) in genre.games.edges"
                                 :key="i"
