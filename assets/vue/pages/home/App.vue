@@ -54,16 +54,17 @@ export default class App extends VueComponent {
 
     private selectComponent(component: any): void {
         this.selectedComponent = component;
+        this.$forceUpdate();
     }
 
+    //TODO: stop using first 6 and get random games (random cursor?)
     private async loadGames(): Promise<void> {
         let outerString = `query GetGenreWithGamesAndDescription(`;
         let innerString = ``;
         let variables = {};
 
         for (let i = 0; i < this.amountOfGenres; i++) {
-            variables[`id${i}`] = `/api/genres/${this.randNumber(1, 13)}`;
-
+            variables = this.addRandomGenres(variables, i);
             outerString += i === this.amountOfGenres - 1 ? `$id${i}: ID!` : `$id${i}: ID!, `;
             let genreString = `genre${i} : genre(id: $id${i}) {
                 description
@@ -86,6 +87,16 @@ export default class App extends VueComponent {
         this.genreGames = await this.queryPoster(outerString, variables);
     }
 
+    private addRandomGenres(variables: object, iteration: number)
+    {
+        let randNumber = this.randNumber(1, 13);
+        while (this.objectContains(variables, `/api/genres/${randNumber}`)) {
+            randNumber = this.randNumber(1, 13);
+        }
+        variables[`id${iteration}`] = `/api/genres/${randNumber}`;
+        return variables;
+    }
+
     private async queryPoster(query: string, variables: object): Promise<object> {
         const response = await axios.post("http://127.0.0.1:8000/api/graphql", {
                 query: query,
@@ -103,6 +114,13 @@ export default class App extends VueComponent {
 
     private randNumber(min: number, max: number): number {
         return Math.floor(Math.random() * (max - min + 1) + min);
+    }
+
+    private objectContains(obj, term: string): boolean {
+        for (let key in obj) {
+            if (obj[key].indexOf(term) != -1) return true;
+        }
+        return false;
     }
 }
 </script>
