@@ -55,10 +55,13 @@ export default class App extends VueComponent {
 
     private selectComponent(component: any): void {
         this.selectedComponent = component;
+        setTimeout(() => {
+            this.$forceUpdate()
+        }, 100)
     }
 
     //TODO / nth: featured games ook laden
-    //TODO: stop using first 6 and get random games (random cursor?)
+    //TODO: stop using first x and get random games (random cursor?)
     private async loadGames(): Promise<void> {
 
         const [outerString, variables] = this.setupForQuery();
@@ -90,6 +93,7 @@ export default class App extends VueComponent {
         for (let i = 0; i < this.amountOfGenres; i++) {
             variables = this.addRandomGenres(variables, i);
             outerString += i === this.amountOfGenres - 1 ? `$id${i}: ID!` : `$id${i}: ID!, `;
+            // const randOffset = this.randNumber()
             let genreString = `genre${i} : genre(id: $id${i}) {
                 description
                 games(first:18) {
