@@ -62,6 +62,8 @@ export default class App extends VueComponent {
         let variables = {};
 
         for (let i = 0; i < this.amountOfGenres; i++) {
+            variables[`id${i}`] = `/api/genres/${this.randNumber(1, 13)}`;
+
             outerString += i === this.amountOfGenres -1 ? `$id${i}: ID!` : `$id${i}: ID!, `;
             let genreString = `genre${i} : genre(id: $id${i}) {
                 description
@@ -77,8 +79,6 @@ export default class App extends VueComponent {
             }`
             genreString += i !== this.amountOfGenres ? ',' : '';
             innerString += genreString;
-            const randNumber = this.randNumber(1, 13);
-            variables[`id${i}`] = `/api/genres/${randNumber}`;
         }
         outerString += ") {";
         innerString += '}';
