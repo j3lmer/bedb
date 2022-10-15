@@ -34,7 +34,9 @@
                                 v-if="!game.node.nsfw"
                                 class="pt-10"
                             >
-<!--                                //TODO / FIX: Ja oke dus vet veel games die vrij nsfw lijken, worden alsnog gedisplayed omdat ze in de db staan als niet-nsfw. what to do now.-->
+<!--                                TODO / FIX: Ja oke dus vet veel games die vrij nsfw lijken, worden alsnog gedisplayed omdat ze in de db staan als niet-nsfw. what to do now.
+                                        update: steam api zegt dat deze games required_age: 0. Weet niet hoe steam dit verder zelf fixt, of dit is met opzet zo gedaan om het niet zo commercieel plausibel/moeilijker te maken om hun games zo maar te stelen.
+-->
                                 <v-card
                                     width="250"
                                     outlined
