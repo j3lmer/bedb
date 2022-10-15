@@ -38,7 +38,7 @@ export default class App extends VueComponent {
     private items = HomepageTabs;
     private genreGames = {};
     private amountOfGenres = 5;
-    private chunkLength  = 6;
+    private chunkLength = 6;
 
     private beforeMount(): void {
         this.loadGames();
@@ -70,7 +70,7 @@ export default class App extends VueComponent {
             let chunkCounter = 0;
             for (let j = 0; j < thisGenre.games.edges.length; j++) {
                 const thisGame = thisGenre.games.edges[j];
-                if(thisGenre.chunkedGames[chunkCounter].length >= this.chunkLength) {
+                if (thisGenre.chunkedGames[chunkCounter].length >= this.chunkLength) {
                     thisGenre.chunkedGames.push([]);
                     chunkCounter++;
                 }
