@@ -21,15 +21,16 @@
                     show-arrows-on-hover
                     height="300"
                 >
-                    <v-carousel-item justify="center">
+                    <v-carousel-item justify="center" v-for="(chunk, i) in genre.chunkedGames"
+                        :key="i"
+                    >
                         <v-row
                             align="center"
                             justify="center"
                         >
-                            <!--                            width van het scherm meenemen in het bepalen van hoe het word gerendered?-->
                             <v-col
-                                v-for="(game, i) in genre.games.edges"
-                                :key="i"
+                                v-for="(game, j) in chunk"
+                                :key="j + i"
                                 class="pt-10"
                             >
                                 <v-card
@@ -66,5 +67,7 @@ export default class Games extends VueComponent {
 
     @Prop({required: true})
     private genreGames = {};
+
+
 }
 </script>

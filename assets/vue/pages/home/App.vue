@@ -38,6 +38,7 @@ export default class App extends VueComponent {
     private items = HomepageTabs;
     private genreGames = {};
     private amountOfGenres = 5;
+    private chunkLength  = 6;
 
     private beforeMount(): void {
         this.loadGames();
@@ -59,6 +60,29 @@ export default class App extends VueComponent {
     //TODO / nth: featured games ook laden
     //TODO: stop using first 6 and get random games (random cursor?)
     private async loadGames(): Promise<void> {
+
+        const [outerString, variables] = this.setupForQuery();
+        let response = await this.queryPoster(outerString, variables);
+
+        for (let i = 0; i < Object.entries(response).length; i++) {
+            let thisGenre = response[`genre${i}`];
+            thisGenre.chunkedGames = [[]];
+            let chunkCounter = 0;
+            for (let j = 0; j < thisGenre.games.edges.length; j++) {
+                const thisGame = thisGenre.games.edges[j];
+                if(thisGenre.chunkedGames[chunkCounter].length >= this.chunkLength) {
+                    thisGenre.chunkedGames.push([]);
+                    chunkCounter++;
+                }
+                thisGenre.chunkedGames[chunkCounter].push(thisGame);
+            }
+            delete thisGenre.games;
+            response[`genre${i}`] = thisGenre;
+        }
+        this.genreGames = response;
+    }
+
+    private setupForQuery(): [string, object] {
         let outerString = `query GetGenreWithGamesAndDescription(`;
         let innerString = ``;
         let variables = {};
@@ -68,7 +92,7 @@ export default class App extends VueComponent {
             outerString += i === this.amountOfGenres - 1 ? `$id${i}: ID!` : `$id${i}: ID!, `;
             let genreString = `genre${i} : genre(id: $id${i}) {
                 description
-                games(first:6) {
+                games(first:18) {
                     edges {
                         node {
                             id
@@ -84,11 +108,10 @@ export default class App extends VueComponent {
         outerString += ") {";
         innerString += '}';
         outerString += innerString;
-        this.genreGames = await this.queryPoster(outerString, variables);
+        return [outerString, variables];
     }
 
-    private addRandomGenres(variables: object, iteration: number)
-    {
+    private addRandomGenres(variables: object, iteration: number) {
         let randNumber = this.randNumber(1, 13);
         while (this.objectContains(variables, `/api/genres/${randNumber}`)) {
             randNumber = this.randNumber(1, 13);
