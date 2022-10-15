@@ -6,11 +6,11 @@
             @updated-tab="selectComponent"
         />
         <v-card flat>
-            <Home   v-if="selectedComponent === items.Home"
-                    @updated-tab="selectComponent"
+            <Home v-if="selectedComponent === items.Home"
+                  @updated-tab="selectComponent"
             />
-            <Games  v-if="selectedComponent === items.Games"
-                    :genre-games="genreGames"
+            <Games v-if="selectedComponent === items.Games"
+                   :genre-games="genreGames"
             />
         </v-card>
     </v-app>
@@ -64,7 +64,7 @@ export default class App extends VueComponent {
         for (let i = 0; i < this.amountOfGenres; i++) {
             variables[`id${i}`] = `/api/genres/${this.randNumber(1, 13)}`;
 
-            outerString += i === this.amountOfGenres -1 ? `$id${i}: ID!` : `$id${i}: ID!, `;
+            outerString += i === this.amountOfGenres - 1 ? `$id${i}: ID!` : `$id${i}: ID!, `;
             let genreString = `genre${i} : genre(id: $id${i}) {
                 description
                 games(first:6) {
@@ -76,7 +76,7 @@ export default class App extends VueComponent {
                         }
                     }
                 }
-            }`
+            }`;
             genreString += i !== this.amountOfGenres ? ',' : '';
             innerString += genreString;
         }
@@ -86,8 +86,7 @@ export default class App extends VueComponent {
         this.genreGames = await this.queryPoster(outerString, variables);
     }
 
-    private async queryPoster(query: string, variables: object): Promise<object>
-    {
+    private async queryPoster(query: string, variables: object): Promise<object> {
         const response = await axios.post("http://127.0.0.1:8000/api/graphql", {
                 query: query,
                 variables: variables,
@@ -99,12 +98,11 @@ export default class App extends VueComponent {
             }
         );
 
-        return response.data.data
+        return response.data.data;
     }
 
-    private randNumber(min: number, max: number): number
-    {
-        return Math.floor(Math.random()*(max - min + 1) + min)
+    private randNumber(min: number, max: number): number {
+        return Math.floor(Math.random() * (max - min + 1) + min);
     }
 }
 </script>
