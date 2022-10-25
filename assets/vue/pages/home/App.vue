@@ -21,7 +21,7 @@ import axios from "axios";
 
 const {Component, VueComponent} = require('@/common/VueComponent');
 import {HomepageTabs} from "@/common/components/Enums/HomepageTabs";
-import Header from "@/pages/home/components/Header.vue";
+import Header from "@/pages/common/Header.vue";
 import Home from "@/pages/home/components/Home.vue";
 import Games from "@/pages/home/components/Games.vue";
 

@@ -1,7 +1,6 @@
 <template>
     <div>
         <v-card
-            v-if="items"
             app
             elevation="0"
         >
@@ -46,6 +45,7 @@
                 </v-col>
             </v-row>
             <v-tabs
+                v-if="items"
                 v-model="tab"
                 grow
                 hide-details
@@ -74,10 +74,10 @@ export default class Header extends VueComponent {
     private drawer = false;
     private tab = null;
 
-    @Prop({required: true})
+    @Prop({required: false})
     private items;
 
-    @Prop({required: true})
+    @Prop({required: false})
     private selectedComponent: string
 
     private searchNameString = '';
