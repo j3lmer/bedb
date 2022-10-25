@@ -25,6 +25,9 @@
                                 label="Find a game..."
                                 clearable
                                 solo
+                                v-model="searchNameString"
+                                :items="queryResults"
+                                @change="searchForGames"
                             />
                         </v-col>
 
@@ -75,7 +78,10 @@ export default class Header extends VueComponent {
     private items;
 
     @Prop({required: true})
-    private selectedComponent
+    private selectedComponent: string
+
+    private searchNameString = '';
+    private queryResults = [];
 
     @Watch('selectedComponent')
     private updateTab(Value: string): void {
@@ -90,7 +96,17 @@ export default class Header extends VueComponent {
 
     public created() {
         this.updateTab(this.selectedComponent);
+
     }
+
+    // deze functie elke keer callen wanneer er iets veranderd aan de string in de zoekbalk,
+    // graphql query doen voor games met een naam die lijkt op wat er in word getypt (naam, afbeelding?)
+    // items die graphql returned in een array zetten en die weer aan de autocomplete geven
+    private searchForGames()
+    {
+        console.log('test')
+    }
+
 
     private selectComponent(component: any): void {
         this.$cookies.set('page', component)
