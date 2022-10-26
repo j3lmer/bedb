@@ -24,6 +24,7 @@ import {HomepageTabs} from "@/common/components/Enums/HomepageTabs";
 import Header from "@/pages/common/Header.vue";
 import Home from "@/pages/home/components/Home.vue";
 import Games from "@/pages/home/components/Games.vue";
+import GraphqlHelper from "@/common/components/graphqlHelper";
 
 @Component({
     components: {
@@ -66,7 +67,7 @@ export default class App extends VueComponent {
     private async loadGames(): Promise<void> {
 
         const [q, variables] = this.setupForQuery();
-        let response = await this.queryPoster(q, variables);
+        let response = await GraphqlHelper.queryPoster(q, variables);
 
 
         for (let i = 0; i < Object.entries(response).length; i++) {
@@ -132,20 +133,6 @@ export default class App extends VueComponent {
         return variables;
     }
 
-    private async queryPoster(query: string, variables: object): Promise<object> {
-        const response = await axios.post("http://127.0.0.1:8000/api/graphql", {
-                query: query,
-                variables: variables,
-            },
-            {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }
-        );
-
-        return response.data.data;
-    }
 
     private randNumber(min: number, max: number): number {
         return Math.floor(Math.random() * (max - min + 1) + min);

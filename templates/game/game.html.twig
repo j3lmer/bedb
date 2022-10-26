@@ -2,8 +2,9 @@
 
 {% block body %}
     <script>
-        window.user = {{ user|raw }};
-        window.steamAppId = {{ steamAppId|raw }}
+        {% if user is not null %}
+            window.user = {{ user|raw }};
+        {% endif %}
     </script>
     <div id="Game"></div>
 {% endblock %}

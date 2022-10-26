@@ -19,13 +19,10 @@ class GameController extends AbstractController
     #[Route('/game/{steamAppId}', name: 'entry')]
     public function index(int $steamAppId): Response
     {
-
         return $this->render('game/game.html.twig',[
             'user' => $this->isGranted('IS_AUTHENTICATED_FULLY') ?
                 $this->serializer->serialize($this->getUser(), 'jsonld') :
-                null,
-
-            'steamAppId' => $steamAppId
+                null
         ]);
     }
 }
