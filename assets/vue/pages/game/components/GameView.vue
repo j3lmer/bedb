@@ -23,7 +23,7 @@
                         </v-col>
                         <v-col cols="6" align="center">
                             <v-btn>
-                                Maak een nieuw review
+                                Leave a review
                             </v-btn>
                         </v-col>
                     </v-row>
