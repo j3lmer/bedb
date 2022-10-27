@@ -43,9 +43,9 @@
                                     elevation="10"
                                 >
                                     <v-card-title class="text-center">
-                                        <h4>
+                                        <a class="h4" :href="getUrl(game.node.id)">
                                             {{ game.node.name }}
-                                        </h4>
+                                        </a>
                                     </v-card-title>
                                     <v-img
                                         height="150"
@@ -72,6 +72,10 @@ export default class Games extends VueComponent {
     @Prop({required: true})
     private genreGames = {};
 
+    private getUrl(str) {
+        const id = str.split('/')[3];
+        return `/game/${id}`;
+    }
 
 }
 </script>

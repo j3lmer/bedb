@@ -69,7 +69,6 @@ export default class App extends VueComponent {
         const [q, variables] = this.setupForQuery();
         let response = await GraphqlHelper.queryPoster(q, variables);
 
-
         for (let i = 0; i < Object.entries(response).length; i++) {
             let thisGenre = response[`genre${i}`];
             thisGenre.chunkedGames = [[]];
