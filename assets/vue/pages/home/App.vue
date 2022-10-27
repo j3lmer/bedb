@@ -24,7 +24,7 @@ import Header from "@/pages/common/Header.vue";
 import Home from "@/pages/home/components/Home.vue";
 import Games from "@/pages/home/components/Games.vue";
 import GraphqlHelper from "@/common/components/graphqlHelper";
-const featuredWinIds = require("../../../../steam/featuredGames.json");
+// const featuredWinIds = require("../../../../steam/featuredGames.json");
 
 @Component({
     components: {

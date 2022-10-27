@@ -4,24 +4,12 @@
             <v-col class="text-center">
                 <h1>{{ game.name }}</h1>
             </v-col>
-            <v-col class="text-right">
+            <v-col>
                 <v-spacer/>
                 <v-col align-self="end">
                     <v-row>
-                        <v-col cols="6">
-                            <v-row>
-                                <v-col class="text-right">
-                                    Categories
-                                </v-col>
-                            </v-row>
-
-                            <v-row>
-                                <v-col class="text-right">
-                                    Genres
-                                </v-col>
-                            </v-row>
-                        </v-col>
-                        <v-col cols="6" align="center">
+                        <v-spacer/>
+                        <v-col cols="6" align="right">
                             <v-btn>
                                 Leave a review
                             </v-btn>
@@ -46,11 +34,12 @@
                     </v-col>
 
                 </v-row>
+                <v-divider class="my-5"/>
                 <v-row
                     justify="space-around"
                 >
                     <v-col id="userScore" class="d-flex justify-center">
-<!--                        kleur van de sheet bepalen op hoe hoog de score is?-->
+                        <!--                        kleur van de sheet bepalen op hoe hoog de score is?-->
                         <v-sheet
                             class="text-center"
                             elevation="1"
@@ -68,7 +57,7 @@
                             width="100"
                         >
                             Meta score
-                            {{game.metacritic.score}}
+                            {{ game.metacritic.score }}
                         </v-sheet>
                     </v-col>
                     <v-col id="steamRecommendations" class="d-flex justify-center">
@@ -80,8 +69,57 @@
                         >
                             SteamScore
                             <br/>
-                            {{game.recommendationsTotal}}
+                            {{ game.recommendationsTotal }}
                         </v-sheet>
+                    </v-col>
+                </v-row>
+                <v-divider class="my-5"/>
+                <v-row>
+                    <v-col id="detailedDescription" v-html="game.detailedDescription"></v-col>
+                </v-row>
+                <v-divider class="my-5"/>
+                <v-row>
+                    <v-col v-if="game.website">
+                        Website
+                        <v-col>
+                            <a :href="game.website">{{game.website}}</a>
+                        </v-col>
+                    </v-col>
+                    <v-divider vertical/>
+                    <v-col>
+                        Developers:
+                        <v-col>
+                            <p v-for="(dev, i) in game.developers">{{dev}}</p>
+                        </v-col>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col>
+                        Supported languages:
+                        <v-col>
+                            <p v-html="game.supportedLanguages"></p>
+                        </v-col>
+                    </v-col>
+                    <v-col>
+                        Publishers:
+                        <v-col>
+                            <p v-for="(pub, i) in game.publishers">{{pub}}</p>
+                        </v-col>
+                    </v-col>
+                </v-row>
+                <v-divider class="my-5"/>
+                <v-row>
+                    <v-col>
+                        <v-row>
+                            Categories
+                        </v-row>
+                        <v-row></v-row>
+                    </v-col>
+                    <v-col>
+                        <v-row>
+                            Genres
+                        </v-row>
+                        <v-row></v-row>
                     </v-col>
                 </v-row>
             </v-col>
@@ -145,6 +183,7 @@ export default class GameView extends VueComponent {
                 publishers
                 recommendationsTotal
                 supportedLanguages
+                website
                 metacritic {
                     score
                 }
