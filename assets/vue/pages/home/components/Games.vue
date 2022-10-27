@@ -64,7 +64,6 @@
 
 <script lang="ts">
 const {Component, VueComponent, Prop} = require('@/common/VueComponent');
-const featuredWinIds = require("../../../../steam/featuredGames.json");
 
 @Component
 export default class Games extends VueComponent {

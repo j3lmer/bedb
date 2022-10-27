@@ -40,19 +40,48 @@
                             show-arrows-on-hover
                         >
                             <v-carousel-item v-for="(screenshot, i) in game.screenshots.edges">
-                                <v-img :src="screenshot.node.thumbnail">></v-img>
+                                <v-img :src="screenshot.node.thumbnail"></v-img>
                             </v-carousel-item>
                         </v-carousel>
-                        djsajsdl
                     </v-col>
-                    <v-col id="userScore">
 
+                </v-row>
+                <v-row
+                    justify="space-around"
+                >
+                    <v-col id="userScore" class="d-flex justify-center">
+<!--                        kleur van de sheet bepalen op hoe hoog de score is?-->
+                        <v-sheet
+                            class="text-center"
+                            elevation="1"
+                            height="100"
+                            width="100"
+                        >
+                            User score
+                        </v-sheet>
                     </v-col>
-                    <v-col id="metaScore">
-
+                    <v-col id="metaScore" class="d-flex justify-center" v-if="game.metacritic">
+                        <v-sheet
+                            class="text-center"
+                            elevation="1"
+                            height="100"
+                            width="100"
+                        >
+                            Meta score
+                            {{game.metacritic.score}}
+                        </v-sheet>
                     </v-col>
-                    <v-col id="steamRecommendations">
-
+                    <v-col id="steamRecommendations" class="d-flex justify-center">
+                        <v-sheet
+                            class="text-center"
+                            elevation="1"
+                            height="100"
+                            width="100"
+                        >
+                            SteamScore
+                            <br/>
+                            {{game.recommendationsTotal}}
+                        </v-sheet>
                     </v-col>
                 </v-row>
             </v-col>
@@ -116,6 +145,9 @@ export default class GameView extends VueComponent {
                 publishers
                 recommendationsTotal
                 supportedLanguages
+                metacritic {
+                    score
+                }
                 screenshots {
                   edges {
                     node {
@@ -184,6 +216,7 @@ export default class GameView extends VueComponent {
 
         if (this.gameExists) {
             this.game = (response as any).game;
+            console.log(this.game)
         }
     }
 
