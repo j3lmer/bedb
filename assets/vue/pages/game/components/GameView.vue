@@ -39,7 +39,7 @@
                     justify="space-around"
                 >
                     <v-col id="userScore" class="d-flex justify-center">
-                        <!--                        kleur van de sheet bepalen op hoe hoog de score is?-->
+                        <!--                       TODO: kleur van de sheet bepalen op hoe hoog de score is?-->
                         <v-sheet
                             class="text-center"
                             elevation="1"
@@ -77,22 +77,23 @@
                 <v-row>
                     <v-col id="detailedDescription" v-html="game.detailedDescription"></v-col>
                 </v-row>
-                <v-divider class="my-5"/>
+                <v-divider class="mt-5 mb-3"/>
                 <v-row>
                     <v-col v-if="game.website">
-                        Website
+                        Website:
                         <v-col>
-                            <a :href="game.website">{{game.website}}</a>
+                            <a :href="game.website">{{ game.website }}</a>
                         </v-col>
                     </v-col>
                     <v-divider vertical/>
                     <v-col>
                         Developers:
                         <v-col>
-                            <p v-for="(dev, i) in game.developers">{{dev}}</p>
+                            <p v-for="(dev, i) in game.developers">{{ dev }}</p>
                         </v-col>
                     </v-col>
                 </v-row>
+                <v-divider class="my-3"/>
                 <v-row>
                     <v-col>
                         Supported languages:
@@ -100,26 +101,43 @@
                             <p v-html="game.supportedLanguages"></p>
                         </v-col>
                     </v-col>
+                    <v-divider vertical/>
                     <v-col>
                         Publishers:
                         <v-col>
-                            <p v-for="(pub, i) in game.publishers">{{pub}}</p>
+                            <p v-for="(pub, i) in game.publishers">{{ pub }}</p>
                         </v-col>
                     </v-col>
                 </v-row>
-                <v-divider class="my-5"/>
+                <v-divider class="my-3"/>
                 <v-row>
                     <v-col>
-                        <v-row>
-                            Categories
-                        </v-row>
-                        <v-row></v-row>
+                        Categories:
+                        <v-col>
+                            <p v-for="(cat, i) in game.categories.edges">{{ cat.node.description }}</p>
+                        </v-col>
                     </v-col>
+                    <v-divider vertical/>
                     <v-col>
-                        <v-row>
-                            Genres
-                        </v-row>
-                        <v-row></v-row>
+                        Genres:
+                        <v-col>
+                            <p v-for="(genre, i) in game.genres.edges">{{ genre.node.description }}</p>
+                        </v-col>
+                    </v-col>
+                </v-row>
+                <v-divider class="my-3"/>
+                <v-row>
+                    <v-col>
+                        Pc requirements:
+                        <v-col v-html="game.pcRequirement.minimum"></v-col>
+                        <v-col v-html="game.pcRequirement.recommended"></v-col>
+                    </v-col>
+                    <v-divider vertical/>
+                    <v-col>
+                        Platforms:
+                        <v-col>
+                            <p v-for="(value, platform) in game.platform">{{ capitalizeFirstLetter(platform) }}: {{ value ? "Supported" : "Not supported"}}</p>
+                        </v-col>
                     </v-col>
                 </v-row>
             </v-col>
@@ -237,7 +255,7 @@ export default class GameView extends VueComponent {
                 }
               }
             }
-        `
+        `;
     }
 
     private getVariables(): object {
@@ -257,6 +275,10 @@ export default class GameView extends VueComponent {
             this.game = (response as any).game;
             console.log(this.game)
         }
+    }
+
+    private capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
     }
 
 
