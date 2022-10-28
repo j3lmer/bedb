@@ -55,6 +55,7 @@
                             elevation="1"
                             height="100"
                             width="100"
+                            :color="getColor(game.metacritic.score)"
                         >
                             Meta score
                             {{ game.metacritic.score }}
@@ -66,6 +67,7 @@
                             elevation="1"
                             height="100"
                             width="100"
+                            :color="getColor(game.recommendationsTotal)"
                         >
                             SteamScore
                             <br/>
@@ -142,7 +144,12 @@
                 </v-row>
             </v-col>
             <v-col id="reviews">
+                <v-col id="userReviews">
 
+                </v-col>
+                <v-col id="steamReviews">
+
+                </v-col>
             </v-col>
         </v-row>
     </v-container>
@@ -277,10 +284,17 @@ export default class GameView extends VueComponent {
         }
     }
 
-    private capitalizeFirstLetter(string) {
+    private capitalizeFirstLetter(string: string): string {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
 
+    private getColor(score: number): string {
+        let color = 'red';
+
+        if(score >= 70) color = "green";
+        else if(score >=40) color = "orange"
+        return color;
+    }
 
 }
 </script>
