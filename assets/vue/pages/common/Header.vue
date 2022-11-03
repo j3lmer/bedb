@@ -37,12 +37,14 @@
                             class="text-right pt-0 mr-8"
                             cols="1"
                         >
-                            <v-icon
-                                large
-                                class="pb-4"
-                            >
-                                mdi-account
-                            </v-icon>
+                            <a :href="isLoggedIn ? '/settings' : '/entry'">
+                                <v-icon
+                                    large
+                                    class="pb-4"
+                                >
+                                    mdi-account
+                                </v-icon>
+                            </a>
                         </v-col>
                     </v-row>
                 </v-col>
