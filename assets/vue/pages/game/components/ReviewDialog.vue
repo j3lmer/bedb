@@ -43,6 +43,24 @@
                 </v-card-text>
             </v-card>
         </v-dialog>
+        <v-snackbar
+            v-model="snackbar"
+        >
+            <v-row class="ma-2" v-for="text in snackbarText">
+                {{ text }}
+            </v-row>
+
+            <template v-slot:action="{ attrs }">
+                <v-btn
+                    color="pink"
+                    text
+                    v-bind="attrs"
+                    @click="snackbar = false"
+                >
+                    Close
+                </v-btn>
+            </template>
+        </v-snackbar>
     </v-container>
 </template>
 
@@ -56,12 +74,28 @@ export default class ReviewDialog extends VueComponent {
     private reviewText = '';
     private rating = 0;
     private gameIri = `/api/games/${commonGameViewHelper.getSteamAppId()}`;
+    private snackbar = false;
+    private snackbarText = [];
 
     //checken of de rating op zn minst 1 is
     private sendReview(): void {
         if (!(this.rating > 0 && this.reviewText && this.reviewText.length > 0)) {
-
+            let reasons = [];
+            if (this.rating <= 0) {
+                reasons.push("Vul a.u.b. een rating in.");
+            }
+            if (!this.reviewText || this.reviewText.length <= 0) {
+                reasons.push("Vul a.u.b. een review in.");
+            }
+            this.showSnackBar(reasons);
         }
+        
+
+    }
+
+    private showSnackBar(snackbarText: string[]) {
+        this.snackbarText = snackbarText;
+        this.snackbar = true;
     }
 }
 </script>
