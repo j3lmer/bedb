@@ -10,9 +10,7 @@
                     <v-row>
                         <v-spacer/>
                         <v-col cols="6" align="right">
-                            <v-btn>
-                                Leave a review
-                            </v-btn>
+                            <ReviewDialog/>
                         </v-col>
                     </v-row>
                 </v-col>
@@ -159,10 +157,17 @@
 </template>
 
 <script lang="ts">
+import Header from "@/pages/common/Header.vue";
+
 const {Component, VueComponent} = require('@/common/VueComponent');
 import GraphqlHelper from "@/common/components/graphqlHelper";
+import ReviewDialog from "@/pages/game/components/ReviewDialog.vue";
 
-@Component()
+@Component({
+    components: {
+        ReviewDialog
+    }
+})
 export default class GameView extends VueComponent {
 
     private user: any;
