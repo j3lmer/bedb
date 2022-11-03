@@ -4,6 +4,7 @@
             :selected-component="selectedComponent"
             :items="items"
             @updated-tab="selectComponent"
+            :is-logged-in="this.user !== undefined"
         />
         <v-card flat>
             <Home v-if="selectedComponent === items.Home"

@@ -83,8 +83,12 @@ export default class Header extends VueComponent {
     @Prop({required: false})
     private selectedComponent: string
 
+    @Prop({required: true})
+    private isLoggedIn: boolean
+
     private searchNameString = '';
     private queryResults = [];
+
 
     @Watch('selectedComponent')
     private updateTab(Value: string): void {
@@ -99,7 +103,6 @@ export default class Header extends VueComponent {
 
     public created() {
         this.updateTab(this.selectedComponent);
-
     }
 
     // deze functie elke keer callen wanneer er iets veranderd aan de string in de zoekbalk,

@@ -1,6 +1,6 @@
 <template>
     <v-app>
-        <Header/>
+        <Header :is-logged-in="this.user !== undefined"/>
         <Settings :user="user"/>
     </v-app>
 </template>

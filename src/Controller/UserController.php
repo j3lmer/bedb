@@ -20,10 +20,14 @@ class UserController extends AbstractController
     #[Route('/settings', name: 'userSettings')]
     public function index(): Response
     {
-        return $this->render('user/user.html.twig',[
-            'user' => $this->isGranted('IS_AUTHENTICATED_FULLY') ?
-                $this->serializer->serialize($this->getUser(), 'jsonld') :
-                null
-        ]);
+        $user = $this->isGranted('IS_AUTHENTICATED_FULLY') ?
+            $this->serializer->serialize($this->getUser(), 'jsonld') :
+            null;
+
+        if ($user === null) {
+            return $this->redirectToRoute('home');
+        }
+
+        return $this->render('user/user.html.twig', ['user' => $user]);
     }
 }

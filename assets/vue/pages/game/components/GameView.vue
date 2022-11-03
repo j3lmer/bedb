@@ -27,7 +27,7 @@
                             hide-delimiter-background
                             show-arrows-on-hover
                         >
-                            <v-carousel-item v-for="(screenshot, i) in game.screenshots.edges" :key="screenshot">
+                            <v-carousel-item v-for="(screenshot, i) in game.screenshots.edges" :key="i">
                                 <v-img :src="screenshot.node.thumbnail"></v-img>
                             </v-carousel-item>
                         </v-carousel>
@@ -101,14 +101,14 @@
                     <v-col>
                         Publishers:
                         <v-col>
-                            <p v-for="(pub, i) in game.publishers" :key="pub">{{ pub }}</p>
+                            <p v-for="(pub, i) in game.publishers" :key="i">{{ pub }}</p>
                         </v-col>
                     </v-col>
                     <v-divider vertical/>
                     <v-col>
                         Developers:
                         <v-col>
-                            <p v-for="(dev, i) in game.developers" :key="dev">{{ dev }}</p>
+                            <p v-for="(dev, i) in game.developers" :key="i">{{ dev }}</p>
                         </v-col>
                     </v-col>
                 </v-row>
@@ -117,14 +117,14 @@
                     <v-col>
                         Categories:
                         <v-col>
-                            <p v-for="(cat, i) in game.categories.edges" :key="cat">{{ cat.node.description }}</p>
+                            <p v-for="(cat, i) in game.categories.edges" :key="i">{{ cat.node.description }}</p>
                         </v-col>
                     </v-col>
                     <v-divider vertical/>
                     <v-col>
                         Genres:
                         <v-col>
-                            <p v-for="(genre, i) in game.genres.edges" :key="genre">{{ genre.node.description }}</p>
+                            <p v-for="(genre, i) in game.genres.edges" :key="i">{{ genre.node.description }}</p>
                         </v-col>
                     </v-col>
                 </v-row>
@@ -139,7 +139,7 @@
                     <v-col>
                         Platforms:
                         <v-col>
-                            <p v-for="(value, platform) in game.platform" :key="platform">
+                            <p v-for="(value, platform) in game.platform">
                                 {{ capitalizeFirstLetter(platform) }}: {{ value ? "Supported" : "Not supported"}}
                             </p>
                         </v-col>
