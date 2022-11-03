@@ -43,7 +43,7 @@
                                     elevation="10"
                                 >
                                     <v-card-title class="text-center">
-                                        <a class="h4" :href="getUrl(game.node.id)">
+                                        <a class="h4 game" :href="getUrl(game.node.id)">
                                             {{ game.node.name }}
                                         </a>
                                     </v-card-title>
@@ -78,3 +78,13 @@ export default class Games extends VueComponent {
 
 }
 </script>
+<style scoped>
+.game {
+    text-decoration: none;
+    color: black;
+}
+.game:hover {
+    text-decoration: none;
+    color: black;
+}
+</style>

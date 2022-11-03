@@ -8,9 +8,12 @@
                 <v-spacer/>
                 <v-col cols="6">
                     <v-card-title class="text-center justify-center py-6">
-                        <h1 class="font-weight-bold text-h2 title">
+                        <a
+                            class="h1 font-weight-bold text-h2 title"
+                            href="/"
+                        >
                             Be-db
-                        </h1>
+                        </a>
                     </v-card-title>
                 </v-col>
                 <v-col>
@@ -120,3 +123,15 @@ export default class Header extends VueComponent {
 
 };
 </script>
+
+<style scoped>
+.title {
+    text-decoration: none;
+    color: black;
+}
+.title:hover{
+    text-decoration: none;
+    color: black;
+}
+
+</style>
