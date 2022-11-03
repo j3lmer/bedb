@@ -64,6 +64,7 @@ export default class App extends VueComponent {
     //TODO / nth: featured games ook laden
     //TODO: stop using first x and get random games (random cursor?)
     //TODO / NTH: remove nsfw games and maybe query new ones (recursively until there are no nsfw games anymore?)
+    //TODO / NTH: resultaten cachen en inladen
     private async loadGames(): Promise<void> {
 
         const [q, variables] = this.setupForQuery();

@@ -16,7 +16,7 @@ class GameController extends AbstractController
         $this->serializer = $serializer;
     }
 
-    #[Route('/game/{steamAppId}', name: 'entry')]
+    #[Route('/game/{steamAppId}', name: 'appDetails')]
     public function index(int $steamAppId): Response
     {
         return $this->render('game/game.html.twig',[

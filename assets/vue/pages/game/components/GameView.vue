@@ -81,10 +81,27 @@
                 </v-row>
                 <v-divider class="mt-5 mb-3"/>
                 <v-row>
+                    <v-col>
+                        Supported languages:
+                        <v-col>
+                            <p v-html="game.supportedLanguages"></p>
+                        </v-col>
+                    </v-col>
+                    <v-divider vertical v-if="game.website"/>
                     <v-col v-if="game.website">
                         Website:
                         <v-col>
                             <a :href="game.website">{{ game.website }}</a>
+                        </v-col>
+                    </v-col>
+                </v-row>
+                <v-divider class="my-3"/>
+<!--                TODO: wellicht website op zn eigen row, publishers en developers naast elkaar.-->
+                <v-row>
+                    <v-col>
+                        Publishers:
+                        <v-col>
+                            <p v-for="(pub, i) in game.publishers">{{ pub }}</p>
                         </v-col>
                     </v-col>
                     <v-divider vertical/>
@@ -92,22 +109,6 @@
                         Developers:
                         <v-col>
                             <p v-for="(dev, i) in game.developers">{{ dev }}</p>
-                        </v-col>
-                    </v-col>
-                </v-row>
-                <v-divider class="my-3"/>
-                <v-row>
-                    <v-col>
-                        Supported languages:
-                        <v-col>
-                            <p v-html="game.supportedLanguages"></p>
-                        </v-col>
-                    </v-col>
-                    <v-divider vertical/>
-                    <v-col>
-                        Publishers:
-                        <v-col>
-                            <p v-for="(pub, i) in game.publishers">{{ pub }}</p>
                         </v-col>
                     </v-col>
                 </v-row>
@@ -138,7 +139,9 @@
                     <v-col>
                         Platforms:
                         <v-col>
-                            <p v-for="(value, platform) in game.platform">{{ capitalizeFirstLetter(platform) }}: {{ value ? "Supported" : "Not supported"}}</p>
+                            <p v-for="(value, platform) in game.platform">
+                                {{ capitalizeFirstLetter(platform) }}: {{ value ? "Supported" : "Not supported"}}
+                            </p>
                         </v-col>
                     </v-col>
                 </v-row>
