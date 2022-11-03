@@ -162,6 +162,7 @@ import Header from "@/pages/common/Header.vue";
 const {Component, VueComponent} = require('@/common/VueComponent');
 import GraphqlHelper from "@/common/components/graphqlHelper";
 import ReviewDialog from "@/pages/game/components/ReviewDialog.vue";
+import {commonGameViewHelper} from "@/pages/game/components/commonGameViewHelper";
 
 @Component({
     components: {
@@ -171,7 +172,7 @@ import ReviewDialog from "@/pages/game/components/ReviewDialog.vue";
 export default class GameView extends VueComponent {
 
     private user: any;
-    private steamAppId: number;
+    private steamAppId = commonGameViewHelper.getSteamAppId();
     private game: any;
     private queryString: string;
     private gameExists = false;
@@ -181,11 +182,6 @@ export default class GameView extends VueComponent {
         this.getGameDetails();
     }
 
-    private getSteamAppId(): void {
-        const windowLocation = window.location.pathname;
-        const temp = windowLocation.substring(windowLocation.lastIndexOf('/') + 1);
-        this.steamAppId = +temp;
-    }
 
     // image moet nog
     //steamreviews tijdelijk kapot
@@ -279,7 +275,6 @@ export default class GameView extends VueComponent {
     }
 
     private async getGameDetails(): Promise<void> {
-        this.getSteamAppId();
         this.setupQuery();
         const variables = this.getVariables();
         const response = await GraphqlHelper.queryPoster(this.queryString, variables);
