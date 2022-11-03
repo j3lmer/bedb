@@ -200,7 +200,7 @@ export default class GameView extends VueComponent {
     private setupQuery(): void {
         this.queryString =
             `query getGameDetails($id: ID!) {
-              game(id: $id) {
+                game(id: $id) {
                 name
                 about
                 shortDescription
@@ -216,56 +216,55 @@ export default class GameView extends VueComponent {
                     score
                 }
                 screenshots {
-                  edges {
-                    node {
-                      full
-                      thumbnail
+                    edges {
+                        node {
+                            full
+                            thumbnail
+                        }
                     }
-                  }
                 }
                 reviews {
-                  edges {
-                    node {
-                      text
-                      rating
-                      dateUpdated
-                      owner {
-                        username
-                      }
-
+                    edges {
+                        node {
+                            text
+                            rating
+                            dateUpdated
+                                owner {
+                                username
+                            }
+                        }
                     }
-                  }
                 }
                 releaseDate {
-                  comingSoon
-                  date
+                    comingSoon
+                    date
                 }
                 platform {
-                  windows
-                  mac
-                  linux
+                    windows
+                    mac
+                    linux
                 }
                 pcRequirement {
-                  minimum
-                  recommended
+                    minimum
+                    recommended
                 }
                 genres {
-                  edges {
-                    node {
-                      description
+                    edges {
+                        node {
+                          description
+                        }
                     }
-                  }
                 }
                 categories {
-                  edges {
-                    node {
-                      description
+                    edges {
+                        node {
+                          description
+                        }
                     }
-                  }
                 }
-              }
-            }
-        `;
+                }
+            }`
+        ;
     }
 
     private getVariables(): object {
@@ -295,7 +294,7 @@ export default class GameView extends VueComponent {
         let color = 'red';
 
         if(score >= 70) color = "green";
-        else if(score >=40) color = "orange"
+        else if(score >=40) color = "orange";
         return color;
     }
 
