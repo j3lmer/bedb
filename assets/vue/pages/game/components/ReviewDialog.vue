@@ -31,7 +31,6 @@
                     </v-row>
                     <v-row class="d-flex flex-row-reverse">
                         <v-col cols="3" class="text-end">
-                            <!--                            TODO: maak dit werkend lol-->
                             <v-btn @click="sendReview">Verzend review!</v-btn>
 
                         </v-col>
@@ -67,6 +66,7 @@
 <script lang="ts">
 const {Component, VueComponent, Prop} = require('@/common/VueComponent');
 import {commonGameViewHelper} from "@/pages/game/components/commonGameViewHelper";
+import axios from "axios";
 
 @Component()
 export default class ReviewDialog extends VueComponent {
@@ -77,7 +77,6 @@ export default class ReviewDialog extends VueComponent {
     private snackbar = false;
     private snackbarText = [];
 
-    //checken of de rating op zn minst 1 is
     private sendReview(): void {
         if (!(this.rating > 0 && this.reviewText && this.reviewText.length > 0)) {
             let reasons = [];
@@ -89,8 +88,17 @@ export default class ReviewDialog extends VueComponent {
             }
             this.showSnackBar(reasons);
         }
-        
 
+        const postData = {
+            text: this.reviewText,
+            game: this.gameIri,
+            rating: this.rating,
+            dateUpdated: new Date(),
+            owner: `/api/users/${(window as any).user.id}`
+        };
+
+        const response = axios.post("http://127.0.0.1:8000/api/reviews", postData);
+        console.log(response);
     }
 
     private showSnackBar(snackbarText: string[]) {
