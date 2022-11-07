@@ -24,7 +24,7 @@ export default class App extends VueComponent {
 
     public created(): void {
         this.user = (window as any).user;
-        this.steamAppId = (window as any).steamAppid;
+        this.steamAppid = (window as any).steamAppid;
     }
 }
 </script>

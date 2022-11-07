@@ -1,8 +1,10 @@
 import axios from "axios";
+import base from "./base"
+
 export default class GraphqlHelper {
 
     public static async queryPoster(query: string, variables: object): Promise<object> {
-        const response = await axios.post("http://127.0.0.1:8000/api/graphql", {
+        const response = await axios.post(`${base.getBase()}api/graphql`, {
                 query: query,
                 variables: variables,
             },

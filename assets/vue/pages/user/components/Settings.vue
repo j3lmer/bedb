@@ -16,15 +16,15 @@
                         <v-row>
                            <v-card elevation="0" width="50vw" class="px-5 ma-3" outlined>
 <!--                               v-for in de nested v-card-->
-                               <v-row class="top-layer" justify="space-between">
+                               <v-row class="top-layer" justify="space-around">
                                    <v-col>
                                        <h4>
                                            gamenaam
                                        </h4>
 <!--                                       hier een br en gebruikersnaam gerapporteerde post mocht dit een admin zijn-->
                                    </v-col>
-                                   <v-col class="text-end">
-                                       verwijderknop
+                                   <v-col class="text-end mt-3 pr-3">
+                                       <v-btn color="red" class="white--text pa-0 ma-0" @click="deleteReview">X</v-btn>
                                    </v-col>
                                </v-row>
                                <v-row class="mid-layer">
@@ -40,7 +40,11 @@
 <!--                               if v-img-->
                                <v-row class="bottom-layer">
 <!--                                   FIXME: hier een max height en width aan geven zonder te croppen-->
-                                   <v-img class="ma-5" src="https://gifimage.net/wp-content/uploads/2018/06/work-in-progress-gif-7.gif" max-height="25vh" max-width="25-vw"/>
+                                   <v-img class="ma-5" src="https://gifimage.net/wp-content/uploads/2018/06/work-in-progress-gif-7.gif"
+                                          max-height="25vh"
+                                          max-width="25-vw"
+                                          contain
+                                   />
                                </v-row>
                            </v-card>
                         </v-row>
@@ -87,10 +91,15 @@ export default class Settings extends VueComponent {
 
     private isAdminUser = false;
 
-    created(): void {
+    private created(): void {
         console.log(this.user);
         this.isAdminUser = !!this.user.roles.includes("ROLE_ADMIN");
         //query doen voor alle reviews van
+    }
+
+    private deleteReview()
+    {
+
     }
 }
 </script>

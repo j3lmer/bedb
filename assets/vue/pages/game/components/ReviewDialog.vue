@@ -67,6 +67,7 @@
 const {Component, VueComponent, Prop} = require('@/common/VueComponent');
 import {commonGameViewHelper} from "@/pages/game/components/commonGameViewHelper";
 import axios from "axios";
+import base from "@/pages/game/components/base"
 
 @Component()
 export default class ReviewDialog extends VueComponent {
@@ -97,7 +98,7 @@ export default class ReviewDialog extends VueComponent {
             owner: `/api/users/${(window as any).user.id}`
         };
 
-        const response = axios.post("http://127.0.0.1:8000/api/reviews", postData);
+        const response = axios.post(`${base.getBase()}api/reviews`, postData);
         console.log(response);
     }
 
