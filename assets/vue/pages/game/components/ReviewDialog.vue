@@ -99,6 +99,9 @@ export default class ReviewDialog extends VueComponent {
         };
 
         const response = await axios.post(`${base.getBase()}api/reviews`, postData);
+        this.reviewText = "";
+        this.rating = 0;
+
         if (response.status > 299) {
             this.dialog = false;
             this.snackbarText.push("Review kon niet verstuurd worden, probeer het later opnieuw.")
@@ -110,8 +113,6 @@ export default class ReviewDialog extends VueComponent {
         this.snackbar = true;
         this.$emit("review-made");
         this.dialog = false;
-        this.reviewText = "";
-        this.rating = 0;
     }
 
     private showSnackBar(snackbarText: string[]) {
