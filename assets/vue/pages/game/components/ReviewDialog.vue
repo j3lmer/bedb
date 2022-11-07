@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        <v-dialog width="50vw">
+        <v-dialog width="50vw" v-model="dialog">
             <template v-slot:activator="{on, attrs}">
                 <v-btn
                     v-bind="attrs"
@@ -54,7 +54,7 @@
                     color="pink"
                     text
                     v-bind="attrs"
-                    @click="snackbar = false"
+                    @click="closeSnackBar"
                 >
                     Close
                 </v-btn>
@@ -67,7 +67,7 @@
 const {Component, VueComponent, Prop} = require('@/common/VueComponent');
 import {commonGameViewHelper} from "@/pages/game/components/commonGameViewHelper";
 import axios from "axios";
-import base from "@/pages/game/components/base"
+import base from "@/common/components/base";
 
 @Component()
 export default class ReviewDialog extends VueComponent {
@@ -78,7 +78,7 @@ export default class ReviewDialog extends VueComponent {
     private snackbar = false;
     private snackbarText = [];
 
-    private sendReview(): void {
+    private async sendReview(): Promise<void> {
         if (!(this.rating > 0 && this.reviewText && this.reviewText.length > 0)) {
             let reasons = [];
             if (this.rating <= 0) {
@@ -98,13 +98,30 @@ export default class ReviewDialog extends VueComponent {
             owner: `/api/users/${(window as any).user.id}`
         };
 
-        const response = axios.post(`${base.getBase()}api/reviews`, postData);
-        console.log(response);
+        const response = await axios.post(`${base.getBase()}api/reviews`, postData);
+        if (response.status > 299) {
+            this.dialog = false;
+            this.snackbarText.push("Review kon niet verstuurd worden, probeer het later opnieuw.")
+            this.snackbar = true;
+            return;
+        }
+
+        this.snackbarText.push("Je review is successvol verstuurd!");
+        this.snackbar = true;
+        this.$emit("review-made");
+        this.dialog = false;
+        this.reviewText = "";
+        this.rating = 0;
     }
 
     private showSnackBar(snackbarText: string[]) {
         this.snackbarText = snackbarText;
         this.snackbar = true;
+    }
+
+    private closeSnackBar(): void {
+        this.snackbarText = [];
+        this.snackbar = false;
     }
 }
 </script>
