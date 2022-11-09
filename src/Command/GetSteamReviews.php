@@ -46,7 +46,6 @@ class GetSteamReviews extends Command
     }
 
 
-
     protected function getReviews(Filesystem $filesystem, int $numReviewsPerChunk, $numTotalReviewsPerGame) // only for test purposes
     {
         $appids = $this->filestructureHelper->getAppIds();
@@ -54,7 +53,6 @@ class GetSteamReviews extends Command
 
         foreach ($appids as $appid) {
             $reviewCounter = 0;
-            $appid = $appid[1];
             $reviewPath = "assets/steam/games/{$appid}/{$appid}_reviews.json";
 
             printf("\n Deleting reviews and creating empty file for: {$appid} \n");
