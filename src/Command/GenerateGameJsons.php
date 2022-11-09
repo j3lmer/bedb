@@ -49,6 +49,12 @@ class GenerateGameJsons extends Command
         for ($i = 0; $i < count($gameList); $i++) {
             $appId = $gameList[$i]["appid"];
             $path = "{$package->getUrl("assets/steam/games/")}/{$appId}/{$appId}.json";
+
+            if($filesystem->exists("{$package->getUrl("assets/steam/games/")}/{$appId}/{$appId}.json")) {
+                printf("json file already exists, skipping..");
+                continue;
+            }
+
             $response = file_get_contents("https://store.steampowered.com/api/appdetails?appids={$appId}");
 
             $filesystem->dumpFile($path, $response);
