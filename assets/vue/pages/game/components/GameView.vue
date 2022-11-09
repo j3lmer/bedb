@@ -179,7 +179,6 @@
                             </v-row>
                         </v-col>
                     </v-row>
-                <!--                        <h3>Steam reviews</h3>-->
                 </v-container>
             </v-col>
         </v-row>
