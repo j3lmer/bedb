@@ -17,16 +17,37 @@ class FilestructureHelper
 
     public function getGamePaths(): array
     {
-        return glob("{$this->package->getUrl("assets/steam/games/**")}");
+        $arrFiles = [];
+        $handle = opendir('assets/steam/games');
+
+        if ($handle) {
+            while (($entry = readdir($handle)) !== FALSE) {
+                if($entry !== "." && $entry !== "..") {
+                    $arrFiles[] = "assets/steam/games/{$entry}";
+                }
+            }
+        }
+        closedir($handle);
+        sort($arrFiles);
+
+        return $arrFiles;
     }
 
     public function getAppIds(): array
     {
-        $appids = [];
+        $arrFiles = [];
+        $handle = opendir('assets/steam/games');
 
-        foreach ($this->getGamePaths() as $path) {
-            $appids[] = explode("assets/steam/games/", $path);
+        if ($handle) {
+            while (($entry = readdir($handle)) !== FALSE) {
+                if($entry !== "." && $entry !== "..") {
+                    $arrFiles[] = $entry;
+                }
+            }
         }
-        return $appids;
+        closedir($handle);
+        sort($arrFiles);
+
+        return $arrFiles;
     }
 }
