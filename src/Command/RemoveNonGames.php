@@ -23,26 +23,28 @@ class RemoveNonGames extends Command
     {
         $filestructureHelper = new FilestructureHelper();
         $filesystem = new Filesystem();
-        $paths = $filestructureHelper->getGamePaths();
+        $appIds = $filestructureHelper->getAppIds();
+        $pathPrefix = 'assets/steam/games/';
 
-        foreach ($paths as $path) {
-            $appId = explode('assets/steam/games/', $path)[1];
-
-            if (!$filesystem->exists("{$path}/{$appId}.json")) {
+        foreach ($appIds as $appId) {
+            if (!$filesystem->exists("{$pathPrefix}/{$appId}/{$appId}.json")) {
                 printf("No json found for " . $appId . ". Removing.. \n");
-                $filesystem->remove($path);
+                $filesystem->remove("{$pathPrefix}/{$appId}");
             }
 
-            $file = json_decode(file_get_contents("{$path}/{$appId}.json"), true);
+            $file = json_decode(file_get_contents("{$pathPrefix}/{$appId}/{$appId}.json"), true);
             $type = $this->getType($file, $appId);
+
 
             if ($type === null) {
                 printf($appId . " has no type, removing.. \n");
-                $this->removeGame($filesystem, $path);
+                $this->removeGame($filesystem, "{$pathPrefix}/{$appId}");
             } else if ($type !== "game") {
                 printf($appId . " is not a game, removing.. \n");
-                $this->removeGame($filesystem, $path);
+                $this->removeGame($filesystem, "{$pathPrefix}/{$appId}");
             }
+
+            printf($appId . " is a game, skipping.. \n");
         }
         return Command::SUCCESS;
     }
