@@ -2,26 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\TeamReview;
+use App\Entity\SteamReview;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<TeamReview>
+ * @extends ServiceEntityRepository<SteamReview>
  *
- * @method TeamReview|null find($id, $lockMode = null, $lockVersion = null)
- * @method TeamReview|null findOneBy(array $criteria, array $orderBy = null)
- * @method TeamReview[]    findAll()
- * @method TeamReview[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method SteamReview|null find($id, $lockMode = null, $lockVersion = null)
+ * @method SteamReview|null findOneBy(array $criteria, array $orderBy = null)
+ * @method SteamReview[]    findAll()
+ * @method SteamReview[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class SteamReviewRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, TeamReview::class);
+        parent::__construct($registry, SteamReview::class);
     }
 
-    public function save(TeamReview $entity, bool $flush = false): void
+    public function save(SteamReview $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class SteamReviewRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(TeamReview $entity, bool $flush = false): void
+    public function remove(SteamReview $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -40,7 +40,7 @@ class SteamReviewRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return TeamReview[] Returns an array of TeamReview objects
+//     * @return SteamReview[] Returns an array of SteamReview objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -54,7 +54,7 @@ class SteamReviewRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?TeamReview
+//    public function findOneBySomeField($value): ?SteamReview
 //    {
 //        return $this->createQueryBuilder('t')
 //            ->andWhere('t.exampleField = :val')

@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Command\Helper\FilestructureHelper;
-use DirectoryIterator;
+use App\Repository\SteamReviewRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,24 +21,31 @@ class ImportSteamReviewsToDb extends Command
 {
     private FilestructureHelper $filestructureHelper;
     private Filesystem $filesystem;
+    private SteamReviewRepository $steamReviewRepository;
+
+
+    public function __construct(SteamReviewRepository $steamReviewRepository)
+    {
+        parent::__construct();
+        $this->steamReviewRepository = $steamReviewRepository;
+        $this->filesystem = new Filesystem();
+        $this->filestructureHelper = new FilestructureHelper();
+    }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->filestructureHelper = new FilestructureHelper();
-        $this->filesystem = new Filesystem();
-
-
-
 
         foreach ($this->filestructureHelper->getAppIds() as $appId) {
+            $json = file_get_contents("assets/steam/games/{$appId}/{$appId}_reviews.json");
+            if($json === "[[]]") {
+                printf("{$appId} has no reviews, skipping.. \n \n");
+                continue;
+            }
 
-
-            $json = json_decode(file_get_contents("assets/steam/games/{$appId}/{$appId}_reviews.json"), true);
-
-            dd("assets/steam/games/{$appId}/{$appId}_reviews.json");
-            dd($json);
-
+            dd(json_decode($json, true));
         }
+
+
         return Command::SUCCESS;
     }
 }
