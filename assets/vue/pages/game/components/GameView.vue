@@ -154,10 +154,13 @@
                             <v-row v-if="isReady" v-for="review in userReviews" cols="6">
                                 <v-col cols="12">
                                     <v-card class="my-4">
-                                        <v-card-title>{{ review.node.owner.username }} | Rating: {{ review.node.rating }}
+                                        <v-card-title>{{ review.node.owner.username }} | Rating: {{
+                                                review.node.rating
+                                            }}
                                         </v-card-title>
                                         <v-card-subtitle>
-                                            {{ new Date(review.node.dateUpdated).toLocaleTimeString() }} {{ new Date(review.node.dateUpdated).toLocaleDateString()}}
+                                            {{ new Date(review.node.dateUpdated).toLocaleTimeString() }}
+                                            {{ new Date(review.node.dateUpdated).toLocaleDateString() }}
                                         </v-card-subtitle>
                                         <v-divider/>
                                         <v-card-text>
@@ -186,8 +189,6 @@
 </template>
 
 <script lang="ts">
-import Header from "@/pages/common/Header.vue";
-
 const {Component, VueComponent} = require('@/common/VueComponent');
 import GraphqlHelper from "@/common/components/graphqlHelper";
 import ReviewDialog from "@/pages/game/components/ReviewDialog.vue";
@@ -211,18 +212,16 @@ export default class GameView extends VueComponent {
     public beforeMount(): void {
         this.getGameDetails();
         this.getReviews();
-
     }
 
     private created(): void {
         this.user = (window as any).user;
     }
 
-
     // image moet nog
-    //steamreviews tijdelijk kapot
+    //steamreviews moet nog
     /**
-     * # steamReviews { tijdelijk kapot
+     * # steamReviews {
      *     #   edges {
      *     #     node {
      *     #       hours
@@ -292,16 +291,9 @@ export default class GameView extends VueComponent {
         ;
     }
 
-    private getVariables(): object {
-        return {
-            "id": `/api/games/${this.steamAppId}`
-        };
-    }
-
     private async getGameDetails(): Promise<void> {
         this.setupGamesQuery();
-        const variables = this.getVariables();
-        const response = await GraphqlHelper.queryPoster(this.queryString, variables);
+        const response = await GraphqlHelper.queryPoster(this.queryString, {"id": `/api/games/${this.steamAppId}`});
         this.gameExists = response !== null;
 
         if (this.gameExists) {
