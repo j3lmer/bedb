@@ -27,8 +27,6 @@ class UpdateJsonsALL extends Command
         $this->getApplication()->find('app:generate-game-jsons')->run($input, $output);
         $this->getApplication()->find("app:remove-non-games")->run($input, $output);
         $this->getApplication()->find('app:get-reviews')->run($input, $output);
-        $this->getApplication()->find("app:generate-game-enums")->run($input, $output);
-        $this->getApplication()->find("app:get-featured-games")->run($input, $output);
         $this->getApplication()->find("app:get-featured-games")->run($input, $output);
         $this->getApplication()->find("app:generate-game-categories-and-enums")->run($input, $output);
         $this->getApplication()->find("app:import-games-to-db")->run($input, $output);

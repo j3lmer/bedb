@@ -57,7 +57,7 @@ class ImportGamesToDatabase extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $ids = $this->filestructureHelper->getAppIds();
+        $ids = $this->filestructureHelper->gezXtAppIds();
         $this->createLogFile();
 
         foreach ($ids as $id) {

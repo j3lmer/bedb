@@ -18,7 +18,7 @@ use Symfony\Component\Filesystem\Filesystem;
 )]
 class GetFeaturedGames extends Command
 {
-//TODO: this command has to be run weekly
+// TODO: this command has to be run weekly
 
     private Filesystem $filesystem;
 

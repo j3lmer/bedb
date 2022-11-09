@@ -42,7 +42,6 @@ class GenerateCategoriesAndGenres extends Command
         $collectedCategories = [];
 
         foreach ($this->filestructureHelper->getAppIds() as $appId) {
-            $appId = $appId[1];
             printf("\n processing {$appId} \n");
 
             $json = json_decode(file_get_contents("assets/steam/games/{$appId}/{$appId}.json"), true);
