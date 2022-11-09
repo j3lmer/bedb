@@ -61,7 +61,6 @@ class ImportGamesToDatabase extends Command
         $this->createLogFile();
 
         foreach ($ids as $id) {
-            $id = $id[1];
             $path = "assets/steam/games/{$id}/{$id}.json";
             $data = json_decode(file_get_contents($path), true);
 
