@@ -145,33 +145,42 @@
                 </v-row>
             </v-col>
             <v-col id="reviews" cols="6">
-                <v-col id="userReviews" cols="6">
-                    <v-row justify="center">
-                        <h3>Gebruiker reviews</h3>
-                    </v-row>
+                <v-container>
+                    <v-row>
+                        <v-col id="userReviews" cols="6">
+                            <v-row justify="center">
+                                <h3>Gebruiker reviews</h3>
+                            </v-row>
+                            <v-row v-if="isReady" v-for="review in userReviews" cols="6">
+                                <v-col cols="12">
+                                    <v-card class="my-4">
+                                        <v-card-title>{{ review.node.owner.username }} | Rating: {{ review.node.rating }}
+                                        </v-card-title>
+                                        <v-card-subtitle>
+                                            {{ new Date(review.node.dateUpdated).toLocaleTimeString() }} {{ new Date(review.node.dateUpdated).toLocaleDateString()}}
+                                        </v-card-subtitle>
+                                        <v-divider/>
+                                        <v-card-text>
+                                            {{ review.node.text }}
+                                        </v-card-text>
+                                    </v-card>
+                                </v-col>
+                            </v-row>
+                        </v-col>
+                        <v-col id="steamReviews" cols="6">
+                            <v-row justify="center">
+                                <h3>Steam reviews</h3>
+                            </v-row>
+                            <v-row justify="center">
+                                <v-col cols="12" class="text-center">
+                                    <h4>Het lijkt er op dat er geen steam reviews zijn</h4><!-- v-if geen reviews-->
 
-                    <v-row v-if="isReady" v-for="review in userReviews">
-                        <v-col>
-                            <v-card class="my-4">
-                                <v-card-title>{{ review.node.owner.username }} | Rating: {{ review.node.rating }}
-                                </v-card-title>
-                                <v-card-subtitle>
-                                    {{ new Date(review.node.dateUpdated).toLocaleTimeString() }} {{ new Date(review.node.dateUpdated).toLocaleDateString()}}
-                                </v-card-subtitle>
-                                <v-divider/>
-                                <v-card-text>
-                                    {{ review.node.text }}
-                                </v-card-text>
-                            </v-card>
+                                </v-col>
+                            </v-row>
                         </v-col>
                     </v-row>
-                </v-col>
-                <!--                <v-col id="steamReviews" cols="6">-->
-                <!--                    <v-row justify="center">-->
                 <!--                        <h3>Steam reviews</h3>-->
-                <!--                    </v-row>-->
-
-                <!--                </v-col>-->
+                </v-container>
             </v-col>
         </v-row>
     </v-container>
