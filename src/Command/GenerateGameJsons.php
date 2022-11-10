@@ -50,7 +50,7 @@ class GenerateGameJsons extends Command
             $appId = $gameList[$i]["appid"];
             $path = "{$package->getUrl("assets/steam/games/")}/{$appId}/{$appId}.json";
 
-            if($filesystem->exists("{$package->getUrl("assets/steam/games/")}/{$appId}/{$appId}.json")) { // TODO: een soort switch maken dat dit alleen gebeurt als ik t wil
+            if($filesystem->exists("{$package->getUrl("assets/steam/games/")}/{$appId}/{$appId}.json") || $filesystem->exists("{$package->getUrl("assets/steam/games/")}/{$appId}")) { // TODO: een soort switch maken dat dit alleen gebeurt als ik t wil
                 printf("json file already exists for {$appId}, skipping.. \n \n");
                 continue;
             }
