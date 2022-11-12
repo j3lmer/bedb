@@ -14,7 +14,15 @@
                     </v-card-title>
                     <v-divider/>
                     <v-card-text>
-                        <v-row>
+                        <v-row justify="center">
+                            <v-card
+                                class="my-4"
+                                v-if="!hasReviews"
+                            >
+                                <v-card-title>Het lijkt er op dat je nog geen reviews hebt.</v-card-title>
+                                <v-divider/>
+                                <v-card-subtitle>Probeer er een aan te maken!</v-card-subtitle>
+                            </v-card>
                             <v-card
                                 v-if="hasReviews"
                                 v-for="review in userReviews"
@@ -98,6 +106,8 @@
 <script lang="ts">
 const {Component, VueComponent, Prop} = require('@/common/VueComponent')
 import GraphqlHelper from "@/common/components/graphqlHelper";
+import base from "@/common/components/base"
+import axios from "axios";
 
 @Component
 export default class Settings extends VueComponent {
@@ -111,20 +121,28 @@ export default class Settings extends VueComponent {
     // TODO: als admin; query voor alle gerapporteerde reviews
     private async beforeMount(): Promise<void> {
         this.isAdminUser = !!this.user.roles.includes("ROLE_ADMIN");
-        const [q, variables] = this.setupQuery();
+        const [q, variables] = this.setupQuery(this.user.reviews);
         this.userReviews = await GraphqlHelper.queryPoster(q, variables);
-        this.hasReviews = this.userReviews !== null;
+        this.hasReviews = this.userReviews != null;
+
     }
 
-    private setupQuery(): [string, object] {
+    private async getReviews(): Promise<string[]>
+    {
+        const response = await axios.get(`${base.getBase()}api/users/${this.user.id}`);
+        return (response as any).data.reviews;
+    }
+
+
+    private setupQuery(reviews: string[]): [string, object] {
         let outerString = `query GetUserReviews(`;
         let innerString = ``;
         let variables = {};
 
-        for (let i = 0; i < this.user.reviews.length; i++) {
-            variables[`id${i}`] = this.user.reviews[i];
+        for (let i = 0; i < reviews.length; i++) {
+            variables[`id${i}`] = reviews[i];
 
-            outerString += i === this.user.reviews.length - 1 ? `$id${i}: ID!` : `$id${i}: ID!, `;
+            outerString += i === reviews.length - 1 ? `$id${i}: ID!` : `$id${i}: ID!, `;
             let userReviewString = `
                 review${i} : review(id: $id${i}) {
                     id
@@ -137,7 +155,7 @@ export default class Settings extends VueComponent {
                     dateUpdated
                 }`
             ;
-            userReviewString += i !== this.user.reviews.length ? ',' : '';
+            userReviewString += i !== reviews.length ? ',' : '';
             innerString += userReviewString;
         }
         outerString += ") {";
@@ -147,8 +165,13 @@ export default class Settings extends VueComponent {
         return [outerString, variables];
     }
 
-    private deleteReview(id: number) {
-        console.log(id);
+    private async deleteReview(id: string) {
+
+        await axios.delete(`${base.getBase()}${id.substring(1)}`)
+        const response = await this.getReviews();
+        const [q, variables] = this.setupQuery(response);
+        this.userReviews = await GraphqlHelper.queryPoster(q, variables);
+        this.$forceUpdate();
     }
 }
 </script>
