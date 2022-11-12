@@ -3,8 +3,6 @@
         <v-row>
             <v-col>
                 <v-card>
-                    <!--                Als er reviews zijn, anders misschien weergeven dat je nog geen posts hebt-->
-
                     <v-card-title>
                         <v-row class="text-center">
                             <v-col>
@@ -40,7 +38,9 @@
                                         <!--                                       hier een br en gebruikersnaam gerapporteerde post mocht dit een admin zijn-->
                                     </v-col>
                                     <v-col class="text-end mt-3 pr-3">
-                                        <v-btn color="red" class="white--text pa-0 ma-0" @click="deleteReview(review.id)">X</v-btn>
+                                        <v-btn color="red" class="white--text pa-0 ma-0"
+                                               @click="deleteReview(review.id)">X
+                                        </v-btn>
                                     </v-col>
                                 </v-row>
                                 <v-row class="mid-layer">
@@ -124,15 +124,12 @@ export default class Settings extends VueComponent {
         const [q, variables] = this.setupQuery(this.user.reviews);
         this.userReviews = await GraphqlHelper.queryPoster(q, variables);
         this.hasReviews = this.userReviews != null;
-
     }
 
-    private async getReviews(): Promise<string[]>
-    {
+    private async getReviews(): Promise<string[]> {
         const response = await axios.get(`${base.getBase()}api/users/${this.user.id}`);
         return (response as any).data.reviews;
     }
-
 
     private setupQuery(reviews: string[]): [string, object] {
         let outerString = `query GetUserReviews(`;
@@ -166,7 +163,6 @@ export default class Settings extends VueComponent {
     }
 
     private async deleteReview(id: string) {
-
         await axios.delete(`${base.getBase()}${id.substring(1)}`)
         const response = await this.getReviews();
         const [q, variables] = this.setupQuery(response);
