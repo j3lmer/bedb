@@ -67,6 +67,9 @@ class Review
     )]
     private File $image;
 
+    #[ORM\Column]
+    private int $timesReported = 0;
+
     #[Assert\NotNull]
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'reviews')]
     #[ORM\JoinColumn(name: 'owner_id', nullable: false)]

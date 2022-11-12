@@ -154,9 +154,17 @@
                             <v-row v-if="isReady" v-for="review in userReviews" cols="6">
                                 <v-col cols="12">
                                     <v-card class="my-4">
-                                        <v-card-title>{{ review.node.owner.username }} | Rating: {{
-                                                review.node.rating
-                                            }}
+                                        <v-card-title>
+                                            <v-col cols="9">
+                                                {{ review.node.owner.username }} | Rating: {{ review.node.rating }}
+                                            </v-col>
+                                            <v-col cols="3">
+                                                <v-btn @click="reportReview(review.node)">
+                                                    <v-icon>
+                                                        mdi-alert-octagon
+                                                    </v-icon>
+                                                </v-btn>
+                                            </v-col>
                                         </v-card-title>
                                         <v-card-subtitle>
                                             {{ new Date(review.node.dateUpdated).toLocaleTimeString() }}
@@ -216,6 +224,11 @@ export default class GameView extends VueComponent {
 
     private created(): void {
         this.user = (window as any).user;
+    }
+
+    private reportReview(review: object): void {
+
+        console.log(review)
     }
 
     // image moet nog
@@ -310,6 +323,7 @@ export default class GameView extends VueComponent {
                     edges {
                         node {
                             text
+                            id
                             rating
                             dateUpdated
                                 owner {

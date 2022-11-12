@@ -29,7 +29,6 @@
                                 class="px-5 pb-5 pt-2 ma-3"
                                 outlined
                             >
-                                <!--                               v-for in de nested v-card-->
                                 <v-row class="top-layer" justify="space-around">
                                     <v-col>
                                         <h4>
@@ -83,12 +82,14 @@
                     <v-card-text class="pa-5 pl-10 pb-10">
                         <v-row class="mb-2 text-center">
                             <v-col><h4>Gebruikersnaam:</h4></v-col>
+                            <v-spacer/>
                             <v-col>{{ user.username }} <a>
                                 <v-icon> mdi-pencil</v-icon>
                             </a></v-col>
                         </v-row>
                         <v-row class="my-2 text-center">
                             <v-col><h4>E-mail:</h4></v-col>
+                            <v-spacer/>
                             <v-col>{{ user.email }}</v-col>
                         </v-row>
                         <v-row class="mt-2" justify="center">
@@ -97,88 +98,88 @@
                                 width="50%"
                             >
                                 <template v-slot:activator="{ on, attrs }">
-                            <v-btn
-                                v-bind="attrs"
-                                v-on="on"
-                            >
-                                Verander wachtwoord
-                            </v-btn>
-                            </template>
-<!-- TODO: dialoog mooier maken, regel maken dat het nieuwe wachtwoord met het oude wachtwoord moet overeenkomen. functionaliteit maken om te ook echt te updaten, met email?-->
-                            <v-card>
-                                <v-card-title class="text-h5">
-                                    Wachtwoord veranderen
-                                </v-card-title>
-
-                                <v-card-text>
-                                    <v-row>
-                                        <v-col>
-                                            <p>Huidige wachtwoord</p>
-                                        </v-col>
-                                        <v-col>
-                                            <v-input>
-                                                <v-text-field
-                                                    v-model="oldPassword"
-                                                    :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                                                    :type="show1 ? 'text' : 'password'"
-                                                    name="input-10-1"
-                                                    counter
-                                                    @click:append="show1 = !show1"
-                                                ></v-text-field>
-                                            </v-input>
-                                        </v-col>
-                                    </v-row>
-                                    <v-row>
-                                        <v-col>
-                                            <p>Nieuw wachtwoord</p>
-                                        </v-col>
-                                        <v-col>
-                                            <v-input>
-                                                <v-text-field
-                                                    v-model="password1"
-                                                    :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                                                    :rules="[rules.required, rules.min]"
-                                                    :type="show1 ? 'text' : 'password'"
-                                                    name="input-10-1"
-                                                    counter
-                                                    @click:append="show1 = !show1"
-                                                ></v-text-field>
-                                            </v-input>
-                                        </v-col>
-                                    </v-row>
-                                    <v-row>
-                                        <v-col>
-                                            <p>Nieuwe wachtwoord herhalen</p>
-                                        </v-col>
-                                        <v-col>
-                                            <v-input>
-                                                <v-text-field
-                                                    v-model="password2"
-                                                    :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                                                    :rules="[rules.required, rules.min]"
-                                                    :type="show1 ? 'text' : 'password'"
-                                                    name="input-10-1"
-                                                    counter
-                                                    @click:append="show1 = !show1"
-                                                ></v-text-field>
-                                            </v-input>
-                                        </v-col>
-                                    </v-row>
-                                </v-card-text>
-
-                                <v-divider></v-divider>
-
-                                <v-card-actions>
-                                    <v-spacer></v-spacer>
                                     <v-btn
-                                        color="primary"
-                                        text
-                                        @click="updatePasswordDialog = false"
+                                        v-bind="attrs"
+                                        v-on="on"
                                     >
-                                        Opslaan
+                                        Verander wachtwoord
                                     </v-btn>
-                                </v-card-actions>
-                            </v-card>
+                                </template>
+                                <!-- TODO: dialoog mooier maken, regel maken dat het nieuwe wachtwoord met het oude wachtwoord moet overeenkomen. functionaliteit maken om te ook echt te updaten, met email?-->
+                                <v-card>
+                                    <v-card-title class="text-h5">
+                                        Wachtwoord veranderen
+                                    </v-card-title>
+
+                                    <v-card-text>
+                                        <v-row>
+                                            <v-col>
+                                                <p class="font-weight-bold">Huidige wachtwoord</p>
+                                            </v-col>
+                                            <v-col>
+                                                <v-input>
+                                                    <v-text-field
+                                                        v-model="oldPassword"
+                                                        :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                                                        :type="show1 ? 'text' : 'password'"
+                                                        name="input-10-1"
+                                                        counter
+                                                        @click:append="show1 = !show1"
+                                                    ></v-text-field>
+                                                </v-input>
+                                            </v-col>
+                                        </v-row>
+                                        <v-row>
+                                            <v-col>
+                                                <p class="font-weight-bold">Nieuw wachtwoord</p>
+                                            </v-col>
+                                            <v-col>
+                                                <v-input>
+                                                    <v-text-field
+                                                        v-model="password1"
+                                                        :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                                                        :rules="[rules.required, rules.min]"
+                                                        :type="show1 ? 'text' : 'password'"
+                                                        name="input-10-1"
+                                                        counter
+                                                        @click:append="show1 = !show1"
+                                                    ></v-text-field>
+                                                </v-input>
+                                            </v-col>
+                                        </v-row>
+                                        <v-row>
+                                            <v-col>
+                                                <p class="font-weight-bold">Nieuwe wachtwoord herhalen</p>
+                                            </v-col>
+                                            <v-col>
+                                                <v-input>
+                                                    <v-text-field
+                                                        v-model="password2"
+                                                        :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                                                        :rules="[rules.required, rules.min, rules.match]"
+                                                        :type="show1 ? 'text' : 'password'"
+                                                        name="input-10-1"
+                                                        counter
+                                                        @click:append="show1 = !show1"
+                                                    ></v-text-field>
+                                                </v-input>
+                                            </v-col>
+                                        </v-row>
+                                    </v-card-text>
+
+                                    <v-divider></v-divider>
+
+                                    <v-card-actions>
+                                        <v-spacer></v-spacer>
+                                        <v-btn
+                                            color="primary"
+                                            text
+                                            @click="updatePasswordDialog = false"
+                                        >
+                                            Opslaan
+                                        </v-btn>
+                                    </v-card-actions>
+                                </v-card>
                             </v-dialog>
                         </v-row>
                     </v-card-text>
@@ -204,12 +205,13 @@ export default class Settings extends VueComponent {
     private userReviews = {};
     private updatePasswordDialog = false;
     private show1 = false;
-    private password1= '';
+    private password1 = '';
     private password2 = '';
     private oldPassword = '';
     private rules = {
         required: value => !!value || 'Verplicht.',
-        min: v => v.length >= 6 || 'Min 6 karakters'
+        min: v => v.length >= 6 || 'Min 6 karakters',
+        match: v => v === this.password1 || 'Wachtwoorden moeten overeen komen'
     }
 
     // TODO: als admin; query voor alle gerapporteerde reviews
@@ -218,6 +220,14 @@ export default class Settings extends VueComponent {
         const [q, variables] = this.setupQuery(this.user.reviews);
         this.userReviews = await GraphqlHelper.queryPoster(q, variables);
         this.hasReviews = this.userReviews != null;
+
+        if (this.isAdminUser) {
+            this.getReportedReviews();
+        }
+    }
+
+    private getReportedReviews() {
+
     }
 
     private async getReviews(): Promise<string[]> {
