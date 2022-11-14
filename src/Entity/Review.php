@@ -153,4 +153,21 @@ class Review
         $this->game = $game;
         return $this;
     }
+
+    /**
+     * @return int
+     */
+    public function getTimesReported(): int
+    {
+        return $this->timesReported;
+    }
+
+    /**
+     * @param int $timesReported
+     */
+    public function setTimesReported(int $timesReported): void
+    {
+        $this->timesReported = $timesReported;
+    }
+
 }

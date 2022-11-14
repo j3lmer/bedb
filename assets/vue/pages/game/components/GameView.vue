@@ -6,7 +6,10 @@
             </v-col>
             <v-col>
                 <v-spacer/>
-                <v-col align-self="end">
+                <v-col
+                    align-self="end"
+                    v-if="user"
+                >
                     <v-row>
                         <v-spacer/>
                         <v-col cols="6" align="right">
@@ -326,7 +329,8 @@ export default class GameView extends VueComponent {
                             id
                             rating
                             dateUpdated
-                                owner {
+                            timesReported
+                            owner {
                                 username
                             }
                         }
@@ -339,7 +343,10 @@ export default class GameView extends VueComponent {
             "id": `/api/games/${this.steamAppId}`
         };
         const response = await GraphqlHelper.queryPoster(q, variables);
-        this.userReviews = (response as any).game.reviews.edges;
+        console.log(response);
+        if (response != undefined) {
+            this.userReviews = (response as any).game.reviews.edges;
+        }
         this.isReady = true;
     }
 
