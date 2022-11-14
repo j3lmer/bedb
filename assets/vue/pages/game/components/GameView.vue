@@ -200,10 +200,15 @@
 </template>
 
 <script lang="ts">
+import axios from "axios";
+
 const {Component, VueComponent} = require('@/common/VueComponent');
 import GraphqlHelper from "@/common/components/graphqlHelper";
 import ReviewDialog from "@/pages/game/components/ReviewDialog.vue";
 import {commonGameViewHelper} from "@/pages/game/components/commonGameViewHelper";
+import base from "@/common/components/base";
+
+// TODO: SNACKBAR CLEAREN NADAT HIJ WORD GECLOSED OF ZELF CLOSED OFZO WANT ANDERS GEKKE BUG DAT DE SNACKBAR ECHT FUCKING GROOT WORD
 
 @Component({
     components: {
@@ -229,9 +234,18 @@ export default class GameView extends VueComponent {
         this.user = (window as any).user;
     }
 
-    private reportReview(review: object): void {
+    // TODO: iets maken dat 1 gebruiker maar 1x een review kan reporten. op deze manier kan je maar 1x per page refresh (ik weet ook niet waarom) een (individueel) review reporten. will do for now.
 
-        console.log(review)
+    private reportReview(review: object): void {
+        let rev = JSON.parse(JSON.stringify(review));
+        rev.timesReported += 1;
+        rev.owner = rev.owner.id
+        const id = this.getId(rev.id);
+        axios.patch(`${base.getBase()}api/reviews/${id}`, rev, {
+            headers: {
+                'Content-Type': "application/merge-patch+json"
+            }
+        });
     }
 
     // image moet nog
@@ -331,6 +345,7 @@ export default class GameView extends VueComponent {
                             dateUpdated
                             timesReported
                             owner {
+                                id
                                 username
                             }
                         }
@@ -343,7 +358,6 @@ export default class GameView extends VueComponent {
             "id": `/api/games/${this.steamAppId}`
         };
         const response = await GraphqlHelper.queryPoster(q, variables);
-        console.log(response);
         if (response != undefined) {
             this.userReviews = (response as any).game.reviews.edges;
         }
@@ -352,6 +366,12 @@ export default class GameView extends VueComponent {
 
     private capitalizeFirstLetter(string: string): string {
         return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    private getId(id: string): number {
+        const parts = id.split("/");
+        const res = parts[parts.length - 1];
+        return +res;
     }
 
     private getColor(score: number): string {
