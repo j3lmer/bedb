@@ -222,12 +222,36 @@ export default class Settings extends VueComponent {
         this.hasReviews = this.userReviews != null;
 
         if (this.isAdminUser) {
-            this.getReportedReviews();
+            await this.getReportedReviews();
         }
     }
 
-    private getReportedReviews() {
-
+    private async getReportedReviews(): Promise<void>{
+        // // TODO: filter property op review entity aangezet, query moet iets worden als /reviews?exists[timesReported]=true
+        //https://stackoverflow.com/questions/51352648/restrict-all-results-to-a-specific-property-value-i-e-active-true
+        // const test = `
+        //     query ReportedReviews($reported: Boolean!) {
+        //         review(reported: $reported) {
+        //             reported
+        //             id
+        //             text
+        //             rating
+        //             dateUpdated
+        //             game {
+        //                 id
+        //                 name
+        //             }
+        //         }
+        //     }
+        // `;
+        // const variables = {
+        //     "reported": true
+        // };
+        //
+        // const testResponse = await GraphqlHelper.queryPoster(test, variables);
+        // console.log(testResponse);
+        // const testResponse = await axios.get(`${base.getBase()}api/reviews?reported=1`);
+        // console.log(testResponse);
     }
 
     private async getReviews(): Promise<string[]> {

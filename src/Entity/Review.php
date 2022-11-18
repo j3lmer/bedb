@@ -40,7 +40,7 @@ use Symfony\Component\HttpFoundation\File\File;
 // * )
 // */
 #[ApiResource]
-#[ApiFilter(OrderFilter::class, properties: ['id' => 'DESC', 'reported'])]
+#[ApiFilter(OrderFilter::class, properties: ['id' => 'DESC', 'reported' => 'exact'])]
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
 class Review
 {
