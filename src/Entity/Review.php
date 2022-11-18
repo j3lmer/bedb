@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use App\Repository\ReviewRepository;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
@@ -38,6 +40,7 @@ use Symfony\Component\HttpFoundation\File\File;
 // * )
 // */
 #[ApiResource]
+#[ApiFilter(OrderFilter::class, properties: ['id' => 'DESC', 'reported'])]
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
 class Review
 {
@@ -68,7 +71,7 @@ class Review
     private File $image;
 
     #[ORM\Column]
-    private int $timesReported = 0;
+    private bool $reported = false;
 
     #[Assert\NotNull]
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'reviews')]
@@ -155,19 +158,19 @@ class Review
     }
 
     /**
-     * @return int
+     * @return bool
      */
-    public function getTimesReported(): int
+    public function isReported(): bool
     {
-        return $this->timesReported;
+        return $this->reported;
     }
 
     /**
-     * @param int $timesReported
+     * @param bool $reported
      */
-    public function setTimesReported(int $timesReported): void
+    public function setReported(bool $reported): void
     {
-        $this->timesReported = $timesReported;
+        $this->reported = $reported;
     }
 
 }
