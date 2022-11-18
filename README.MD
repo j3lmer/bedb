@@ -4,3 +4,4 @@
 `npm run dev`
 `bin/console doctrine:migrations:migrate`
 `bin/console app:update-jsons-all` 
+`php memory limit increasen`
