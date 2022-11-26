@@ -40,7 +40,6 @@
                     justify="space-around"
                 >
                     <v-col id="userScore" class="d-flex justify-center">
-                        <!--                       TODO: kleur van de sheet bepalen op hoe hoog de score is?-->
                         <v-sheet
                             class="text-center"
                             elevation="1"
@@ -97,7 +96,6 @@
                     </v-col>
                 </v-row>
                 <v-divider class="my-3"/>
-                <!--                TODO: wellicht website op zn eigen row, publishers en developers naast elkaar.-->
                 <v-row>
                     <v-col>
                         Publishers:
@@ -180,15 +178,35 @@
                                     </v-card>
                                 </v-col>
                             </v-row>
+                            <v-row v-if="!isReady || userReviews.length === 0">
+                                <v-col cols="12">
+                                    <v-card class="my-4">
+                                        <v-card-title>
+                                            <v-col>
+                                                Het lijkt er op dat er nog geen reviews zijn voor deze game
+                                            </v-col>
+                                        </v-card-title>
+                                        <v-divider/>
+                                        <v-card-text>
+                                            Word de eerste om er een toe te voegen!
+                                        </v-card-text>
+                                    </v-card>
+                                </v-col>
+                            </v-row>
                         </v-col>
                         <v-col id="steamReviews" cols="6">
                             <v-row justify="center">
                                 <h3>Steam reviews</h3>
                             </v-row>
-                            <v-row justify="center">
-                                <v-col cols="12" class="text-center">
-                                    <h4>Het lijkt er op dat er geen steam reviews zijn</h4><!-- v-if geen reviews-->
-
+<!--                            TODO: steamreviews-->
+                            <v-row v-if="!isReady || userReviews.length === 0">
+                                <v-col cols="12">
+                                    <v-card class="my-4">
+                                        <v-card-title>
+                                                Het lijkt er op dat er geen Steam reviews zijn voor deze game
+                                        </v-card-title>
+                                        <v-divider/>
+                                    </v-card>
                                 </v-col>
                             </v-row>
                         </v-col>
@@ -207,8 +225,6 @@ import GraphqlHelper from "@/common/components/graphqlHelper";
 import ReviewDialog from "@/pages/game/components/ReviewDialog.vue";
 import {commonGameViewHelper} from "@/pages/game/components/commonGameViewHelper";
 import base from "@/common/components/base";
-
-// TODO: SNACKBAR CLEAREN NADAT HIJ WORD GECLOSED OF ZELF CLOSED OFZO WANT ANDERS GEKKE BUG DAT DE SNACKBAR ECHT FUCKING GROOT WORD
 
 @Component({
     components: {
