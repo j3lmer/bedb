@@ -30,12 +30,20 @@
                         <v-textarea outlined v-model="reviewText" label="Wat je denkt"/>
                     </v-row>
                     <v-row class="d-flex flex-row-reverse">
+                        <v-spacer/>
                         <v-col cols="3" class="text-end">
                             <v-btn @click="sendReview">Verzend review!</v-btn>
 
                         </v-col>
                         <v-col class="text-end">
-                            <v-btn>Selecteer een bijlage</v-btn>
+                            <v-file-input
+                                :rules="rules"
+                                v-model="files"
+                                accept="image/png, image/jpeg, image/bmp"
+                                placeholder="Upload a screenshot"
+                                prepend-icon="mdi-camera"
+                                label="Images"
+                            />
                         </v-col>
                         <v-spacer/>
                     </v-row>
@@ -74,11 +82,25 @@ export default class ReviewDialog extends VueComponent {
     private dialog = false;
     private reviewText = '';
     private rating = 0;
+    private files = [];
     private gameIri = `/api/games/${commonGameViewHelper.getSteamAppId()}`;
     private snackbar = false;
     private snackbarText = [];
+    private rules = [value => !value || value.size < 2000000 || 'Image size should be less than 2 MB!'];
+
+
+    created()
+    {
+        this.test();
+    }
+
+    private test()
+    {
+        axios.post(`${base.getBase()}media_objects`, {"test": "test"})
+    }
 
     private async sendReview(): Promise<void> {
+        console.log(this.files);
         if (!(this.rating > 0 && this.reviewText && this.reviewText.length > 0)) {
             let reasons = [];
             if (this.rating <= 0) {

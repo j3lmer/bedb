@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Metadata\ApiFilter;
@@ -12,6 +13,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Vich\UploaderBundle\Mapping\Annotation\Uploadable;
+use Vich\UploaderBundle\Mapping\Annotation\UploadableField;
 
 ///**
 // * @ApiResource(
@@ -41,6 +45,7 @@ use Symfony\Component\HttpFoundation\File\File;
 // */
 #[ApiResource]
 #[ApiFilter(OrderFilter::class, properties: ['id' => 'DESC', 'reported' => 'exact'])]
+#[Uploadable]
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
 class Review
 {
@@ -61,13 +66,20 @@ class Review
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: false)]
     private DateTimeInterface $date_updated;
 
-    #[Assert\Image(
-        maxSize: '8M',
-        minWidth: 200,
-        maxWidth: 1080,
-        maxHeight: 1920,
-        minHeight: 200
-    )]
+    /**
+    * @ApiProperty(
+    *   iri="http://schema.org/image",
+    *   attributes={
+    *     "openapi_context"={
+    *       "type"="string",
+    *     }
+    *   }
+    * )
+    */
+    #[ORM\Column(type: Types::STRING, length: 255)]
+    private string $imageName;
+
+    #[UploadableField(mapping: "media_object", fileNameProperty: "imageName")]
     private File $image;
 
     #[ORM\Column]
@@ -127,12 +139,26 @@ class Review
     public function setImage(File $file = null): self
     {
         $this->image = $file;
+        if($file) {
+            $this->date_updated = new \DateTime('now');
+        }
+
         return $this;
     }
 
     public function getImage(): File
     {
         return $this->image;
+    }
+
+    public function getImageName(): string
+    {
+        return $this->imageName;
+    }
+
+    public function setImageName(string $imageName): void
+    {
+        $this->imageName = $imageName;
     }
 
     public function getOwner(): User
@@ -172,5 +198,4 @@ class Review
     {
         $this->reported = $reported;
     }
-
 }
