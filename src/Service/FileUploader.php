@@ -15,7 +15,7 @@ class FileUploader
     private $urlHelper;
     private Filesystem $filesystem;
 
-    public function __construct(string $publicPath,  SluggerInterface $slugger, UrlHelper $urlHelper, Filesystem $filesystem)
+    public function __construct(string $publicPath, SluggerInterface $slugger, UrlHelper $urlHelper, Filesystem $filesystem)
     {
         $this->publicPath = $publicPath . "/uploads";
         $this->slugger = $slugger;
@@ -28,7 +28,7 @@ class FileUploader
     {
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $safeFilename = $this->slugger->slug($originalFilename);
-        $fileName = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
+        $fileName = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
 
         try {
             $file->move($this->getUploadPath(), $fileName);

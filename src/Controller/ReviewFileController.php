@@ -24,7 +24,7 @@ class ReviewFileController extends AbstractController
     {
         $uploadedFile = $request->files->get('image');
         if (!$uploadedFile) {
-            throw new BadRequestHttpException('"file" is required');
+            throw new BadRequestHttpException('"image" is required');
         }
 
         $review = new Review();

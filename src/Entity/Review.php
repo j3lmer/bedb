@@ -60,7 +60,7 @@ use App\Controller\ReviewFileController;
  *              "multipart/form-data" = {
  *                "schema" = {
  *                  "type" = "object",
-*                   "properties" = {
+ *                   "properties" = {
  *                      "text" = {
  *                        "description" = "The review text the user has submitted for a game",
  *                        "type" = "string",
@@ -207,7 +207,6 @@ class Review
 
     public function setImageName(string $imageName): void
     {
-        //TODO: on upload image name, get image from storage and set to property (/public/uploads)
         $this->imageName = $imageName;
     }
 
