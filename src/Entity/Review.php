@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Vich\UploaderBundle\Mapping\Annotation\Uploadable;
 use Vich\UploaderBundle\Mapping\Annotation\UploadableField;
+use App\Controller\ReviewFileController;
 
 ///**
 // * @ApiResource(
@@ -43,7 +44,58 @@ use Vich\UploaderBundle\Mapping\Annotation\UploadableField;
 // *     shortName="Review"
 // * )
 // */
-#[ApiResource]
+
+/**
+ * @ApiResource(
+ *   collectionOperations={
+ *     "get",
+ *     "post" = {
+ *       "controller" = ReviewFileController::class,
+ *       "deserialize" = false,
+ *       "openapi_context" = {
+ *          "requestBody" = {
+ *            "description" = "File upload to an existing resource (Review)",
+ *            "required" = false,
+ *            "content" = {
+ *              "multipart/form-data" = {
+ *                "schema" = {
+ *                  "type" = "object",
+*                   "properties" = {
+ *                      "text" = {
+ *                        "description" = "The review text the user has submitted for a game",
+ *                        "type" = "string",
+ *                        "example" = "Dit vind ik geen leuk spelletje"
+ *                      },
+ *                      "rating" = {
+ *                          "description" = "The numerical rating a user has left on a game",
+ *                          "type" = "integer",
+ *                          "example" = "5"
+ *                      },
+ *                      "image" = {
+ *                          "description" = "An image file a user can upload supporting their review",
+ *                          "type" = "string",
+ *                          "format" = "binary",
+ *                      },
+ *                      "game" = {
+ *                          "description" = "The associated game with the review",
+ *                          "type" = "string",
+ *                          "example" = "/api/games/1"
+ *                      },
+ *                      "owner" = {
+ *                          "description" = "The id of the user associated with this review",
+ *                          "type" = "string",
+ *                          "example" = "/api/users/1"
+ *                      }
+ *                  },
+ *                },
+ *              },
+ *            },
+ *          },
+ *       },
+ *     },
+ *   },
+ *)
+ */
 #[ApiFilter(OrderFilter::class, properties: ['id' => 'DESC', 'reported' => 'exact'])]
 #[Uploadable]
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
@@ -67,20 +119,17 @@ class Review
     private DateTimeInterface $date_updated;
 
     /**
-    * @ApiProperty(
-    *   iri="http://schema.org/image",
-    *   attributes={
-    *     "openapi_context"={
-    *       "type"="string",
-    *     }
-    *   }
-    * )
-    */
+     * @ApiProperty(
+     *   iri="http://schema.org/image",
+     *   attributes={
+     *     "openapi_context"={
+     *       "type"="string",
+     *     }
+     *   }
+     * )
+     */
     #[ORM\Column(type: Types::STRING, length: 255)]
     private string $imageName;
-
-    #[UploadableField(mapping: "media_object", fileNameProperty: "imageName")]
-    private File $image;
 
     #[ORM\Column]
     private bool $reported = false;
@@ -139,7 +188,7 @@ class Review
     public function setImage(File $file = null): self
     {
         $this->image = $file;
-        if($file) {
+        if ($file) {
             $this->date_updated = new \DateTime('now');
         }
 
@@ -158,6 +207,7 @@ class Review
 
     public function setImageName(string $imageName): void
     {
+        //TODO: on upload image name, get image from storage and set to property (/public/uploads)
         $this->imageName = $imageName;
     }
 

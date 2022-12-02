@@ -10,31 +10,28 @@ use Symfony\Component\HttpFoundation\UrlHelper;
 
 class FileUploader
 {
-    private $uploadPath;
+    private string $uploadPath;
     private $slugger;
     private $urlHelper;
-    private $relativeUploadsDir;
     private Filesystem $filesystem;
 
-    public function __construct($publicPath, $uploadPath, SluggerInterface $slugger, UrlHelper $urlHelper, Filesystem $filesystem)
+    public function __construct(string $publicPath,  SluggerInterface $slugger, UrlHelper $urlHelper, Filesystem $filesystem)
     {
-        $this->uploadPath = $uploadPath;
+        $this->publicPath = $publicPath . "/uploads";
         $this->slugger = $slugger;
         $this->urlHelper = $urlHelper;
         $this->filesystem = $filesystem;
 
-        // get uploads directory relative to public path //  "/uploads/"
-        $this->relativeUploadsDir = str_replace($publicPath, '', $this->uploadPath).'/';
     }
 
-    public function upload(UploadedFile $file)
+    public function upload(UploadedFile $file): string
     {
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $safeFilename = $this->slugger->slug($originalFilename);
         $fileName = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
 
         try {
-            $file->move($this->getuploadPath(), $fileName);
+            $file->move($this->getUploadPath(), $fileName);
         } catch (FileException $e) {
             $this->appendToLogfile("Exception occured: " . $e->getMessage());
         }
@@ -42,20 +39,9 @@ class FileUploader
         return $fileName;
     }
 
-    public function getuploadPath()
+    public function getUploadPath(): string
     {
-        return $this->uploadPath;
-    }
-
-    public function getUrl(?string $fileName, bool $absolute = true)
-    {
-        if (empty($fileName)) return null;
-
-        if ($absolute) {
-            return $this->urlHelper->getAbsoluteUrl($this->relativeUploadsDir.$fileName);
-        }
-
-        return $this->urlHelper->getRelativePath($this->relativeUploadsDir.$fileName);
+        return $this->publicPath;
     }
 
     protected function appendToLogfile(string $text): void
