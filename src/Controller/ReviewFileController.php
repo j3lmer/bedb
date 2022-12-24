@@ -17,28 +17,25 @@ use App\Service\FileUploader;
 #[AsController]
 class ReviewFileController extends AbstractController
 {
-
-    //TODO: dit is vooral voor een nieuwe aan te maken, mijn gedachte was meer een bestaande updaten
     //todo: ook even data valideren
     public function __invoke(Request $request, FileUploader $fileUploader, GameRepository $gameRepository, UserRepository $userRepository, string $publicPath): Review
     {
-        $uploadedFile = $request->files->get('image');
-        if (!$uploadedFile) {
-            throw new BadRequestHttpException('"image" is required');
-        }
-
         $review = new Review();
 
         $owner = $this->getUser() !== null ? $this->getUser() : $userRepository->find($this->getSinceLastSlash($request->get('owner')));
 
+        //request komt niet binnen via axios(?)
         $game = $gameRepository->find($this->getSinceLastSlash($request->get('game')));
         $review->setGame($game);
         $review->setOwner($owner);
         $review->setRating((int)$request->get('rating'));
         $review->setText($request->get('text'));
-        $review->setImageName($fileUploader->upload($uploadedFile));
-        $review->setImage(new File($publicPath . '/uploads/' . $review->getImageName()));
 
+        $uploadedFile = $request->files->get('image');
+        if ($uploadedFile) {
+            $review->setImageName($fileUploader->upload($uploadedFile));
+            $review->setImage(new File($publicPath . '/uploads/' . $review->getImageName()));
+        }
         $review->setDateUpdated(new \DateTime('now'));
 
         return $review;

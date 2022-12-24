@@ -20,33 +20,39 @@
                 </v-card-title>
                 <v-divider/>
                 <v-card-text class="pa-5">
-                    <v-row justify="center">
-                        <v-rating
-                            v-model="rating"
-                            length="10"
-                        />
-                    </v-row>
-                    <v-row>
-                        <v-textarea outlined v-model="reviewText" label="Wat je denkt"/>
-                    </v-row>
-                    <v-row class="d-flex flex-row-reverse">
-                        <v-spacer/>
-                        <v-col cols="3" class="text-end">
-                            <v-btn @click="sendReview">Verzend review!</v-btn>
-
-                        </v-col>
-                        <v-col class="text-end">
-                            <v-file-input
-                                :rules="rules"
-                                v-model="files"
-                                accept="image/png, image/jpeg, image/bmp"
-                                placeholder="Upload a screenshot"
-                                prepend-icon="mdi-camera"
-                                label="Images"
+                    <v-form
+                        ref="form"
+                        v-model="valid"
+                        :lazy-validation="lazy"
+                    >
+                        <v-row justify="center">
+                            <v-rating
+                                v-model="rating"
+                                length="10"
                             />
-                        </v-col>
-                        <v-spacer/>
-                    </v-row>
+                        </v-row>
+                        <v-row>
+                            <v-textarea outlined v-model="reviewText" label="Wat je denkt"/>
+                        </v-row>
+                        <v-row class="d-flex flex-row-reverse">
+                            <v-spacer/>
+                            <v-col cols="3" class="text-end">
+                                <v-btn @click="sendReview">Verzend review!</v-btn>
+
+                            </v-col>
+                            <v-col class="text-end">
+                                <v-file-input
+                                    :rules="rules"
+                                    v-model="file"
+                                    accept="image/png, image/jpeg, image/bmp"
+                                    placeholder="Upload a screenshot"
+                                    prepend-icon="mdi-camera"
+                                    label="Afbeelding"
+                                />
+                            </v-col>
+                            <v-spacer/>
+                        </v-row>
+                    </v-form>
                 </v-card-text>
             </v-card>
         </v-dialog>
@@ -76,31 +82,27 @@ const {Component, VueComponent, Prop} = require('@/common/VueComponent');
 import {commonGameViewHelper} from "@/pages/game/components/commonGameViewHelper";
 import axios from "axios";
 import base from "@/common/components/base";
-
+import * as fs from 'fs';
 @Component()
 export default class ReviewDialog extends VueComponent {
+
     private dialog = false;
     private reviewText = '';
     private rating = 0;
-    private files = [];
+    private file = {};
     private gameIri = `/api/games/${commonGameViewHelper.getSteamAppId()}`;
     private snackbar = false;
     private snackbarText = [];
     private rules = [value => !value || value.size < 2000000 || 'Image size should be less than 2 MB!'];
+    private valid = true;
+    private lazy = false;
 
-
-    created()
-    {
+    created() {
         this.test();
     }
 
-    private test()
-    {
-        axios.post(`${base.getBase()}media_objects`, {"test": "test"})
-    }
-
     private async sendReview(): Promise<void> {
-        console.log(this.files);
+
         if (!(this.rating > 0 && this.reviewText && this.reviewText.length > 0)) {
             let reasons = [];
             if (this.rating <= 0) {
@@ -117,12 +119,24 @@ export default class ReviewDialog extends VueComponent {
             game: this.gameIri,
             rating: this.rating,
             dateUpdated: new Date(),
-            owner: `/api/users/${(window as any).user.id}`
+            owner: `/api/users/${(window as any).user.id}`,
+            image: this.file
         };
 
-        const response = await axios.post(`${base.getBase()}api/reviews`, postData);
+        const config = {
+            headers: {
+                'accept': "application/ld+json",
+                'Content-Type': 'multipart/form-data'
+            }
+        }
+
+        console.log(postData);
+        //FIXME: possibly this has to have a different header than json. so this might mean i need to make an endpoint + entity specifically for images.
+        const response = await axios.post(`${base.getBase()}api/reviews`, postData, config);
         this.reviewText = "";
         this.rating = 0;
+
+        console.log(response);
 
         if (response.status > 299) {
             this.dialog = false;
@@ -145,6 +159,30 @@ export default class ReviewDialog extends VueComponent {
     private closeSnackBar(): void {
         this.snackbarText = [];
         this.snackbar = false;
+    }
+
+    //OMG! DIT GAAT WERKEN!
+    private async test(): Promise<void> {
+        const form = new FormData();
+        form.append('rating', '5');
+        // form.append('image', fs.readFileSync('yellowcar.png;type=image/png'), 'yellowcar.png;type=image/png');
+        form.append('game', '/api/games/1000000');
+        form.append('owner', '/api/users/1');
+        form.append('text', 'Dit vind ik geen leuk spelletje');
+
+
+        const response = await axios.post(
+            `${base.getBase()}api/reviews`,
+            form,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data-F',
+                    'accept': 'application/ld+json',
+                }
+            }
+        );
+
+        console.log(response);
     }
 }
 </script>
