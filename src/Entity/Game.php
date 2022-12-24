@@ -22,6 +22,9 @@ class Game
     #[ORM\Column(unique: true, nullable: false)]
     private int $id; // steam appid
 
+    #[ORM\Column(nullable: true)]
+    private int $userScore;
+
     #[ORM\Column(type: Types::SIMPLE_ARRAY, nullable: true)]
     private ?array $developers = [];
 
@@ -498,5 +501,21 @@ class Game
             }
         }
         return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getUserScore(): int
+    {
+        return $this->userScore;
+    }
+
+    /**
+     * @param int $userScore
+     */
+    public function setUserScore(int $userScore): void
+    {
+        $this->userScore = $userScore;
     }
 }
