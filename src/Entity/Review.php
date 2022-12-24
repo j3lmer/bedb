@@ -71,11 +71,6 @@ use App\Controller\ReviewFileController;
  *                          "type" = "integer",
  *                          "example" = "5"
  *                      },
- *                      "image" = {
- *                          "description" = "An image file a user can upload supporting their review",
- *                          "type" = "string",
- *                          "format" = "binary",
- *                      },
  *                      "game" = {
  *                          "description" = "The associated game with the review",
  *                          "type" = "string",
@@ -183,21 +178,6 @@ class Review
         $this->date_updated = $date_updated;
 
         return $this;
-    }
-
-    public function setImage(File $file = null): self
-    {
-        $this->image = $file;
-        if ($file) {
-            $this->date_updated = new \DateTime('now');
-        }
-
-        return $this;
-    }
-
-    public function getImage(): File
-    {
-        return $this->image;
     }
 
     public function getImageName(): string

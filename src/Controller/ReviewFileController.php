@@ -34,7 +34,6 @@ class ReviewFileController extends AbstractController
         $uploadedFile = $request->files->get('image');
         if ($uploadedFile) {
             $review->setImageName($fileUploader->upload($uploadedFile));
-            $review->setImage(new File($publicPath . '/uploads/' . $review->getImageName()));
         }
         $review->setDateUpdated(new \DateTime('now'));
 

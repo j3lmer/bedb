@@ -18,8 +18,6 @@ use Symfony\Component\Filesystem\Filesystem;
 )]
 class TestCommand extends Command
 {
-// TODO: this command has to be run weekly
-
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
      /*
