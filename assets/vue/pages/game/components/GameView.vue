@@ -40,7 +40,6 @@
                     justify="space-around"
                 >
                     <v-col id="userScore" class="d-flex justify-center">
-                        <!--                       TODO: kleur van de sheet bepalen op hoe hoog de score is?-->
                         <v-sheet
                             class="text-center"
                             elevation="1"
@@ -97,7 +96,6 @@
                     </v-col>
                 </v-row>
                 <v-divider class="my-3"/>
-                <!--                TODO: wellicht website op zn eigen row, publishers en developers naast elkaar.-->
                 <v-row>
                     <v-col>
                         Publishers:
@@ -176,6 +174,24 @@
                                         <v-divider/>
                                         <v-card-text>
                                             {{ review.node.text }}
+                                            <v-img
+                                                :src="review.node.filePath"
+                                            />
+                                        </v-card-text>
+                                    </v-card>
+                                </v-col>
+                            </v-row>
+                            <v-row v-if="!isReady || userReviews.length === 0">
+                                <v-col cols="12">
+                                    <v-card class="my-4">
+                                        <v-card-title>
+                                            <v-col>
+                                                Het lijkt er op dat er nog geen reviews zijn voor deze game
+                                            </v-col>
+                                        </v-card-title>
+                                        <v-divider/>
+                                        <v-card-text>
+                                            Word de eerste om er een toe te voegen!
                                         </v-card-text>
                                     </v-card>
                                 </v-col>
@@ -185,10 +201,15 @@
                             <v-row justify="center">
                                 <h3>Steam reviews</h3>
                             </v-row>
-                            <v-row justify="center">
-                                <v-col cols="12" class="text-center">
-                                    <h4>Het lijkt er op dat er geen steam reviews zijn</h4><!-- v-if geen reviews-->
-
+                            <!--                            TODO: steamreviews-->
+                            <v-row v-if="!isReady || userReviews.length === 0">
+                                <v-col cols="12">
+                                    <v-card class="my-4">
+                                        <v-card-title>
+                                            Het lijkt er op dat er geen Steam reviews zijn voor deze game
+                                        </v-card-title>
+                                        <v-divider/>
+                                    </v-card>
                                 </v-col>
                             </v-row>
                         </v-col>
@@ -208,8 +229,6 @@ import ReviewDialog from "@/pages/game/components/ReviewDialog.vue";
 import {commonGameViewHelper} from "@/pages/game/components/commonGameViewHelper";
 import base from "@/common/components/base";
 
-// TODO: SNACKBAR CLEAREN NADAT HIJ WORD GECLOSED OF ZELF CLOSED OFZO WANT ANDERS GEKKE BUG DAT DE SNACKBAR ECHT FUCKING GROOT WORD
-
 @Component({
     components: {
         ReviewDialog
@@ -225,6 +244,7 @@ export default class GameView extends VueComponent {
     private userReviews = [];
     private isReady = false;
 
+
     public beforeMount(): void {
         this.getGameDetails();
         this.getReviews();
@@ -238,7 +258,7 @@ export default class GameView extends VueComponent {
 
     private reportReview(review: object): void {
         let rev = JSON.parse(JSON.stringify(review));
-        rev.timesReported += 1;
+        rev.reported = true;
         rev.owner = rev.owner.id
         const id = this.getId(rev.id);
         axios.patch(`${base.getBase()}api/reviews/${id}`, rev, {
@@ -248,7 +268,6 @@ export default class GameView extends VueComponent {
         });
     }
 
-    // image moet nog
     //steamreviews moet nog
     /**
      * # steamReviews {
@@ -334,7 +353,7 @@ export default class GameView extends VueComponent {
 
     private async getReviews(): Promise<void> {
         const q = `
-        query getGameDetails($id: ID!) {
+        query getReviews($id: ID!) {
             game(id: $id) {
                 reviews {
                     edges {
@@ -343,11 +362,12 @@ export default class GameView extends VueComponent {
                             id
                             rating
                             dateUpdated
-                            timesReported
+                            reported
                             owner {
                                 id
                                 username
                             }
+                            imageName
                         }
                     }
                 }
@@ -357,9 +377,18 @@ export default class GameView extends VueComponent {
         const variables = {
             "id": `/api/games/${this.steamAppId}`
         };
+
         const response = await GraphqlHelper.queryPoster(q, variables);
+
         if (response != undefined) {
             this.userReviews = (response as any).game.reviews.edges;
+            for (let i = 0; i < this.userReviews.length; i++) {
+                const review = this.userReviews[i].node;
+
+                if (review.imageName) {
+                    this.userReviews[i].node.filePath = this.getFilePath(review.imageName);
+                }
+            }
         }
         this.isReady = true;
     }
@@ -382,5 +411,8 @@ export default class GameView extends VueComponent {
         return color;
     }
 
+    private getFilePath(fileName: string): string {
+        return `/uploads/${fileName}`;
+    }
 }
 </script>

@@ -1,0 +1,21 @@
+TODO:
+Speciafieke games uitkiezen om te laten zien op de games page
+Review rapporteren uitwerken
+Afbeeldingen uploaden gereed maken
+userscore fixen
+score blokjes mooi maken
+steam reviews inladen / ophalen
+snackbar toevoegen wanneer je een review report
+reverse order reviews
+op gebruiker checken wie een review probeert te verwijderen (is admin?)
+alleen reported reviews laten zien op admin settings page
+------------------------------------------------------------------------------------------------------------------------
+NTH:
+snackbar component maken en snackbar calls refactoren
+games pagina mobile responsive maken
+security op api endpoints
+------------------------------------------------------------------------------------------------------------------------
+DOING:
+
+------------------------------------------------------------------------------------------------------------------------
+DONE:

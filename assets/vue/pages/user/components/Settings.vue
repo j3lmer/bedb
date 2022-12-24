@@ -36,7 +36,7 @@
                                         </h4>
                                         <!--                                       hier een br en gebruikersnaam gerapporteerde post mocht dit een admin zijn-->
                                     </v-col>
-                                    <v-col class="text-end mt-3 pr-3">
+                                    <v-col class="text-end mt-1 pr-1">
                                         <v-btn color="red" class="white--text pa-0 ma-0"
                                                @click="deleteReview(review.id)">X
                                         </v-btn>
@@ -56,9 +56,9 @@
                                 <v-row class="bottom-layer">
                                     <!--                                   FIXME: hier een max height en width aan geven zonder te croppen-->
                                     <v-img
-                                        v-if="review.image"
+                                        v-if="review.imageName"
                                         class="ma-5"
-                                        :src="review.image"
+                                        :src="review.filePath"
                                         max-height="25vh"
                                         max-width="25-vw"
                                         contain
@@ -224,6 +224,18 @@ export default class Settings extends VueComponent {
         if (this.isAdminUser) {
             await this.getReportedReviews();
         }
+
+        this.setFilePaths();
+    }
+
+    private setFilePaths()
+    {
+       for (let i = 0; Object.keys(this.userReviews).length > i; i++) {
+           let review = this.userReviews[`review${i}`];
+           this.userReviews[`review${i}`].filePath = this.getFilePath(review.imageName);
+       }
+
+       this.$forceUpdate();
     }
 
     private async getReportedReviews(): Promise<void>{
@@ -278,6 +290,7 @@ export default class Settings extends VueComponent {
                         name
                     }
                     dateUpdated
+                    imageName
                 }`
             ;
             userReviewString += i !== reviews.length ? ',' : '';
@@ -296,6 +309,10 @@ export default class Settings extends VueComponent {
         const [q, variables] = this.setupQuery(response);
         this.userReviews = await GraphqlHelper.queryPoster(q, variables);
         this.$forceUpdate();
+    }
+
+    private getFilePath(fileName: string): string {
+        return `/uploads/${fileName}`;
     }
 }
 </script>
