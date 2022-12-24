@@ -80,9 +80,9 @@
 <script lang="ts">
 const {Component, VueComponent, Prop} = require('@/common/VueComponent');
 import {commonGameViewHelper} from "@/pages/game/components/commonGameViewHelper";
-import axios from "axios";
+import axios, {AxiosResponse} from "axios";
 import base from "@/common/components/base";
-import * as fs from 'fs';
+
 @Component()
 export default class ReviewDialog extends VueComponent {
 
@@ -97,12 +97,7 @@ export default class ReviewDialog extends VueComponent {
     private valid = true;
     private lazy = false;
 
-    created() {
-        this.test();
-    }
-
     private async sendReview(): Promise<void> {
-
         if (!(this.rating > 0 && this.reviewText && this.reviewText.length > 0)) {
             let reasons = [];
             if (this.rating <= 0) {
@@ -130,13 +125,10 @@ export default class ReviewDialog extends VueComponent {
             }
         }
 
-        console.log(postData);
-        //FIXME: possibly this has to have a different header than json. so this might mean i need to make an endpoint + entity specifically for images.
-        const response = await axios.post(`${base.getBase()}api/reviews`, postData, config);
+        const response = await this.postFormData(postData, config);
         this.reviewText = "";
         this.rating = 0;
-
-        console.log(response);
+        this.snackbarText = [];
 
         if (response.status > 299) {
             this.dialog = false;
@@ -161,28 +153,15 @@ export default class ReviewDialog extends VueComponent {
         this.snackbar = false;
     }
 
-    //OMG! DIT GAAT WERKEN!
-    private async test(): Promise<void> {
+    private async postFormData(postData, config): Promise<AxiosResponse> {
         const form = new FormData();
-        form.append('rating', '5');
-        // form.append('image', fs.readFileSync('yellowcar.png;type=image/png'), 'yellowcar.png;type=image/png');
-        form.append('game', '/api/games/1000000');
-        form.append('owner', '/api/users/1');
-        form.append('text', 'Dit vind ik geen leuk spelletje');
+        form.append('rating', postData.rating);
+        form.append('image', postData.image, 'yellowcar.png;type=image/png');
+        form.append('game', postData.game);
+        form.append('owner', postData.owner);
+        form.append('text', postData.text);
 
-
-        const response = await axios.post(
-            `${base.getBase()}api/reviews`,
-            form,
-            {
-                headers: {
-                    'Content-Type': 'multipart/form-data-F',
-                    'accept': 'application/ld+json',
-                }
-            }
-        );
-
-        console.log(response);
+        return await axios.post(`${base.getBase()}api/reviews`, form, config);
     }
 }
 </script>
