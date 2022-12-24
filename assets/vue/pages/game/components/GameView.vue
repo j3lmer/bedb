@@ -41,35 +41,39 @@
                 >
                     <v-col id="userScore" class="d-flex justify-center">
                         <v-sheet
-                            class="text-center"
+                            class="d-flex align-center justify-center text-center score px-2"
                             elevation="1"
                             height="100"
-                            width="100"
+                            width="200"
+                            :color="getColorUser(game.userScore)"
                         >
                             User score
+                            <br/>
+                            {{ game.userScore }}
                         </v-sheet>
                     </v-col>
                     <v-col id="metaScore" class="d-flex justify-center" v-if="game.metacritic">
                         <v-sheet
-                            class="text-center"
+                            class="d-flex align-center justify-center text-center score px-2"
                             elevation="1"
                             height="100"
-                            width="100"
+                            width="200"
                             :color="getColor(game.metacritic.score)"
                         >
                             Meta score
+                            <br/>
                             {{ game.metacritic.score }}
                         </v-sheet>
                     </v-col>
                     <v-col id="steamRecommendations" class="d-flex justify-center">
                         <v-sheet
-                            class="text-center"
+                            class="d-flex align-center justify-center text-center score px-2"
                             elevation="1"
                             height="100"
-                            width="100"
+                            width="200"
                             :color="getColor(game.recommendationsTotal)"
                         >
-                            SteamScore
+                            Steam Score
                             <br/>
                             {{ game.recommendationsTotal }}
                         </v-sheet>
@@ -287,6 +291,7 @@ export default class GameView extends VueComponent {
             `query getGameDetails($id: ID!) {
                 game(id: $id) {
                 name
+                userScore
                 about
                 shortDescription
                 detailedDescription
@@ -411,8 +416,22 @@ export default class GameView extends VueComponent {
         return color;
     }
 
+    private getColorUser(score: number): string {
+        let color = 'red';
+
+        if (score >= 7) color = "green";
+        else if (score >= 4) color = "orange";
+        return color;
+    }
+
     private getFilePath(fileName: string): string {
         return `/uploads/${fileName}`;
     }
 }
 </script>
+<style scoped>
+.score {
+    color: white;
+    font-family: monospace;
+}
+</style>

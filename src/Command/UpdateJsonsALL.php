@@ -30,6 +30,7 @@ class UpdateJsonsALL extends Command
         $this->getApplication()->find("app:get-featured-games")->run($input, $output);
         $this->getApplication()->find("app:generate-game-categories-and-enums")->run($input, $output);
         $this->getApplication()->find("app:import-games-to-db")->run($input, $output);
+        $this->getApplication()->find("app:calulate-user-scores")->run($input, $output);
 
         return Command::SUCCESS;
     }

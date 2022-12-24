@@ -3,15 +3,13 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Entity\Game;
+use App\Entity\Review;
 use App\Repository\GameRepository;
-use Symfony\Component\Asset\Package;
-use Symfony\Component\Asset\VersionStrategy\EmptyVersionStrategy;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Filesystem\Filesystem;
 
 #[AsCommand(
     name: 'app:calulate-user-scores',
@@ -22,13 +20,14 @@ use Symfony\Component\Filesystem\Filesystem;
 class CalculateUserScores extends Command
 {
     private GameRepository $gameRepository;
+    private EntityManagerInterface $entityManager;
 
-    public function __construct(GameRepository $gameRepository)
+    public function __construct(GameRepository $gameRepository, EntityManagerInterface $entityManager)
     {
         parent::__construct();
         $this->gameRepository = $gameRepository;
+        $this->entityManager = $entityManager;
     }
-
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -37,16 +36,28 @@ class CalculateUserScores extends Command
             $thisGame = $allGames[$i];
             $reviews = $thisGame->getReviews()->toArray();
             if (count($reviews) > 0) {
-                $thisGame->setUserScore($this->calculateUserScore($thisGame));
+                $score = $this->calculateUserScore($reviews);
+                $thisGame->setUserScore($score);
+                $this->entityManager->persist($thisGame);
+                $this->entityManager->flush();
             }
         }
-
         return Command::SUCCESS;
     }
 
-    private function calculateUserScore(Game $game): int
+    /**
+     * @param Review[] $reviews
+     * @return int
+     */
+    private function calculateUserScore(array $reviews): int
     {
+        $scores = [];
+        for ($i = 0; $i < count($reviews); $i++) {
+            $scores[] = $reviews[$i]->getRating();
+        }
+        $scores = array_filter($scores);
 
+        return (int) round(array_sum($scores) / count($scores));
     }
 }
 

@@ -226,6 +226,7 @@ export default class Settings extends VueComponent {
         }
 
         this.setFilePaths();
+        this.$forceUpdate();
     }
 
     private setFilePaths()
@@ -234,8 +235,6 @@ export default class Settings extends VueComponent {
            let review = this.userReviews[`review${i}`];
            this.userReviews[`review${i}`].filePath = this.getFilePath(review.imageName);
        }
-
-       this.$forceUpdate();
     }
 
     private async getReportedReviews(): Promise<void>{
