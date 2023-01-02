@@ -17,20 +17,27 @@
                     </v-card-title>
                 </v-col>
                 <v-col>
-                    <v-row
+                    <v-row                                                                                                    
                         class="pa-2"
                         align="center"
                     >
                         <v-spacer/>
-                        <v-col cols="5">
+                        <v-col cols="6">
+<!--                            />-->
                             <v-autocomplete
-                                label="Find a game..."
-                                clearable
-                                solo
-                                v-model="searchNameString"
+                                v-model="select"
+                                :search-input.sync="search"
+                                :loading="loading"
                                 :items="queryResults"
-                                @change="searchForGames"
-                            />
+                                cache-items
+                                class="mx-4"
+                                hide-no-data
+                                hide-details
+                                label="Find a game..."
+                                solo
+                                item-text="name"
+                                item-value="id"
+                            ></v-autocomplete>
                         </v-col>
 
                         <v-col
@@ -63,7 +70,7 @@
                     {{ item }}
                 </v-tab>
             </v-tabs>
-            <v-divider />
+            <v-divider/>
         </v-card>
     </div>
 </template>
@@ -71,7 +78,8 @@
 <script lang="ts">
 const {Component, VueComponent, Prop, Watch} = require('@/common/VueComponent');
 import {HomepageTabs} from '@/common/components/Enums/HomepageTabs';
-
+import axios from "axios";
+import base from "@/common/components/base";
 
 @Component
 export default class Header extends VueComponent {
@@ -88,9 +96,10 @@ export default class Header extends VueComponent {
     @Prop({required: true})
     private isLoggedIn: boolean
 
-    private searchNameString = '';
+    private select = null;
+    private search = null;
     private queryResults = [];
-
+    private loading = false;
 
     @Watch('selectedComponent')
     private updateTab(Value: string): void {
@@ -107,12 +116,13 @@ export default class Header extends VueComponent {
         this.updateTab(this.selectedComponent);
     }
 
-    // deze functie elke keer callen wanneer er iets veranderd aan de string in de zoekbalk,
-    // graphql query doen voor games met een naam die lijkt op wat er in word getypt (naam, afbeelding?)
-    // items die graphql returned in een array zetten en die weer aan de autocomplete geven
-    private searchForGames()
-    {
-        console.log('test')
+    @Watch('search')
+    private async searchForGames(s: string) {
+        console.log(s);
+        const response = await axios.post(`${base.getBase()}getGame`, {
+            "gameName": s
+        });
+        this.queryResults = response.data;
     }
 
 
@@ -134,7 +144,8 @@ export default class Header extends VueComponent {
     text-decoration: none;
     color: black;
 }
-.title:hover{
+
+.title:hover {
     text-decoration: none;
     color: black;
 }
