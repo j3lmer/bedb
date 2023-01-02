@@ -1,6 +1,7 @@
 <template>
     <v-app>
         <Header :is-logged-in="this.user !== undefined"/>
+
         <GameView/>
     </v-app>
 </template>

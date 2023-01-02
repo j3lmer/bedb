@@ -221,6 +221,25 @@
                 </v-container>
             </v-col>
         </v-row>
+
+        <div class="text-center ma-2">
+            <v-snackbar
+                v-model="snackbar"
+            >
+                {{  snackbarText }}
+
+                <template v-slot:action="{ attrs }">
+                    <v-btn
+                        color="pink"
+                        text
+                        v-bind="attrs"
+                        @click="snackbar = false"
+                    >
+                        Close
+                    </v-btn>
+                </template>
+            </v-snackbar>
+        </div>
     </v-container>
 </template>
 
@@ -247,6 +266,8 @@ export default class GameView extends VueComponent {
     private gameExists = false;
     private userReviews = [];
     private isReady = false;
+    private snackbar = false;
+    private snackbarText = "";
 
 
     public beforeMount(): void {
@@ -261,6 +282,9 @@ export default class GameView extends VueComponent {
     // TODO: iets maken dat 1 gebruiker maar 1x een review kan reporten. op deze manier kan je maar 1x per page refresh (ik weet ook niet waarom) een (individueel) review reporten. will do for now.
 
     private reportReview(review: object): void {
+        this.snackbar = true;
+        this.snackbarText = "Gerapporteerd.";
+
         let rev = JSON.parse(JSON.stringify(review));
         rev.reported = true;
         rev.owner = rev.owner.id

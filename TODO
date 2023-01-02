@@ -1,13 +1,11 @@
 TODO:
 Speciafieke games uitkiezen om te laten zien op de games page
-userscore fixen
-score blokjes mooi maken
 steam reviews inladen / ophalen
-snackbar toevoegen wanneer je een review report
 reverse order reviews
-op gebruiker checken wie een review probeert te verwijderen (is admin?)
-alleen reported reviews laten zien op admin settings page
+op gebruiker checken wie een review probeert te verwijderen (is admin? (is van jezelf?)
+reported reviews laten zien op admin settings page
 commando maken die elke keer als ie runt elke game met reviews bij langs gaat en dan de userscore calculeert en aanwijst
+zoekbalk laten werken
 ------------------------------------------------------------------------------------------------------------------------
 NTH:
 snackbar component maken en snackbar calls refactoren
@@ -20,3 +18,6 @@ DOING:
 DONE:
 Review rapporteren uitwerken
 Afbeeldingen uploaden gereed maken
+userscore fixen
+score blokjes mooi maken
+snackbar toevoegen wanneer je een review report
