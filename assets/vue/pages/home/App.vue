@@ -68,9 +68,8 @@ export default class App extends VueComponent {
     //TODO / NTH: resultaten cachen en inladen
     private async loadGames(): Promise<void> {
 
-        const [q, variables] = this.setupForQueryViaGameId();
+        const [q, variables] = this.setupForQueryViaGenre();
         let response = await GraphqlHelper.queryPoster(q, variables);
-
 
         if (response == null) {
             return;
@@ -91,8 +90,31 @@ export default class App extends VueComponent {
             delete thisGenre.games;
             response[`genre${i}`] = thisGenre;
         }
-        this.genreGames = response;
+        
+        this.genreGames = this.removeWeirdGames(response);
     }
+
+    private removeWeirdGames(response: any): object {
+        let disallowedIds = ["/api/games/1000550"];
+        let k: keyof typeof response;
+        for (k in response) {
+            const v = response[k];
+
+            for (let i = 0; i < v.chunkedGames.length; i++) {
+                console.log(v.chunkedGames[i]);
+
+                for (let j = 0; j < v.chunkedGames[i].length; j++) {
+                    console.log(`${v.chunkedGames[i][j].node.name}: ${v.chunkedGames[i][j].node.id}`);
+                    const game = v.chunkedGames[i][j].node;
+                    if (disallowedIds.includes(game.id)) {
+                        delete v.chunkedGames[i][j];
+                    }
+                }
+            }
+        }
+        return response;
+    }
+
 
     /*  TODO / NTH: Het zo maken dat er eerst 18 games worden opgehaald vanaf een willekeurige cursor plek,
             vanaf daar dynamisch meer ophaalt met de cursor, wanneer t einde is bereikt,
@@ -130,93 +152,6 @@ export default class App extends VueComponent {
         return [outerString, variables];
     }
 
-    /*
-    *   query GetGenreWithGamesAndDescription($id0: ID!, $id1: ID!, $id2: ID!, $id3: ID!, $id4: ID!) {
-            genre0 : genre(id: $id0) {
-                description
-                games(first:18) {
-                    edges {
-                        node {
-                            id
-                            name
-                            headerImage
-                            nsfw
-                        }
-                    }
-                }
-            },
-            genre1 : genre(id: $id1) {
-                description
-                games(first:18) {
-                    edges {
-                        node {
-                            id
-                            name
-                            headerImage
-                            nsfw
-                        }
-                    }
-                }
-            },
-            genre2 : genre(id: $id2) {
-                description
-                games(first:18) {
-                    edges {
-                        node {
-                            id
-                            name
-                            headerImage
-                            nsfw
-                        }
-                    }
-                }
-            },
-            genre3 : genre(id: $id3) {
-                description
-                games(first:18) {
-                    edges {
-                        node {
-                            id
-                            name
-                            headerImage
-                            nsfw
-                        }
-                    }
-                }
-            },
-            genre4 : genre(id: $id4) {
-                description
-                games(first:18) {
-                    edges {
-                        node {
-                            id
-                            name
-                            headerImage
-                            nsfw
-                        }
-                    }
-                }
-            }
-    *   }
-    */
-
-
-    private setupForQueryViaGameId(): [string, object] {
-        let variables = {};
-
-        variables = this.addPredefinedGames(variables, 1)
-        let outerString = `
-            query gamequery($id: ID!){
-                game(id: $id) {
-                    id
-                    name
-               }
-           }
-        `;
-
-        return [outerString, variables];
-    }
-
     private addRandomGenres(variables: object, iteration: number): object {
         let randNumber = this.randNumber(1, 13);
         while (this.objectContains(variables, `/api/genres/${randNumber}`)) {
@@ -225,13 +160,6 @@ export default class App extends VueComponent {
         variables[`id${iteration}`] = `/api/genres/${randNumber}`;
         return variables;
     }
-
-    private addPredefinedGames(variables: object, iteration: number): object {
-
-        variables['id'] = `/api/games/1000000`
-        return variables;
-    }
-
 
     private randNumber(min: number, max: number): number {
         return Math.floor(Math.random() * (max - min + 1) + min);
