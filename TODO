@@ -1,8 +1,6 @@
 TODO:
 Speciafieke games uitkiezen om te laten zien op de games page
 steam reviews inladen / ophalen
-reverse order reviews
-op gebruiker checken wie een review probeert te verwijderen (is admin? (is van jezelf?)
 reported reviews laten zien op admin settings page
 commando maken die elke keer als ie runt elke game met reviews bij langs gaat en dan de userscore calculeert en aanwijst
 zoekbalk laten werken
@@ -11,6 +9,9 @@ NTH:
 snackbar component maken en snackbar calls refactoren
 games pagina mobile responsive maken
 security op api endpoints
+reverse order reviews
+op gebruiker checken wie een review probeert te verwijderen (is admin? (is van jezelf?)
+
 ------------------------------------------------------------------------------------------------------------------------
 DOING:
 

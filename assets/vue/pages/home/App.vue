@@ -68,8 +68,9 @@ export default class App extends VueComponent {
     //TODO / NTH: resultaten cachen en inladen
     private async loadGames(): Promise<void> {
 
-        const [q, variables] = this.setupForQuery();
+        const [q, variables] = this.setupForQueryViaGameId();
         let response = await GraphqlHelper.queryPoster(q, variables);
+
 
         if (response == null) {
             return;
@@ -98,7 +99,7 @@ export default class App extends VueComponent {
             de eerste 18 queryen, totdat je de plek van de eerste cursor hebt bereikt.
         (vermoedelijk te veel werk voor nu)
      */
-    private setupForQuery(): [string, object] {
+    private setupForQueryViaGenre(): [string, object] {
         let outerString = `query GetGenreWithGamesAndDescription(`;
         let innerString = ``;
         let variables = {};
@@ -129,12 +130,105 @@ export default class App extends VueComponent {
         return [outerString, variables];
     }
 
+    /*
+    *   query GetGenreWithGamesAndDescription($id0: ID!, $id1: ID!, $id2: ID!, $id3: ID!, $id4: ID!) {
+            genre0 : genre(id: $id0) {
+                description
+                games(first:18) {
+                    edges {
+                        node {
+                            id
+                            name
+                            headerImage
+                            nsfw
+                        }
+                    }
+                }
+            },
+            genre1 : genre(id: $id1) {
+                description
+                games(first:18) {
+                    edges {
+                        node {
+                            id
+                            name
+                            headerImage
+                            nsfw
+                        }
+                    }
+                }
+            },
+            genre2 : genre(id: $id2) {
+                description
+                games(first:18) {
+                    edges {
+                        node {
+                            id
+                            name
+                            headerImage
+                            nsfw
+                        }
+                    }
+                }
+            },
+            genre3 : genre(id: $id3) {
+                description
+                games(first:18) {
+                    edges {
+                        node {
+                            id
+                            name
+                            headerImage
+                            nsfw
+                        }
+                    }
+                }
+            },
+            genre4 : genre(id: $id4) {
+                description
+                games(first:18) {
+                    edges {
+                        node {
+                            id
+                            name
+                            headerImage
+                            nsfw
+                        }
+                    }
+                }
+            }
+    *   }
+    */
+
+
+    private setupForQueryViaGameId(): [string, object] {
+        let variables = {};
+
+        variables = this.addPredefinedGames(variables, 1)
+        let outerString = `
+            query gamequery($id: ID!){
+                game(id: $id) {
+                    id
+                    name
+               }
+           }
+        `;
+
+        return [outerString, variables];
+    }
+
     private addRandomGenres(variables: object, iteration: number): object {
         let randNumber = this.randNumber(1, 13);
         while (this.objectContains(variables, `/api/genres/${randNumber}`)) {
             randNumber = this.randNumber(1, 13);
         }
         variables[`id${iteration}`] = `/api/genres/${randNumber}`;
+        return variables;
+    }
+
+    private addPredefinedGames(variables: object, iteration: number): object {
+
+        variables['id'] = `/api/games/1000000`
         return variables;
     }
 
