@@ -118,7 +118,6 @@ export default class Header extends VueComponent {
 
     @Watch('search')
     private async searchForGames(s: string) {
-        console.log(s);
         const response = await axios.post(`${base.getBase()}getGame`, {
             "gameName": s
         });

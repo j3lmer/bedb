@@ -75,6 +75,26 @@ export default class App extends VueComponent {
             return;
         }
 
+        let disallowedIds = [
+            "/api/games/1000550",
+            "/api/games/1000280",
+            "/api/games/1000120",
+            "/api/games/1000240",
+            "/api/games/1000180",
+            "/api/games/1000140",
+            "/api/games/1000150",
+            "/api/games/1000160",
+            "/api/games/1000170",
+            "/api/games/1000180",
+            "/api/games/1000190",
+            "/api/games/1000200",
+            "/api/games/1000210",
+            "/api/games/1000220",
+            "/api/games/1000230",
+            "/api/games/1000240",
+            "/api/games/1000250",
+        ];
+
         for (let i = 0; i < Object.entries(response).length; i++) {
             let thisGenre = response[`genre${i}`];
             thisGenre.chunkedGames = [[]];
@@ -85,36 +105,21 @@ export default class App extends VueComponent {
                     thisGenre.chunkedGames.push([]);
                     chunkCounter++;
                 }
+                console.log(thisGame.node.id)
+
+                if (disallowedIds.indexOf(thisGame.node.id) > -1) {
+                    console.log(thisGame.node.id)
+                    console.log(thisGame.node.name)
+                    continue;
+                }
                 thisGenre.chunkedGames[chunkCounter].push(thisGame);
             }
             delete thisGenre.games;
             response[`genre${i}`] = thisGenre;
         }
-        
-        this.genreGames = this.removeWeirdGames(response);
+
+        this.genreGames = response;
     }
-
-    private removeWeirdGames(response: any): object {
-        let disallowedIds = ["/api/games/1000550"];
-        let k: keyof typeof response;
-        for (k in response) {
-            const v = response[k];
-
-            for (let i = 0; i < v.chunkedGames.length; i++) {
-                console.log(v.chunkedGames[i]);
-
-                for (let j = 0; j < v.chunkedGames[i].length; j++) {
-                    console.log(`${v.chunkedGames[i][j].node.name}: ${v.chunkedGames[i][j].node.id}`);
-                    const game = v.chunkedGames[i][j].node;
-                    if (disallowedIds.includes(game.id)) {
-                        delete v.chunkedGames[i][j];
-                    }
-                }
-            }
-        }
-        return response;
-    }
-
 
     /*  TODO / NTH: Het zo maken dat er eerst 18 games worden opgehaald vanaf een willekeurige cursor plek,
             vanaf daar dynamisch meer ophaalt met de cursor, wanneer t einde is bereikt,
