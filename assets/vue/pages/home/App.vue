@@ -105,11 +105,7 @@ export default class App extends VueComponent {
                     thisGenre.chunkedGames.push([]);
                     chunkCounter++;
                 }
-                console.log(thisGame.node.id)
-
                 if (disallowedIds.indexOf(thisGame.node.id) > -1) {
-                    console.log(thisGame.node.id)
-                    console.log(thisGame.node.name)
                     continue;
                 }
                 thisGenre.chunkedGames[chunkCounter].push(thisGame);
