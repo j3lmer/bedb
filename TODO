@@ -2,7 +2,7 @@ TODO:
 steam reviews inladen / ophalen
 reported reviews laten zien op admin settings page
 commando maken die elke keer als ie runt elke game met reviews bij langs gaat en dan de userscore calculeert en aanwijst
-zoekbalk laten werken
+zoekbalk laten werken (onclick redirect)
 ------------------------------------------------------------------------------------------------------------------------
 NTH:
 snackbar component maken en snackbar calls refactoren
