@@ -3,15 +3,17 @@
         <Header
             :selected-component="selectedComponent"
             :items="items"
-            @updated-tab="selectComponent"
             :is-logged-in="this.user !== undefined"
+            @updated-tab="selectComponent"
         />
         <v-card flat>
-            <Home v-if="selectedComponent === items.Home"
-                  @updated-tab="selectComponent"
+            <Home
+                v-if="selectedComponent === items.Home"
+                @updated-tab="selectComponent"
             />
-            <Games v-if="selectedComponent === items.Games"
-                   :genre-games="genreGames"
+            <Games
+                v-if="selectedComponent === items.Games"
+                :genre-games="genreGames"
             />
         </v-card>
     </v-app>
