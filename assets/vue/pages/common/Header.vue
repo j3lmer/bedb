@@ -135,6 +135,11 @@ export default class Header extends VueComponent {
         this.drawer = false;
     }
 
+    @Watch('select')
+    private redirectToGame(select :any): void {
+        window.location.replace(`/game/${select}`);
+    }
+
 };
 </script>
 
