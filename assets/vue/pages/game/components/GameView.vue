@@ -412,6 +412,7 @@ export default class GameView extends VueComponent {
         if (response != undefined) {
             this.userReviews = (response as any).game.reviews.edges;
             for (let i = 0; i < this.userReviews.length; i++) {
+                console.log(this.userReviews)
                 const review = this.userReviews[i].node;
 
                 if (review.imageName) {

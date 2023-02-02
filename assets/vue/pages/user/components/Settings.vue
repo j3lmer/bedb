@@ -12,59 +12,119 @@
                     </v-card-title>
                     <v-divider/>
                     <v-card-text>
+<!--                                                                                                                    REPORTED REVIEWS-->
                         <v-row justify="center">
-                            <v-card
-                                class="my-4"
-                                v-if="!hasReviews"
-                            >
-                                <v-card-title>Het lijkt er op dat je nog geen reviews hebt.</v-card-title>
-                                <v-divider/>
-                                <v-card-subtitle>Probeer er een aan te maken!</v-card-subtitle>
-                            </v-card>
-                            <v-card
-                                v-if="hasReviews"
-                                v-for="review in userReviews"
-                                elevation="0"
-                                width="50vw"
-                                class="px-5 pb-5 pt-2 ma-3"
-                                outlined
-                            >
-                                <v-row class="top-layer" justify="space-around">
-                                    <v-col>
-                                        <h4>
-                                            {{ review.game.name }}
-                                        </h4>
-                                        <!--                                       hier een br en gebruikersnaam gerapporteerde post mocht dit een admin zijn-->
-                                    </v-col>
-                                    <v-col class="text-end mt-1 pr-1">
-                                        <v-btn color="red" class="white--text pa-0 ma-0"
-                                               @click="deleteReview(review.id)">X
-                                        </v-btn>
-                                    </v-col>
-                                </v-row>
-                                <v-row class="mid-layer">
-                                    <v-col>
-                                        {{ review.text }}
-                                    </v-col>
-                                    <v-col class="text-end">
-                                        <h5>
-                                            {{ new Date(review.dateUpdated).toLocaleTimeString() }}
-                                            {{ new Date(review.dateUpdated).toLocaleDateString() }}
-                                        </h5>
-                                    </v-col>
-                                </v-row>
-                                <v-row class="bottom-layer">
-                                    <!--                                   FIXME: hier een max height en width aan geven zonder te croppen-->
-                                    <v-img
-                                        v-if="review.imageName"
-                                        class="ma-5"
-                                        :src="review.filePath"
-                                        max-height="25vh"
-                                        max-width="25-vw"
-                                        contain
-                                    />
-                                </v-row>
-                            </v-card>
+                            <v-col cols="6">
+                                <v-card
+                                    class="my-4"
+                                    v-if="!hasReportedReviews"
+                                >
+                                    <v-card-title>Het lijkt er op dat er nog geen gerapporteerde reviews zijn.</v-card-title>
+                                    <v-divider/>
+                                    <v-card-subtitle>Mooizo!</v-card-subtitle>
+                                </v-card>
+                                <v-card
+                                    v-if="hasReportedReviews"
+                                    v-for="review in reportedReviews"
+                                    elevation="0"
+                                    width="50vw"
+                                    class="px-5 pb-5 pt-2 ma-3"
+                                    outlined
+                                >
+                                    <v-row class="top-layer" justify="space-around">
+                                        <v-col>
+                                            <h4>
+                                                {{ review.game.name }}
+                                            </h4>
+                                            <!--                                       hier een br en gebruikersnaam gerapporteerde post mocht dit een admin zijn-->
+                                        </v-col>
+                                        <v-col class="text-end mt-1 pr-1">
+                                            <v-btn color="red" class="white--text pa-0 ma-0"
+                                                   @click="deleteReview(review.id)">X
+                                            </v-btn>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row class="mid-layer">
+                                        <v-col>
+                                            {{ review.text }}
+                                        </v-col>
+                                        <v-col class="text-end">
+                                            <h5>
+                                                {{ new Date(review.dateUpdated).toLocaleTimeString() }}
+                                                {{ new Date(review.dateUpdated).toLocaleDateString() }}
+                                            </h5>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row class="bottom-layer">
+                                        <!--                                   FIXME: hier een max height en width aan geven zonder te croppen-->
+                                        <v-img
+                                            v-if="review.imageName"
+                                            class="ma-5"
+                                            :src="review.filePath"
+                                            max-height="25vh"
+                                            max-width="25-vw"
+                                            contain
+                                        />
+                                    </v-row>
+                                </v-card>
+                            </v-col>
+<!--                                                                                                                    USER REVIEWS-->
+
+                            <v-col cols="6">
+                                <v-card
+                                    class="my-4"
+                                    v-if="!hasReviews"
+                                >
+                                    <v-card-title>Het lijkt er op dat je nog geen reviews hebt.</v-card-title>
+                                    <v-divider/>
+                                    <v-card-subtitle>Probeer er een aan te maken!</v-card-subtitle>
+                                </v-card>
+                                <v-card
+                                    v-if="hasReviews"
+                                    v-for="review in userReviews"
+                                    elevation="0"
+                                    width="50vw"
+                                    class="px-5 pb-5 pt-2 ma-3"
+                                    outlined
+                                >
+                                    <v-row class="top-layer" justify="space-around">
+                                        <v-col>
+                                            <h4>
+                                                {{ review.game.name }}
+                                            </h4>
+                                            <!--                                       hier een br en gebruikersnaam gerapporteerde post mocht dit een admin zijn-->
+                                        </v-col>
+                                        <v-col class="text-end mt-1 pr-1">
+                                            <v-btn color="red" class="white--text pa-0 ma-0"
+                                                   @click="deleteReview(review.id)">X
+                                            </v-btn>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row class="mid-layer">
+                                        <v-col>
+                                            {{ review.text }}
+                                        </v-col>
+                                        <v-col class="text-end">
+                                            <h5>
+                                                {{ new Date(review.dateUpdated).toLocaleTimeString() }}
+                                                {{ new Date(review.dateUpdated).toLocaleDateString() }}
+                                            </h5>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row class="bottom-layer">
+                                        <!--                                   FIXME: hier een max height en width aan geven zonder te croppen-->
+                                        <v-img
+                                            v-if="review.imageName"
+                                            class="ma-5"
+                                            :src="review.filePath"
+                                            max-height="25vh"
+                                            max-width="25-vw"
+                                            contain
+                                        />
+                                    </v-row>
+                                </v-card>
+                            </v-col>
+
                         </v-row>
                     </v-card-text>
                 </v-card>
@@ -202,7 +262,9 @@ export default class Settings extends VueComponent {
     private user: any;
     private isAdminUser = false;
     private hasReviews = false;
+    private hasReportedReviews = false;
     private userReviews = {};
+    private reportedReviews = [];
     private updatePasswordDialog = false;
     private show1 = false;
     private password1 = '';
@@ -223,46 +285,24 @@ export default class Settings extends VueComponent {
 
         if (this.isAdminUser) {
             await this.getReportedReviews();
+            this.hasReportedReviews = this.reportedReviews != null;
+            console.log(this.hasReportedReviews);
+            console.log(this.reportedReviews);
         }
 
         this.setFilePaths();
         this.$forceUpdate();
     }
 
-    private setFilePaths()
-    {
-       for (let i = 0; Object.keys(this.userReviews).length > i; i++) {
-           let review = this.userReviews[`review${i}`];
-           this.userReviews[`review${i}`].filePath = this.getFilePath(review.imageName);
-       }
+    private setFilePaths() {
+        for (let i = 0; Object.keys(this.userReviews).length > i; i++) {
+            let review = this.userReviews[`review${i}`];
+            this.userReviews[`review${i}`].filePath = this.getFilePath(review.imageName);
+        }
     }
 
-    private async getReportedReviews(): Promise<void>{
-        // // TODO: filter property op review entity aangezet, query moet iets worden als /reviews?exists[timesReported]=true
-        //https://stackoverflow.com/questions/51352648/restrict-all-results-to-a-specific-property-value-i-e-active-true
-        // const test = `
-        //     query ReportedReviews($reported: Boolean!) {
-        //         review(reported: $reported) {
-        //             reported
-        //             id
-        //             text
-        //             rating
-        //             dateUpdated
-        //             game {
-        //                 id
-        //                 name
-        //             }
-        //         }
-        //     }
-        // `;
-        // const variables = {
-        //     "reported": true
-        // };
-        //
-        // const testResponse = await GraphqlHelper.queryPoster(test, variables);
-        // console.log(testResponse);
-        // const testResponse = await axios.get(`${base.getBase()}api/reviews?reported=1`);
-        // console.log(testResponse);
+    private async getReportedReviews(): Promise<void> {
+        this.reportedReviews = (await axios.get(`${base.getBase()}api/reviews?exists[timesReported]=true`)).data["hydra:member"];
     }
 
     private async getReviews(): Promise<string[]> {

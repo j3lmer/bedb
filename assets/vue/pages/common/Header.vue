@@ -17,13 +17,13 @@
                     </v-card-title>
                 </v-col>
                 <v-col>
-                    <v-row                                                                                                    
+                    <v-row
                         class="pa-2"
                         align="center"
                     >
                         <v-spacer/>
                         <v-col cols="6">
-<!--                            />-->
+                            <!--                            />-->
                             <v-autocomplete
                                 v-model="select"
                                 :search-input.sync="search"
@@ -121,6 +121,8 @@ export default class Header extends VueComponent {
         const response = await axios.post(`${base.getBase()}getGame`, {
             "gameName": s
         });
+
+        console.log(response.data);
         this.queryResults = response.data;
     }
 
@@ -136,7 +138,7 @@ export default class Header extends VueComponent {
     }
 
     @Watch('select')
-    private redirectToGame(select :any): void {
+    private redirectToGame(select: any): void {
         window.location.replace(`/game/${select}`);
     }
 

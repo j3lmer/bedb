@@ -10,12 +10,8 @@ use App\Repository\ReviewRepository;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Vich\UploaderBundle\Mapping\Annotation\Uploadable;
-use Vich\UploaderBundle\Mapping\Annotation\UploadableField;
 use App\Controller\ReviewFileController;
 
 ///**
@@ -123,8 +119,8 @@ class Review
      *   }
      * )
      */
-    #[ORM\Column(type: Types::STRING, length: 255)]
-    private string $imageName;
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    private ?string $imageName;
 
     #[ORM\Column]
     private bool $reported = false;
