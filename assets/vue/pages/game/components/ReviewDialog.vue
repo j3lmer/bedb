@@ -129,6 +129,7 @@ export default class ReviewDialog extends VueComponent {
         this.reviewText = "";
         this.rating = 0;
         this.snackbarText = [];
+        this.file = {};
 
         if (response.status > 299) {
             this.dialog = false;
@@ -155,7 +156,6 @@ export default class ReviewDialog extends VueComponent {
 
     private async postFormData(postData, config): Promise<AxiosResponse> {
 
-        console.log(postData)
 
         const form = new FormData();
         form.append('rating', postData.rating);

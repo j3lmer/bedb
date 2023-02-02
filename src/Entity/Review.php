@@ -120,7 +120,7 @@ class Review
      * )
      */
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
-    private ?string $imageName;
+    private ?string $imageName = null;
 
     #[ORM\Column]
     private bool $reported = false;
@@ -176,7 +176,10 @@ class Review
         return $this;
     }
 
-    public function getImageName(): string
+    /**
+     * @return string|null
+     */
+    public function getImageName(): ?string
     {
         return $this->imageName;
     }
