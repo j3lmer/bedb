@@ -7,10 +7,8 @@ use App\Entity\Review;
 use App\Repository\GameRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\AsController;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 use App\Service\FileUploader;
 
@@ -39,7 +37,6 @@ class ReviewFileController extends AbstractController
 
         return $review;
     }
-
 
     private function getSinceLastSlash(string $x): string
     {
