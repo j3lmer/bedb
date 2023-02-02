@@ -162,9 +162,14 @@ export default class ReviewDialog extends VueComponent {
         form.append('game', postData.game);
         form.append('owner', postData.owner);
         form.append('text', postData.text);
-        if (Object.keys(postData.image).length > 0) {
-            form.append('image', postData.image, 'yellowcar.png;type=image/png');
+
+
+
+        if (postData.image.name !== undefined) {
+            form.append('image', postData.image, `${postData.image.name}.png;type=image/png`);
         }
+
+        console.log(form);
 
         return await axios.post(`${base.getBase()}api/reviews`, form, config);
     }
