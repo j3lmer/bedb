@@ -118,11 +118,11 @@ export default class Header extends VueComponent {
 
     @Watch('search')
     private async searchForGames(s: string) {
-        const response = await axios.post(`${base.getBase()}getGame`, {
-            "gameName": s
-        });
+        console.log(`${base.getBase()}api/games?name=${s}`);
+        const response = await axios.get(`${base.getBase()}api/games?name=${s}`);
+        this.queryResults = response.data["hydra:member"];
+        console.log(this.queryResults)
 
-        this.queryResults = response.data;
     }
 
 

@@ -2,26 +2,28 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use App\Repository\GameRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\OneToMany;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource]
 #[UniqueEntity(fields: ["id"], message: 'Another game already has this appid')]
+#[ApiFilter(SearchFilter::class, properties: ['name' => 'partial'])]
 #[ORM\Table(name: '`game`')]
 #[ORM\Entity(repositoryClass: GameRepository::class)]
 class Game
 {
     #[ORM\Id]
     #[ORM\Column(unique: true, nullable: false)]
-    private int $id; // steam appid
-
+    private int $id;
+    // steam appid
     #[ORM\Column(nullable: true)]
     private int $userScore;
 
@@ -153,7 +155,6 @@ class Game
     public function setId(int $id): self
     {
         $this->id = $id;
-
         return $this;
     }
 
@@ -197,7 +198,6 @@ class Game
     public function setName(string $name): self
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -209,7 +209,6 @@ class Game
     public function setDetailedDescription(?string $detailed_description): self
     {
         $this->detailed_description = $detailed_description;
-
         return $this;
     }
 
@@ -221,7 +220,6 @@ class Game
     public function setAbout(?string $about): self
     {
         $this->about = $about;
-
         return $this;
     }
 
@@ -233,7 +231,6 @@ class Game
     public function setShortDescription(?string $short_description): self
     {
         $this->short_description = $short_description;
-
         return $this;
     }
 
@@ -245,7 +242,6 @@ class Game
     public function setSupportedLanguages(?string $supported_languages): self
     {
         $this->supported_languages = $supported_languages;
-
         return $this;
     }
 
@@ -257,7 +253,6 @@ class Game
     public function setHeaderImage(?string $header_image): self
     {
         $this->header_image = $header_image;
-
         return $this;
     }
 
@@ -269,7 +264,6 @@ class Game
     public function setWebsite(?string $website): self
     {
         $this->website = $website;
-
         return $this;
     }
 
@@ -281,7 +275,6 @@ class Game
     public function setRecommendationsTotal(int $recommendations_total): self
     {
         $this->recommendations_total = $recommendations_total;
-
         return $this;
     }
 
@@ -293,7 +286,6 @@ class Game
     public function setNotes(?string $notes): self
     {
         $this->notes = $notes;
-
         return $this;
     }
 
@@ -305,7 +297,6 @@ class Game
     public function setNsfw(bool $nsfw): self
     {
         $this->nsfw = $nsfw;
-
         return $this;
     }
 
@@ -357,7 +348,6 @@ class Game
         $this->metacritic = $metacritic;
     }
 
-
     /**
      * @return ReleaseDate
      */
@@ -373,7 +363,6 @@ class Game
     {
         $this->release_date = $release_date;
     }
-
 
     public function getReviews(): ArrayCollection|iterable
     {
@@ -400,7 +389,6 @@ class Game
         return $this;
     }
 
-
     public function getSteamReviews(): ArrayCollection|iterable
     {
         return $this->steam_reviews;
@@ -425,7 +413,6 @@ class Game
         }
         return $this;
     }
-
 
     public function getScreenshots(): iterable
     {
@@ -459,6 +446,7 @@ class Game
     {
         return $this->categories;
     }
+
     public function addCategory(Category $category): self
     {
         if (!$this->categories->contains($category)) {
@@ -467,6 +455,7 @@ class Game
         }
         return $this;
     }
+
     public function removeCategory(Category $category): self
     {
         if ($this->genres->contains($category)) {
