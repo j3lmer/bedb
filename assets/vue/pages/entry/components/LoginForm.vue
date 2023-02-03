@@ -105,13 +105,11 @@ export default class LoginForm extends VueComponent {
             axios
                 .post('/login', user)
                 .then(response => {
-                    console.log(response.headers);
                     if (response.status < 299) {
                          location.replace('/');
                     }
                 })
                 .catch(error => {
-                    console.log(error);
                     if (error.response.data.error) {
                         this.snackbarText = error.response.data.error;
                     } else {

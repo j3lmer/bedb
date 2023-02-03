@@ -34,19 +34,20 @@
                                     <v-row class="top-layer" justify="space-around">
                                         <v-col>
                                             <h4>
-                                                {{ review.game.name }}
+                                                {{ review.game }}
                                             </h4>
                                             <!--                                       hier een br en gebruikersnaam gerapporteerde post mocht dit een admin zijn-->
                                         </v-col>
                                         <v-col class="text-end mt-1 pr-1">
                                             <v-btn color="red" class="white--text pa-0 ma-0"
-                                                   @click="deleteReview(review.id)">X
+                                                   @click="deleteReview(`/api/reviews/${review.id}`)">X
                                             </v-btn>
                                         </v-col>
                                     </v-row>
                                     <v-row class="mid-layer">
                                         <v-col>
-                                            {{ review.text }}
+                                            <p>{{ review.text }}</p>
+                                            <strong>{{review.imageName}}</strong>
                                         </v-col>
                                         <v-col class="text-end">
                                             <h5>
@@ -285,16 +286,16 @@ export default class Settings extends VueComponent {
 
         if (this.isAdminUser) {
             await this.getReportedReviews();
-            this.hasReportedReviews = this.reportedReviews != null;
-            console.log(this.hasReportedReviews);
-            console.log(this.reportedReviews);
+            this.hasReportedReviews = this.reportedReviews != null && this.reportedReviews.length !== 0;
         }
-
         this.setFilePaths();
         this.$forceUpdate();
     }
 
     private setFilePaths() {
+        if (typeof this.userReviews === 'undefined') {
+           return;
+        }
         for (let i = 0; Object.keys(this.userReviews).length > i; i++) {
             let review = this.userReviews[`review${i}`];
             this.userReviews[`review${i}`].filePath = this.getFilePath(review.imageName);
@@ -302,7 +303,16 @@ export default class Settings extends VueComponent {
     }
 
     private async getReportedReviews(): Promise<void> {
-        this.reportedReviews = (await axios.get(`${base.getBase()}api/reviews?exists[timesReported]=true`)).data["hydra:member"];
+        const response  = (await axios.get(`${base.getBase()}api/reviews?reported=true`)).data["hydra:member"];
+
+        let reported = [];
+        for (let i = 0; i < Object.keys(response).length; i++) {
+            const cur = response[i];
+            if(cur.reported) {
+                reported.push(cur);
+            }
+        }
+        this.reportedReviews = reported;
     }
 
     private async getReviews(): Promise<string[]> {
@@ -347,6 +357,9 @@ export default class Settings extends VueComponent {
         const response = await this.getReviews();
         const [q, variables] = this.setupQuery(response);
         this.userReviews = await GraphqlHelper.queryPoster(q, variables);
+        await this.getReportedReviews();
+        this.hasReportedReviews = this.reportedReviews != null;
+        this.hasReviews = this.userReviews != null;
         this.$forceUpdate();
     }
 

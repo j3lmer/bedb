@@ -114,8 +114,6 @@ export default class RegisterForm extends VueComponent {
             axios
                 .post('/register', user)
                 .then(response => {
-                    console.log(response.data);
-                    console.log(response.headers);
                     if (response.status < 299) {
                         location.replace('/');
                     }

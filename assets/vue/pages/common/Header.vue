@@ -122,7 +122,6 @@ export default class Header extends VueComponent {
             "gameName": s
         });
 
-        console.log(response.data);
         this.queryResults = response.data;
     }
 

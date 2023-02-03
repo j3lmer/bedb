@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Doctrine\Odm\Filter\RangeFilter;
+use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use App\Repository\ReviewRepository;
@@ -87,7 +89,8 @@ use App\Controller\ReviewFileController;
  *   },
  *)
  */
-#[ApiFilter(OrderFilter::class, properties: ['id' => 'DESC', 'reported' => 'exact'])]
+//#[ApiFilter(OrderFilter::class, properties: ['id' => 'DESC'])]
+#[ApiFilter(BooleanFilter::class, properties: ['reported'])]
 #[Uploadable]
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
 class Review
