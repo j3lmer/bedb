@@ -34,15 +34,27 @@ class ImportSteamReviewsToDb extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-
         foreach ($this->filestructureHelper->getAppIds() as $appId) {
-            $json = file_get_contents("assets/steam/games/{$appId}/{$appId}_reviews.json");
-            if($json === "[[]]") {
+            $path = "assets/steam/games/{$appId}/{$appId}_reviews.json";
+
+            if (!file_exists($path)) {
+                printf("{$appId} No review file found, skipping.. \n \n");
+                continue;
+            }
+            $json = json_decode(file_get_contents($path), true);
+
+            if ($json === "[[]]" || $json === [[]]) {
                 printf("{$appId} has no reviews, skipping.. \n \n");
                 continue;
             }
 
-            dd(json_decode($json, true));
+            $reviewId = $json[0][0]["recommendationid"];
+
+            if($this->steamReviewRepository->find($reviewId) !== null) {
+                printf("{$reviewId} already in database, skipping.. \n \n");
+                
+                continue;
+            }
         }
 
 
